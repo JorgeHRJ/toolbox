@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {{ include('components/menu.html.twig') }}
+    <div class="app-wrapper">
+        <div class="app-content pt-3 p-md-3 p-lg-4">
+            <div class="container-xl">
+                {% block content %}{% endblock %}
+            </div>
+            {{ include('components/footer.html.twig') }}
+        </div>
+    </div>
+{% endblock %}

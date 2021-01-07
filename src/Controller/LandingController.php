@@ -6,6 +6,9 @@ use App\Library\Controller\BaseController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * @Route("/", name="landing_")
+ */
 class LandingController extends BaseController
 {
     /**
