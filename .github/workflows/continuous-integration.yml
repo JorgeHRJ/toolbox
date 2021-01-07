@@ -1,0 +1,48 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  php-quality-checks:
+    name: PHP Quality Checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest --ignore-platform-reqs
+
+      - name: PHP Code Sniffer
+        if: ${{ always() }}
+        run: vendor/bin/phpcs --standard=PSR2 src
+
+      - name: PHP Mess Detector
+        if: ${{ always() }}
+        run: vendor/bin/phpmd src/ text codesize,controversial,phpmd.xml
+
+      - name: PHP Stan
+        if: ${{ always() }}
+        run: vendor/bin/phpstan analyse -c phpstan.neon
+
+      - name: Twig Code Sniffer
+        if: ${{ always() }}
+        run: vendor/bin/twigcs templates
+
+  php-tests:
+    name: PHP Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest --ignore-platform-reqs
+
+      - name: PHP Unit
+        if: ${{ always() }}
+        run: bin/phpunit

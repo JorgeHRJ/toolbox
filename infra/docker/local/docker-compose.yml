@@ -1,0 +1,47 @@
+version: '2'
+
+services:
+    web:
+        build: ./web
+        container_name: toolbox-web
+        image: toolbox-web
+        ports:
+            - ${APP_PORT}:80
+        volumes:
+            - ${APP_DIR}:/home/app:ro
+        links:
+            - php
+        network_mode: bridge
+
+    php:
+        build: ./php
+        container_name: toolbox-php
+        image: toolbox-php
+        links:
+            - db
+            - mailcatcher
+            - rabbitmq
+        volumes:
+            - ${APP_DIR}:/home/app:cached
+        network_mode: bridge
+        working_dir: /home/app
+
+    db:
+        build: ./dbserver
+        container_name: toolbox-db
+        image: toolbox-db
+        ports:
+            - "${DB_PORT}:3306"
+        volumes:
+            - ${APP_DB}:/var/lib/mysql
+        environment:
+            MYSQL_ALLOW_EMPTY_PASSWORD: 1
+        network_mode: bridge
+
+    mailcatcher:
+        container_name: toolbox-mail
+        image: yappabe/mailcatcher
+        ports:
+            - 1025:1025
+            - 1080:1080
+        network_mode: bridge
