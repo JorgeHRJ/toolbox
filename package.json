@@ -2,9 +2,12 @@
     "devDependencies": {
         "@symfony/stimulus-bridge": "^1.1.0",
         "@symfony/webpack-encore": "^0.32.0",
+        "@symfony/autoimport": "^",
         "core-js": "^3.0.0",
-        "stimulus": "^2.0.0",
+        "node-sass": "^4.13.1",
         "regenerator-runtime": "^0.13.2",
+        "sass-loader": "^9.0.1",
+        "stimulus": "^2.0.0",
         "webpack-notifier": "^1.6.0"
     },
     "license": "UNLICENSED",
@@ -14,5 +17,16 @@
         "dev": "encore dev",
         "watch": "encore dev --watch",
         "build": "encore production --progress"
+    },
+    "dependencies": {
+        "@popperjs/core": "^2.5.4",
+        "bootstrap": "^5.0.0-alpha2",
+        "choices.js": "^9.0.1",
+        "eslint": "^5.6.0",
+        "eslint-config-airbnb-base": "^13.1.0",
+        "eslint-plugin-import": "^2.14.0",
+        "pace": "0.0.4",
+        "pace-js": "^1.0.2",
+        "vanillajs-datepicker": "^1.0.3"
     }
 }

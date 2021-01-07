@@ -73,9 +73,9 @@ Create database schema
 docker exec -it toolbox-php bin/console doctrine:schema:create
 ```
 
-Update your /etc/host file
+Update your /etc/host file adding the following entry
 ```bash
-sudo echo "127.0.0.1 toolbox.loc" >> /etc/hosts
+127.0.0.1       toolbox.loc
 ```
 
 ## Assets 

@@ -1,12 +1,26 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
-    </body>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Toolbox</title>
+
+    {% block stylesheets %}
+        <link type="text/css" rel="stylesheet" href="{{ preload(asset('build/app.css'), {as: 'style'}) }}"/>
+    {% endblock %}
+</head>
+<body>
+{% block body %}{% endblock %}
+
+{% block translations %}{% endblock %}
+
+{% for js_file in encore_entry_js_files('app') %}
+    <script src="{{ preload(asset(js_file), {as: 'script'}) }}"></script>
+{% endfor %}
+
+{% block javascripts %}{% endblock %}
+</body>
 </html>
