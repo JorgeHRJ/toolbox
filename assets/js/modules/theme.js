@@ -36,7 +36,7 @@ function initBootstrapComponents() {
 
 function handleResponsiveSidePanel() {
   const sidePanel = document.getElementById('app-sidepanel');
-  
+
   if(window.innerWidth >= 1200) {
     // if larger
     sidePanel.classList.remove('sidepanel-hidden');

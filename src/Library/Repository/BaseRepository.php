@@ -2,7 +2,6 @@
 
 namespace App\Library\Repository;
 
-use App\Entity\Home;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
@@ -23,24 +22,15 @@ abstract class BaseRepository extends ServiceEntityRepository
      * @param array|null $orderBy
      * @param int|null $limit
      * @param int|null $offset
-     * @param Home|null $home
      *
      * @return mixed
      */
-    public function getAll(
-        string $filter = null,
-        array $orderBy = null,
-        int $limit = null,
-        int $offset = null,
-        Home $home = null
-    ) {
+    public function getAll(string $filter = null, array $orderBy = null, int $limit = null, int $offset = null)
+    {
         $alias = 't';
         $qb = $this->createQueryBuilder($alias);
 
         $this->setFilter($alias, $qb, $filter);
-        if ($home instanceof Home) {
-            $this->setHomeRestriction($alias, $qb, $home);
-        }
 
         if (!empty($orderBy)) {
             foreach ($orderBy as $field => $dir) {
@@ -58,19 +48,15 @@ abstract class BaseRepository extends ServiceEntityRepository
 
     /**
      * @param string|null $filter
-     * @param Home|null $home
+     *
      * @return int
      */
-    public function getAllCount(?string $filter, Home $home = null)
+    public function getAllCount(?string $filter)
     {
         $alias = 't';
 
         $qb = $this->createQueryBuilder($alias)->select(sprintf('count(%s.id)', $alias));
-
         $this->setFilter($alias, $qb, $filter);
-        if ($home instanceof Home) {
-            $this->setHomeRestriction($alias, $qb, $home);
-        }
 
         try {
             return $qb->getQuery()->getSingleScalarResult();
@@ -97,16 +83,5 @@ abstract class BaseRepository extends ServiceEntityRepository
             $qb->orWhere(sprintf('%s LIKE :%s_filter', sprintf('%s.%s', $alias, $field), $field));
             $qb->setParameter(sprintf('%s_filter', $field), sprintf('%%%s%%', $filter));
         }
-    }
-
-    /**
-     * @param string $alias
-     * @param QueryBuilder $qb
-     * @param Home $home
-     */
-    protected function setHomeRestriction(string $alias, QueryBuilder $qb, Home $home): void
-    {
-        $qb->andWhere(sprintf('%s.home = :homeId', $alias));
-        $qb->setParameter('homeId', $home->getId());
     }
 }
