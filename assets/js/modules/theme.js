@@ -95,10 +95,10 @@ function initMobileSearch() {
 }
 
 function init() {
+  initPace();
   initResponsiveSidePanel();
   initMobileSearch();
   initBootstrapComponents();
-  initPace();
 }
 
 export default init;
