@@ -7,48 +7,7 @@
                         {{ source('icons/toggler.svg') }}
                     </a>
                 </div>
-                <div class="search-mobile-trigger d-sm-none col">
-                    {{ source('icons/search-1.svg') }}
-                </div>
-                <div class="app-search-box col">
-                    <form class="app-search-form">
-                        <input type="text" placeholder="Buscar" name="search" class="form-control search-input">
-                        <button type="submit" class="btn search-btn btn-primary" value="Buscar">
-                            {{ source('icons/search-2.svg') }}
-                        </button>
-                    </form>
-                </div>
                 <div class="app-utilities col-auto">
-                    <div class="app-utility-item app-notifications-dropdown dropdown">
-                        <a class="dropdown-toggle no-toggle-arrow" id="notifications-dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false" title="Notifications">
-                            {{ source('icons/bell.svg') }}
-                            <span class="icon-badge">3</span>
-                        </a>
-                        <div class="dropdown-menu p-0" aria-labelledby="notifications-dropdown-toggle">
-                            <div class="dropdown-menu-header p-3">
-                                <h5 class="dropdown-menu-title mb-0">Notificaciones</h5>
-                            </div>
-                            <div class="dropdown-menu-content">
-                                <div class="item p-3">
-                                    <div class="row gx-2 justify-content-between align-items-center">
-                                        <div class="col-auto">
-                                            {{ source('icons/person.svg') }}
-                                        </div>
-                                        <div class="col">
-                                            <div class="info">
-                                                <div class="desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
-                                                <div class="meta">Hace 2 horas</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <a class="link-mask" href="#"></a>
-                                </div>
-                            </div>
-                            <div class="dropdown-menu-footer p-2 text-center">
-                                <a href="#">Ver todas</a>
-                            </div>
-                        </div>
-                    </div>
                     <div class="app-utility-item app-user-dropdown dropdown">
                         <a class="dropdown-toggle"
                            id="user-dropdown-toggle"
@@ -59,7 +18,7 @@
                             {{ source('icons/person.svg') }}
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="user-dropdown-toggle">
-                            <li><a class="dropdown-item" href="#">Desconectar</a></li>
+                            <li><a class="dropdown-item" href={{ path('security_logout') }}>Desconectar</a></li>
                         </ul>
                     </div>
                 </div>

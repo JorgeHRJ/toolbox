@@ -75,9 +75,9 @@ class AppAuthenticator extends AbstractFormLoginAuthenticator implements Passwor
     /**
      * @param mixed $credentials
      * @param UserProviderInterface $userProvider
-     * @return object|UserInterface|User|null
+     * @return User|null
      */
-    public function getUser($credentials, UserProviderInterface $userProvider): User
+    public function getUser($credentials, UserProviderInterface $userProvider): ?User
     {
         $token = new CsrfToken('authenticate', $credentials['csrf_token']);
         if (!$this->csrfTokenManager->isTokenValid($token)) {

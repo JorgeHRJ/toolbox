@@ -3,13 +3,15 @@
 namespace App\Library\Service;
 
 use App\Library\Repository\BaseRepository;
-use App\Service\ContextService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 
 abstract class BaseService
 {
+    /** @var EntityManagerInterface */
     protected $entityManager;
+
+    /** @var LoggerInterface */
     protected $logger;
 
     public function __construct(EntityManagerInterface $entityManager, LoggerInterface $logger)
