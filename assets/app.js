@@ -1,4 +1,9 @@
-import './styles/app.scss';
+import './css/app.scss';
 
-// start the Stimulus application
-import './bootstrap';
+// Stimulus app
+import './js/bootstrap';
+
+// modules
+import initTheme from './js/modules/theme';
+
+initTheme();
