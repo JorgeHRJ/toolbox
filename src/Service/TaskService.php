@@ -42,6 +42,45 @@ class TaskService
     }
 
     /**
+     * @param int $id
+     * @return Task|null
+     */
+    public function get(int $id): ?Task
+    {
+        return $this->repository->find($id);
+    }
+
+    /**
+     * @param User $user
+     * @return array
+     * @return Task[]|array
+     */
+    public function getFromCurrent(User $user): array
+    {
+        return $this->getByMonth($user, new \DateTime());
+    }
+
+    /**
+     * @param User $user
+     * @param \DateTime $date
+     * @return Task[]|array
+     */
+    public function getByMonth(User $user, \DateTime $date): array
+    {
+        $startMonth = clone $date;
+        $endMonth = clone $date;
+
+        $startMonth->modify('first day of this month');
+        $endMonth->modify('last day of this month');
+
+        return $this->repository->getBetweenDates(
+            $user,
+            $startMonth->format('Y-m-d'),
+            $endMonth->format('Y-m-d')
+        );
+    }
+
+    /**
      * @param Task $task
      * @return Task
      * @throws \Exception

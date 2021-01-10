@@ -13,5 +13,15 @@
             </div>
         </div>
     </div>
+    <div class="hide" data-component="task-container">
+        {% for task in tasks %}
+            <div data-id="{{ task.id }}"
+                 data-title="{{ task.title }}"
+                 data-date="{{ task.date|date('Y-m-d') }}"
+                 data-color="{{ task.tag.color }}"
+                 data-component="task-event">
+            </div>
+        {% endfor %}
+    </div>
     {{ include('task/components/_new-task-modal.html.twig') }}
 {% endblock %}
