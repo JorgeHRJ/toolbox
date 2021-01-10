@@ -1,0 +1,17 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Inicio{% endblock %}
+{% block bodyAttr %}data-controller="task"{% endblock %}
+
+{% block content %}
+    <div class="app-card shadow-sm mb-4">
+        <div class="inner">
+            <div class="app-card-body p-4">
+                <div class="row gx-5 gy-3">
+                    <div class="calendar" data-component="calendar"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{ include('task/components/_new-task-modal.html.twig') }}
+{% endblock %}
