@@ -81,17 +81,19 @@ function initMobileSearch() {
   const searchMobileTrigger = document.querySelector('.search-mobile-trigger');
   const searchBox = document.querySelector('.app-search-box');
 
-  searchMobileTrigger.addEventListener('click', () => {
-    searchBox.classList.toggle('is-visible');
-    let searchMobileTriggerIcon = document.querySelector('.search-mobile-trigger-icon');
-    if (searchMobileTriggerIcon.classList.contains('fa-search')) {
-      searchMobileTriggerIcon.classList.remove('fa-search');
-      searchMobileTriggerIcon.classList.add('fa-times');
-    } else {
-      searchMobileTriggerIcon.classList.remove('fa-times');
-      searchMobileTriggerIcon.classList.add('fa-search');
-    }
-  });
+  if (searchMobileTrigger && searchBox) {
+    searchMobileTrigger.addEventListener('click', () => {
+      searchBox.classList.toggle('is-visible');
+      let searchMobileTriggerIcon = document.querySelector('.search-mobile-trigger-icon');
+      if (searchMobileTriggerIcon.classList.contains('fa-search')) {
+        searchMobileTriggerIcon.classList.remove('fa-search');
+        searchMobileTriggerIcon.classList.add('fa-times');
+      } else {
+        searchMobileTriggerIcon.classList.remove('fa-times');
+        searchMobileTriggerIcon.classList.add('fa-search');
+      }
+    });
+  }
 }
 
 function init() {

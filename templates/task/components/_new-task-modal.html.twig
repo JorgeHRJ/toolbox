@@ -1,0 +1,31 @@
+<div class="modal hide" tabindex="-1" aria-hidden="true" data-component="modal-add-task">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <form method="post" action="{{ path('task_post') }}" class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Añadir tarea</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger hide" data-component="error-message"></div>
+                <div class="row">
+                    <h3 data-component="task-date"></h3>
+                </div>
+                <div class="row">
+                    <div class="col-12 mb-1">
+                        <label for="title">Título</label>
+                        <div class="input-group">
+                            <input id="title" name="title" class="form-control" type="text" required>
+                        </div>
+                    </div>
+                </div>
+                <input id="date" name="date" class="form-control hide" type="hidden" required>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary text-white">Añadir</button>
+                <button type="button" class="btn btn-secondary text-gray ml-auto" data-bs-dismiss="modal">
+                    Cerrar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

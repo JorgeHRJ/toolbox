@@ -1,9 +1,14 @@
+.hide {
+    display: none;
+}
+
 .icon {
     font-size: 1.25rem;
     width: 24px;
     height: 24px;
 }
 
+/* pace library */
 .pace {
     -webkit-pointer-events: none;
     pointer-events: none;
@@ -26,6 +31,13 @@
     height: 5px;
 }
 
-.close-row {
-    cursor: pointer;
+/* fullcalendar library */
+.fc-button {
+    background-color: #15a362 !important;
+    border-color: #15a362 !important;
+}
+
+.fc-button:hover {
+    background-color: #18ba70 !important;
+    border-color: #18ba70 !important;
 }

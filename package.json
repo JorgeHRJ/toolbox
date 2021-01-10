@@ -18,6 +18,9 @@
         "build": "encore production --progress"
     },
     "dependencies": {
+        "@fullcalendar/core": "^5.5.0",
+        "@fullcalendar/daygrid": "^5.5.0",
+        "@fullcalendar/interaction": "^5.5.0",
         "@popperjs/core": "^2.5.4",
         "bootstrap": "^5.0.0-alpha2",
         "choices.js": "^9.0.1",

@@ -12,11 +12,21 @@
         <nav id="app-nav-main" class="app-nav app-nav-main flex-grow-1">
             <ul class="app-menu list-unstyled accordion" id="menu-accordion">
                 <li class="nav-item">
-                    <a class="nav-link active" href="{{ path('landing_index') }}">
+                    <a class="nav-link {{ 'landing' in app.request.get('_route') ? 'active' : '' }}"
+                       href="{{ path('landing_index') }}">
                         <span class="nav-icon">
                             {{ source('icons/home.svg') }}
                         </span>
                         <span class="nav-link-text">Inicio</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ 'task' in app.request.get('_route') ? 'active' : '' }}"
+                       href="{{ path('task_index') }}">
+                        <span class="nav-icon">
+                            {{ source('icons/calendar-week.svg') }}
+                        </span>
+                        <span class="nav-link-text">Semanal</span>
                     </a>
                 </li>
             </ul>
