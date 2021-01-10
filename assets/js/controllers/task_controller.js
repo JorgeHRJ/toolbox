@@ -1,25 +1,33 @@
-import { Calendar } from '@fullcalendar/core';
+import {Calendar} from '@fullcalendar/core';
 import interactionPlugin from '@fullcalendar/interaction';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import esLocale from '@fullcalendar/core/locales/es';
-import { Modal } from 'bootstrap';
+import {Modal} from 'bootstrap';
 
 let calendar = null;
 let addModal = null;
+
+function getClassNameForEvent(color) {
+  return `bg-${color} border border-light rounded p-1`;
+}
+
+function getEvent(id, title, date, color) {
+  return {
+    id: id,
+    title: title,
+    start: date,
+    end: date,
+    className: getClassNameForEvent(color),
+    draggable: true
+  };
+}
 
 function postReady(event) {
   const httpRequest = event.currentTarget;
   if (httpRequest.readyState === 4) {
     const data = JSON.parse(httpRequest.response);
     if (httpRequest.status === 201) {
-      const event = {
-        id: data.id,
-        title: data.title,
-        start: data.date,
-        end: data.date,
-        className: `bg-${data.tag.color} border border-light rounded p-1`,
-        draggable: true
-      };
+      const event = getEvent(data.id, data.title, data.date, data.tag.color);
       calendar.addEvent(event);
 
       if (addModal !== null) {
@@ -79,6 +87,17 @@ function openAddModal(d) {
   }
 }
 
+function getEventsFromDom() {
+  let events = [];
+  const eventsDom = document.querySelectorAll('[data-component="task-event"]');
+  eventsDom.forEach((eventDom) => {
+    const { id, title, date, color } = eventDom.dataset;
+    events.push(getEvent(id, title, date, color))
+  });
+
+  return events;
+}
+
 function initCalendar(element) {
   calendar = new Calendar(element, {
     plugins: [ dayGridPlugin, interactionPlugin ],
@@ -92,6 +111,7 @@ function initCalendar(element) {
       center: 'title',
       right: 'dayGridDay,dayGridWeek'
     },
+    events: getEventsFromDom(),
     dateClick: (d) => {
       openAddModal(d)
     },

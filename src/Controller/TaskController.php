@@ -32,7 +32,8 @@ class TaskController extends BaseController
      */
     public function index(): Response
     {
-        return $this->render('task/index.html.twig', []);
+        $tasks = $this->taskService->getFromCurrent($this->getUserInstance());
+        return $this->render('task/index.html.twig', ['tasks' => $tasks]);
     }
 
     /**
