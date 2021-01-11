@@ -19,9 +19,11 @@
                  data-title="{{ task.title }}"
                  data-date="{{ task.date|date('Y-m-d') }}"
                  data-color="{{ task.tag.color }}"
-                 data-component="task-event">
+                 data-component="task-event"
+                 data-edit="{{ path('task_patch', {'id': task.id}) }}">
             </div>
         {% endfor %}
     </div>
     {{ include('task/components/_new-task-modal.html.twig') }}
+    {{ include('task/components/_edit-task-modal.html.twig') }}
 {% endblock %}

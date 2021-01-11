@@ -7,13 +7,11 @@ import './js/bootstrap';
 import initTheme from './js/modules/theme';
 
 // import components
-import { initDatepickerComponent } from './js/components/datepicker';
 
 // import controllers
 import initTaskController from './js/controllers/task_controller';
 
 initTheme();
-initDatepickerComponent();
 
 if (document.querySelector('[data-controller="task"]')) {
   initTaskController();

@@ -41,3 +41,12 @@
     background-color: #18ba70 !important;
     border-color: #18ba70 !important;
 }
+
+/** datepicker library */
+.datepicker-dropdown {
+    z-index: 2000 !important;
+}
+
+.datepicker-cell.selected, .datepicker-cell.selected:hover {
+    background-color: #15a362;
+}

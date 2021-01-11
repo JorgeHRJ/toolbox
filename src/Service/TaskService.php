@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use _HumbugBoxce6e9e339315\Roave\BetterReflection\Reflection\Adapter\ReflectionClass;
 use App\Entity\Task;
 use App\Entity\TaskTag;
 use App\Entity\User;
@@ -42,12 +43,13 @@ class TaskService
     }
 
     /**
+     * @param User $user
      * @param int $id
-     * @return Task|null
+     * @return Task|object|null
      */
-    public function get(int $id): ?Task
+    public function get(User $user, int $id): ?Task
     {
-        return $this->repository->find($id);
+        return $this->repository->findOneBy(['id' => $id, 'user' => $user]);
     }
 
     /**
@@ -101,17 +103,35 @@ class TaskService
     }
 
     /**
-     * @param User $user
-     * @param string $title
-     * @param string $date
+     * @param Task $task
      * @return Task
      * @throws \Exception
      */
-    public function post(User $user, string $title, string $date): Task
+    public function update(Task $task): Task
+    {
+        try {
+            $this->entityManager->flush();
+
+            $this->logger->info(sprintf('Task updated! ID %d', $task->getId()));
+
+            return $task;
+        } catch (\Exception $e) {
+            $this->logger->error(sprintf('Error when updating task: %s', $e->getMessage()));
+            throw $e;
+        }
+    }
+
+    /**
+     * @param User $user
+     * @param array $data
+     * @return Task
+     * @throws \Exception
+     */
+    public function post(User $user, array $data): Task
     {
         $task = new Task();
-        $task->setTitle($title);
-        $task->setDate(new \DateTime($date));
+        $task->setTitle($data['title']);
+        $task->setDate(new \DateTime($data['date']));
         $task->setStatus(Task::PENDING_STATUS);
         $task->setUser($user);
 
@@ -137,6 +157,46 @@ class TaskService
 
         try {
             return $this->create($task);
+        } catch (\Exception $e) {
+            throw new \Exception('Hubo un error al crear la tarea');
+        }
+    }
+
+    /**
+     * @param Task $task
+     * @param array $data
+     * @return Task
+     * @throws \Exception
+     */
+    public function patch(Task $task, array $data): Task
+    {
+        $reflectionClass = new \ReflectionClass($task);
+
+        foreach ($data as $property => $value) {
+            if (!$reflectionClass->hasProperty($property)) {
+                continue;
+            }
+
+            $reflectionProperty = new \ReflectionProperty($task, $property);
+            $matches = null;
+            if (preg_match('/@var\s+([^\s]+)/', $reflectionProperty->getDocComment(), $matches)) {
+                list(, $type) = $matches;
+                $type = str_replace(['\\', '|', 'null'], '', $type);
+
+                if (strpos($type, 'DateTime') !== false) {
+                    $value = new \DateTime($value);
+                }
+            }
+
+            $reflectionMethod = $reflectionClass->getMethod(sprintf('set%s', ucwords($property)));
+            if ($reflectionMethod instanceof \ReflectionMethod) {
+                $function = $reflectionMethod->getName();
+                $task->$function($value);
+            }
+        }
+
+        try {
+            return $this->update($task);
         } catch (\Exception $e) {
             throw new \Exception('Hubo un error al crear la tarea');
         }
