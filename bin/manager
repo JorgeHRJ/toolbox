@@ -18,38 +18,38 @@ docker_build() {
     cd $DOCKER_PWD || return
     docker-compose build --pull $EXTRA_PARAMS
     docker-compose build -t $DOCKER_CONTAINER_NODE $NODE_PWD $EXTRA_PARAMS
-    cd $APP_PWD || return
+    cd "$APP_PWD" || return
 }
 
 docker_up() {
     cd $DOCKER_PWD || return
     docker-compose up -d
-    cd $APP_PWD || return
+    cd "$APP_PWD" || return
 }
 
 docker_down() {
     cd $DOCKER_PWD || return
     docker-compose down
-    cd $APP_PWD || return
+    cd "$APP_PWD" || return
 }
 
 docker_reset() {
   cd $DOCKER_PWD || return
   docker-compose down
   docker-compose up -d
-  cd $APP_PWD || return
+  cd "$APP_PWD" || return
 }
 
 docker_update() {
   cd $DOCKER_PWD || return
   docker-compose down
   docker-compose up -d --build
-  cd $APP_PWD || return
+  cd "$APP_PWD" || return
 }
 
 # Docker access updates
 docker_db() {
-    docker exec -it $DOCKER_CONTAINER_DB mysql $1
+    docker exec -it $DOCKER_CONTAINER_DB mysql "$1"
 }
 
 docker_php() {
@@ -75,6 +75,11 @@ schema_update() {
   docker exec -it $DOCKER_CONTAINER_PHP bin/console doctrine:schema:update --dump-sql --force
 }
 
+# Composer tasks
+composer_install() {
+  docker exec -it $DOCKER_CONTAINER_PHP composer install
+}
+
 # Node tasks
 modules_install() {
   docker run -it -v "$APP_PWD":/home/app $DOCKER_CONTAINER_NODE yarn install
@@ -96,7 +101,7 @@ qualitify() {
 
 case $1 in
     "docker-build")
-        docker_build $2
+        docker_build "$2"
     ;;
 
     "docker-up")
@@ -116,7 +121,7 @@ case $1 in
     ;;
 
     "db")
-        docker_db $2
+        docker_db "$2"
     ;;
 
     "php")
@@ -139,8 +144,12 @@ case $1 in
         schema_update
     ;;
 
-    "modules_install")
+    "modules-install")
         modules_install
+    ;;
+
+    "composer-install")
+        composer_install
     ;;
 
     "assets-build")
@@ -158,6 +167,7 @@ case $1 in
     "uptodate")
         git_update
         docker_update
+        composer_install
         schema_update
         modules_install
         assets_build
