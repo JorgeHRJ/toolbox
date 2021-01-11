@@ -42,6 +42,11 @@
     border-color: #18ba70 !important;
 }
 
+.task-done .fc-event-title {
+    font-style: italic !important;
+    text-decoration: line-through !important;
+}
+
 /** datepicker library */
 .datepicker-dropdown {
     z-index: 2000 !important;

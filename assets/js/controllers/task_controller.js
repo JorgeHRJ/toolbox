@@ -15,19 +15,55 @@ function convertDate(dateStr) {
   return dateStr.split('/').reverse().join('-');
 }
 
-function getClassNameForEvent(color) {
-  return `bg-${color} border border-light rounded p-1`;
+function getClassNameForEvent(color, status) {
+  let className = `bg-${color} border border-light rounded p-1`;
+  console.log(parseInt(status, 10) === 1);
+  if (parseInt(status, 10) === 1) {
+    className = className + ' task-done';
+  }
+  console.log(className);
+  return className;
 }
 
-function getEvent(id, title, date, color) {
+function getEvent(id, title, date, color, status) {
   return {
     id: id,
     title: title,
     start: date,
     end: date,
-    className: getClassNameForEvent(color),
+    className: getClassNameForEvent(color, status),
     draggable: true
   };
+}
+
+function applyDivDataset(element, id, title, date, color, status, url) {
+  element.dataset.id = id;
+  element.dataset.title = title;
+  element.dataset.date = date;
+  element.dataset.color = color;
+  element.dataset.status = status;
+  element.dataset.edit = url;
+  element.dataset.component = 'task-event';
+}
+
+function editInDom(id, title, date, color, status) {
+  const element = document
+    .querySelector('[data-component="task-container"]')
+    .querySelector(`[data-id="${id}"]`);
+
+  applyDivDataset(element, id, title, date, color, status, element.dataset.edit);
+}
+
+function addInDom(id, title, date, color, status) {
+  const container = document.querySelector('[data-component="task-container"]');
+
+  let div = document.createElement('div');
+  let url = container.dataset.url;
+  url = url.replace('0', id);
+
+  applyDivDataset(div, id, title, date, color, status, url);
+
+  container.appendChild(div);
 }
 
 function patchReady(event) {
@@ -38,10 +74,10 @@ function patchReady(event) {
       const eventCalendar = calendar.getEventById(data.id);
       if (eventCalendar) {
         eventCalendar.setProp('title', data.title);
-        console.log(data.date);
         eventCalendar.setStart(data.date);
-        eventCalendar.setProp('className', getClassNameForEvent(data.tag.color));
+        eventCalendar.setProp('classNames', getClassNameForEvent(data.tag.color, data.status).split(' '));
       }
+      editInDom(data.id, data.title, data.date, data.tag.color, data.status);
 
       if (editModal !== null) {
         editModal.hide();
@@ -69,8 +105,9 @@ function postReady(event) {
   if (httpRequest.readyState === 4) {
     const data = JSON.parse(httpRequest.response);
     if (httpRequest.status === 201) {
-      const event = getEvent(data.id, data.title, data.date, data.tag.color);
+      const event = getEvent(data.id, data.title, data.date, data.tag.color, data.status);
       calendar.addEvent(event);
+      addInDom(data.id, data.title, data.date, data.tag.color, data.status);
 
       if (addModal !== null) {
         addModal.hide();
@@ -131,6 +168,9 @@ function onPatchSubmit(event) {
       data[key] = value;
     });
 
+    const statusSwitch = document.querySelector('input[name="status"]');
+    data['status'] = statusSwitch.checked ? 1 : 0;
+
     patch(url, data);
   }
 }
@@ -184,9 +224,16 @@ function openAddModal(d) {
 
 function openEditModal(info) {
   const modalElement = document.querySelector('[data-component="modal-edit-task"]');
-  if (modalElement) {
+  const eventDom = document
+    .querySelector('[data-component="task-container"]')
+    .querySelector(`[data-id="${info.event.id}"]`)
+
+  if (modalElement && eventDom) {
     const titleInput = modalElement.querySelector('input[name="title"]');
     titleInput.value = info.event.title;
+
+    const statusSwitch = modalElement.querySelector('input[name="status"]');
+    statusSwitch.checked = parseInt(eventDom.dataset.status, 10) === 1;
 
     editDatepicker.setDate(info.event.start);
 
@@ -203,8 +250,8 @@ function getEventsFromDom() {
   let events = [];
   const eventsDom = document.querySelectorAll('[data-component="task-event"]');
   eventsDom.forEach((eventDom) => {
-    const { id, title, date, color } = eventDom.dataset;
-    events.push(getEvent(id, title, date, color));
+    const { id, title, date, color, status } = eventDom.dataset;
+    events.push(getEvent(id, title, date, color, status));
   });
 
   return events;

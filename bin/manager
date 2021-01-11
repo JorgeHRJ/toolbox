@@ -99,6 +99,19 @@ qualitify() {
   docker exec -it $DOCKER_CONTAINER_PHP bin/qualitify.sh
 }
 
+# Custom tasks
+uptodate() {
+    if [ "$1" == "master" ] ; then
+      git_update
+    fi
+
+    docker_update
+    composer_install
+    schema_update
+    modules_install
+    assets_build
+}
+
 case $1 in
     "docker-build")
         docker_build "$2"
@@ -165,12 +178,7 @@ case $1 in
     ;;
 
     "uptodate")
-        git_update
-        docker_update
-        composer_install
-        schema_update
-        modules_install
-        assets_build
+        uptodate "$2"
     ;;
 esac
 

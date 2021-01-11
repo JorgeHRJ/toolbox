@@ -1,6 +1,6 @@
 {% extends 'layout.html.twig' %}
 
-{% block title %}Inicio{% endblock %}
+{% block title %}Semanal{% endblock %}
 {% block bodyAttr %}data-controller="task"{% endblock %}
 
 {% block content %}
@@ -13,12 +13,13 @@
             </div>
         </div>
     </div>
-    <div class="hide" data-component="task-container">
+    <div class="hide" data-component="task-container" data-url="{{ path('task_patch', {'id': 0}) }}">
         {% for task in tasks %}
             <div data-id="{{ task.id }}"
                  data-title="{{ task.title }}"
                  data-date="{{ task.date|date('Y-m-d') }}"
                  data-color="{{ task.tag.color }}"
+                 data-status="{{ task.status }}"
                  data-component="task-event"
                  data-edit="{{ path('task_patch', {'id': task.id}) }}">
             </div>
