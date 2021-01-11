@@ -3,23 +3,101 @@ import interactionPlugin from '@fullcalendar/interaction';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import esLocale from '@fullcalendar/core/locales/es';
 import {Modal} from 'bootstrap';
+import {initDatepicker} from "../components/datepicker";
 
 let calendar = null;
 let addModal = null;
+let editModal = null;
+let editDatepicker = null;
+let infoDrop = null;
 
-function getClassNameForEvent(color) {
-  return `bg-${color} border border-light rounded p-1`;
+function convertDate(dateStr) {
+  return dateStr.split('/').reverse().join('-');
 }
 
-function getEvent(id, title, date, color) {
+function getClassNameForEvent(color, status) {
+  let className = `bg-${color} border border-light rounded p-1`;
+  console.log(parseInt(status, 10) === 1);
+  if (parseInt(status, 10) === 1) {
+    className = className + ' task-done';
+  }
+  console.log(className);
+  return className;
+}
+
+function getEvent(id, title, date, color, status) {
   return {
     id: id,
     title: title,
     start: date,
     end: date,
-    className: getClassNameForEvent(color),
+    className: getClassNameForEvent(color, status),
     draggable: true
   };
+}
+
+function applyDivDataset(element, id, title, date, color, status, url) {
+  element.dataset.id = id;
+  element.dataset.title = title;
+  element.dataset.date = date;
+  element.dataset.color = color;
+  element.dataset.status = status;
+  element.dataset.edit = url;
+  element.dataset.component = 'task-event';
+}
+
+function editInDom(id, title, date, color, status) {
+  const element = document
+    .querySelector('[data-component="task-container"]')
+    .querySelector(`[data-id="${id}"]`);
+
+  applyDivDataset(element, id, title, date, color, status, element.dataset.edit);
+}
+
+function addInDom(id, title, date, color, status) {
+  const container = document.querySelector('[data-component="task-container"]');
+
+  let div = document.createElement('div');
+  let url = container.dataset.url;
+  url = url.replace('0', id);
+
+  applyDivDataset(div, id, title, date, color, status, url);
+
+  container.appendChild(div);
+}
+
+function patchReady(event) {
+  const httpRequest = event.currentTarget;
+  if (httpRequest.readyState === 4) {
+    const data = JSON.parse(httpRequest.response);
+    if (httpRequest.status === 200) {
+      const eventCalendar = calendar.getEventById(data.id);
+      if (eventCalendar) {
+        eventCalendar.setProp('title', data.title);
+        eventCalendar.setStart(data.date);
+        eventCalendar.setProp('classNames', getClassNameForEvent(data.tag.color, data.status).split(' '));
+      }
+      editInDom(data.id, data.title, data.date, data.tag.color, data.status);
+
+      if (editModal !== null) {
+        editModal.hide();
+        editModal = null;
+      }
+
+      const form = document.querySelector('form');
+      form.reset();
+    }
+
+    if (httpRequest.status === 400) {
+      const alert = document.querySelector('[data-component="error-message"]');
+      alert.innerText = alert.message;
+
+      if (infoDrop !== null) {
+        infoDrop.revert();
+        infoDrop = null;
+      }
+    }
+  }
 }
 
 function postReady(event) {
@@ -27,8 +105,9 @@ function postReady(event) {
   if (httpRequest.readyState === 4) {
     const data = JSON.parse(httpRequest.response);
     if (httpRequest.status === 201) {
-      const event = getEvent(data.id, data.title, data.date, data.tag.color);
+      const event = getEvent(data.id, data.title, data.date, data.tag.color, data.status);
       calendar.addEvent(event);
+      addInDom(data.id, data.title, data.date, data.tag.color, data.status);
 
       if (addModal !== null) {
         addModal.hide();
@@ -46,6 +125,17 @@ function postReady(event) {
   }
 }
 
+function patch(url, data) {
+  const httpRequest = new XMLHttpRequest();
+
+  httpRequest.onreadystatechange = patchReady;
+  httpRequest.open('PATCH', url);
+  httpRequest.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+  httpRequest.setRequestHeader('Content-Type', 'application/json');
+
+  httpRequest.send(JSON.stringify(data));
+}
+
 function post(url, data) {
   const httpRequest = new XMLHttpRequest();
 
@@ -54,10 +144,38 @@ function post(url, data) {
   httpRequest.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
   httpRequest.setRequestHeader('Content-Type', 'application/json');
 
-  httpRequest.send(data);
+  httpRequest.send(JSON.stringify(data));
 }
 
-function onSubmit(event) {
+function onPatchSubmit(event) {
+  event.preventDefault();
+
+  const form = event.target;
+  const formData = new FormData(form);
+  const id = form.dataset.id;
+
+  const eventDom = document
+    .querySelector('[data-component="task-container"]')
+    .querySelector(`[data-id="${id}"]`)
+  if (eventDom) {
+    const url = eventDom.dataset.edit;
+
+    let data = {};
+    formData.forEach((value, key) => {
+      if (key === 'date') {
+        value = convertDate(value);
+      }
+      data[key] = value;
+    });
+
+    const statusSwitch = document.querySelector('input[name="status"]');
+    data['status'] = statusSwitch.checked ? 1 : 0;
+
+    patch(url, data);
+  }
+}
+
+function onPostSubmit(event) {
   event.preventDefault();
 
   const form = event.target;
@@ -68,7 +186,24 @@ function onSubmit(event) {
     data[key] = value;
   });
 
-  post(form.action, JSON.stringify(data));
+  post(form.action, data);
+}
+
+function onDropEvent(info) {
+  infoDrop = info;
+
+  const id = info.event.id;
+  const eventDom = document
+    .querySelector('[data-component="task-container"]')
+    .querySelector(`[data-id="${id}"]`)
+  if (eventDom) {
+    const url = eventDom.dataset.edit;
+    const data = {
+      date: info.event.startStr
+    };
+
+    patch(url, data);
+  }
 }
 
 function openAddModal(d) {
@@ -80,10 +215,34 @@ function openAddModal(d) {
     dateInput.value = d.dateStr;
 
     const form = modalElement.querySelector('form');
-    form.addEventListener('submit', onSubmit);
+    form.addEventListener('submit', onPostSubmit);
 
     addModal = new Modal(modalElement);
     addModal.show();
+  }
+}
+
+function openEditModal(info) {
+  const modalElement = document.querySelector('[data-component="modal-edit-task"]');
+  const eventDom = document
+    .querySelector('[data-component="task-container"]')
+    .querySelector(`[data-id="${info.event.id}"]`)
+
+  if (modalElement && eventDom) {
+    const titleInput = modalElement.querySelector('input[name="title"]');
+    titleInput.value = info.event.title;
+
+    const statusSwitch = modalElement.querySelector('input[name="status"]');
+    statusSwitch.checked = parseInt(eventDom.dataset.status, 10) === 1;
+
+    editDatepicker.setDate(info.event.start);
+
+    const form = modalElement.querySelector('form');
+    form.dataset.id = info.event.id;
+    form.addEventListener('submit', onPatchSubmit);
+
+    editModal = new Modal(modalElement);
+    editModal.show();
   }
 }
 
@@ -91,8 +250,8 @@ function getEventsFromDom() {
   let events = [];
   const eventsDom = document.querySelectorAll('[data-component="task-event"]');
   eventsDom.forEach((eventDom) => {
-    const { id, title, date, color } = eventDom.dataset;
-    events.push(getEvent(id, title, date, color))
+    const { id, title, date, color, status } = eventDom.dataset;
+    events.push(getEvent(id, title, date, color, status));
   });
 
   return events;
@@ -117,9 +276,25 @@ function initCalendar(element) {
     },
     datesSet: (dateInfo) => {
       console.log(dateInfo);
+    },
+    eventDrop: (info) => {
+      onDropEvent(info);
+    },
+    eventClick: (info) => {
+      openEditModal(info);
     }
   });
   calendar.render();
+}
+
+function initEditModal() {
+  const modalElement = document.querySelector('[data-component="modal-edit-task"]');
+  if (modalElement) {
+    const datepickerElement = modalElement.querySelector('[data-component="datepicker"]');
+    if (datepickerElement) {
+      editDatepicker = initDatepicker(datepickerElement);
+    }
+  }
 }
 
 function init() {
@@ -127,6 +302,8 @@ function init() {
   if (calendar) {
     initCalendar(calendar);
   }
+
+  initEditModal();
 }
 
 export default init;
