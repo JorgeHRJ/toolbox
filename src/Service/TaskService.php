@@ -45,7 +45,7 @@ class TaskService
     /**
      * @param User $user
      * @param int $id
-     * @return Task|object|null
+     * @return Task|null
      */
     public function get(User $user, int $id): ?Task
     {
