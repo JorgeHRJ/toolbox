@@ -1,10 +1,10 @@
 .app-sidepanel {
 	position: fixed;
 	min-height: 100vh;
-	height: 100%;	
+	height: 100%;
 	left: 0;
-	top: 0;	
-	font-size: 0.875rem;	
+	top: 0;
+	font-size: 0.875rem;
 	border-right: 1px solid $theme-border-color;
 	.panel-drop {
 		display: none;
@@ -15,10 +15,10 @@
 		background: #fff;
 		@include box-shadow(rgba(0, 0, 0, 0.05) 0px 8px 15px);
 		width: 250px;
-	    height: 100%;	
-	    
+	    height: 100%;
+
 	}
-	
+
 	.sidepanel-close {
 		display: none;
 		position: absolute;
@@ -31,25 +31,25 @@
 
 	&.sidepanel-hidden {
 		left: -400px; //value >= 250px (sidepanel width + close button width)
-		
+
 	}
 	&.sidepanel-visible{
 		left: 0;
 	}
-	
+
 	.app-nav-main {
 		overflow-y: auto;
 		/* Forefox scrollbar */
 		scrollbar-color: rgba(0, 0, 0, 0.1) $theme-border-color;
 	    scrollbar-width: thin;
-	    
+
 	    /* Chrome webkit scrollbar */
-		
+
 		&::-webkit-scrollbar {
 		    width: 6px;
 		    background-color: $theme-border-color;
-		} 
-		
+		}
+
 		&::-webkit-scrollbar-thumb {
 		    background-color: rgba(0, 0, 0, 0.1);
 		    @include border-radius(0.5rem);
@@ -64,12 +64,12 @@
 	padding-top: 1rem;
 	padding-left: 1rem;
 	margin-bottom: 1rem;
-	
+
 	.logo-icon {
 		width: 36px;
 	    height: 36px;
 	}
-	
+
     .logo-text {
 	    color: $theme-text-color-primary;
 	    font-size: 1.25rem;
@@ -107,13 +107,13 @@
 			font-weight: 500;
 
 		}
-		
+
 	    &.submenu-toggle.active {
 		    background: none;
 		    border-color: transparent;
 	    }
-	    
-	    
+
+
 		&:hover {
 			color: $theme-color-primary;
 		}
@@ -127,7 +127,7 @@
 			height: 1.25rem;
 		}
 	}
-	
+
 	.submenu-arrow {
 		position: absolute;
 		right: 1rem;
@@ -136,17 +136,17 @@
 		svg {
 			width: 14px;
 		    height: 14px;
-		    
+
 		}
-		
+
 	}
-	
+
 	.submenu-toggle {
-		
+
 		@include transition (all 0.4s ease-in-out);
 		&[aria-expanded="true"] {
-				
-			
+
+
 			.submenu-arrow {
 				color: $theme-text-color-primary;
 				svg {
@@ -155,21 +155,21 @@
 	                -webkit-transform: rotate(180deg);
 				}
 			}
-			
+
 		}
 	}
-	
+
 	.submenu {
-		
+
 	}
-	
+
 	.submenu-item {
 		margin-bottom: 0;
-		
+
 	}
-	
+
 	.submenu-link {
-		
+
 		color: $theme-text-color-secondary;
 		font-size: 0.875rem;
 		margin-left: 2rem;
@@ -178,7 +178,7 @@
 	    position: relative;
 	    display: block;
 	    margin-bottom: 0;
-	    
+
 		&:before {
 			background-color: $theme-border-color;
 		    content: " ";
@@ -190,18 +190,18 @@
 		    height: 100%;
 		    margin-top: -0.5rem;
 		}
-		
+
 		&:hover {
 			color: $theme-text-color-primary;
 		}
-		
+
 		&.active {
 			color: $theme-color-primary;
 			&:before {
 				background-color: $theme-color-primary;
 			}
 		}
-		
+
 	}
 }
 
@@ -219,37 +219,25 @@
 }
 
 
-// Large devices (desktops, less than 1200px)
-@media (max-width: 1199.98px) { 
-	
-	.app-sidepanel {
-		@include transition (all 0.4s ease-in-out);
-		left: -400px; //value >= 250px (sidepanel width + close button width) 
-		&.sidepanel-visible {
-			display: block;
-		}
-	}
-    .sidepanel-visible .sidepanel-close {
-	    display: inline-block; //prevent showing the panel close button in xl screen
-    }
-	.sidepanel-visible .sidepanel-drop {
-		position: fixed;
+.app-sidepanel {
+	@include transition (all 0.4s ease-in-out);
+	left: -400px; //value >= 250px (sidepanel width + close button width)
+	&.sidepanel-visible {
 		display: block;
-		min-height: 100vh;
-		height: 100%;	
-		width: 100%;
-		min-width: 100vw;
-		left: 0;
-		top: 0;	
-		background: rgba(0, 0, 0, 0.35);
-		
 	}
 }
-
-// X-Large devices (large desktops, 1200px and up)
-@media (min-width: 1200px) { 
-	.app-wrapper {
-		margin-left: 250px;
-	}
+.sidepanel-visible .sidepanel-close {
+	display: inline-block; //prevent showing the panel close button in xl screen
+}
+.sidepanel-visible .sidepanel-drop {
+	position: fixed;
+	display: block;
+	min-height: 100vh;
+	height: 100%;
+	width: 100%;
+	min-width: 100vw;
+	left: 0;
+	top: 0;
+	background: rgba(0, 0, 0, 0.35);
 
 }

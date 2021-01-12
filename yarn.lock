@@ -5385,6 +5385,13 @@ pace-js@^1.0.2:
   resolved "https://registry.yarnpkg.com/pace-js/-/pace-js-1.0.2.tgz#673a717f833ccb4f4315531b75ee4788376600f7"
   integrity sha1-Zzpxf4M8y09DFVMbde5HiDdmAPc=
 
+pace@^0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/pace/-/pace-0.0.4.tgz#d66405d5f5bc12d25441a6e26c878dbc69e77a77"
+  integrity sha1-1mQF1fW8EtJUQabibIeNvGnnenc=
+  dependencies:
+    charm "~0.1.0"
+
 pako@~1.0.5:
   version "1.0.11"
   resolved "https://registry.yarnpkg.com/pako/-/pako-1.0.11.tgz#6c9599d340d54dfd3946380252a35705a6b992bf"

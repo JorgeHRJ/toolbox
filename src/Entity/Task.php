@@ -60,6 +60,8 @@ class Task
      * @Assert\Choice(choices=self::STATUSES, message="Valor inválido para el estado de la tarea")
      *
      * @ORM\Column(name="task_status", type="integer", nullable=false)
+     *
+     * @Groups({"show"})
      */
     private $status;
 

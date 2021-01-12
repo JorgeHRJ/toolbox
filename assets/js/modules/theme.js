@@ -54,8 +54,8 @@ function initResponsiveSidePanel() {
   const sidePanelDrop = document.getElementById('sidepanel-drop');
   const sidePanelClose = document.getElementById('sidepanel-close');
 
-  handleResponsiveSidePanel();
-  window.addEventListener('resive', handleResponsiveSidePanel);
+  //handleResponsiveSidePanel();
+  //window.addEventListener('resize', handleResponsiveSidePanel);
 
   sidePanelToggler.addEventListener('click', () => {
     if (sidePanel.classList.contains('sidepanel-visible')) {

@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Task;
 use App\Library\Controller\BaseController;
 use App\Service\TaskService;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -51,10 +53,41 @@ class TaskController extends BaseController
         $data = json_decode($request->getContent(), true);
 
         try {
-            $task = $this->taskService->post($this->getUserInstance(), $data['title'], $data['date']);
+            $task = $this->taskService->post($this->getUserInstance(), $data);
             $task = $this->serializer->serialize($task, 'json', ['groups' => 'show']);
 
             return new Response($task, Response::HTTP_CREATED);
+        } catch (\Exception $e) {
+            return new JsonResponse(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    /**
+     * @Route("/edit/{id}", name="patch", requirements={"id"="\d+"})
+     *
+     * @param Request $request
+     * @param int $id
+     * @return Response
+     */
+    public function patch(Request $request, int $id): Response
+    {
+        if (!$request->isXmlHttpRequest()) {
+            return new Response(null, Response::HTTP_BAD_REQUEST);
+        }
+
+        $user = $this->getUserInstance();
+        $task = $this->taskService->get($user, $id);
+        if (!$task instanceof Task) {
+            return new Response(null, Response::HTTP_NOT_FOUND);
+        }
+
+        $data = json_decode($request->getContent(), true);
+
+        try {
+            $task = $this->taskService->patch($task, $data);
+            $task = $this->serializer->serialize($task, 'json', ['groups' => 'show']);
+
+            return new Response($task, Response::HTTP_OK);
         } catch (\Exception $e) {
             return new JsonResponse(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
