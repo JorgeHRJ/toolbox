@@ -36,9 +36,33 @@
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-12 mb-2">
+                        <label for="title">Etiqueta</label>
+                        <div class="input-group">
+                            <input id="tag" name="tag" class="form-control" type="hidden" required>
+                        </div>
+                    </div>
+                    <div class="col-12 mb-2" data-component="tags-buttons-container">
+                        {% for tag in tags %}
+                            <button type="button"
+                                    class="{{ "btn btn-#{tag.color} text-white m-1" }}"
+                                    data-id="{{ tag.id }}"
+                                    data-color="{{ tag.color }}">
+                                {{ tag.name }}
+                            </button>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="row">
+                    <p>Previsualización:
+                        <span class="badge bg-secondary text-white p-2" data-component="task-preview"></span>
+                    </p>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary text-white">Editar</button>
+                <button type="button" class="btn btn-danger text-white" data-component="task-delete">Eliminar</button>
                 <button type="button" class="btn btn-secondary text-gray ml-auto" data-bs-dismiss="modal">
                     Cerrar
                 </button>

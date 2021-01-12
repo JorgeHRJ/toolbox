@@ -6,6 +6,19 @@
 {% block content %}
     <div class="app-card shadow-sm mb-4">
         <div class="inner">
+            <div class="app-card-header p-3">
+                <div class="row justify-content-between align-items-center">
+                    <div class="col-auto"></div>
+                    <div class="col-auto">
+                        <div class="card-header-action">
+                            <button class="btn btn-primary text-white" data-component="open-modal-tags">
+                                {{ source('icons/tags.svg') }}
+                                Etiquetas
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="app-card-body p-4">
                 <div class="row gx-5 gy-3">
                     <div class="calendar" data-component="calendar"></div>
@@ -13,18 +26,24 @@
             </div>
         </div>
     </div>
-    <div class="hide" data-component="task-container" data-url="{{ path('task_patch', {'id': 0}) }}">
+    <div class="hide"
+         data-component="task-container"
+         data-edit="{{ path('task_patch', {'id': 0}) }}"
+         data-delete="{{ path('task_delete', {'id': 0}) }}">
         {% for task in tasks %}
             <div data-id="{{ task.id }}"
                  data-title="{{ task.title }}"
                  data-date="{{ task.date|date('Y-m-d') }}"
                  data-color="{{ task.tag.color }}"
+                 data-tag="{{ task.tag.id }}"
                  data-status="{{ task.status }}"
-                 data-component="task-event"
-                 data-edit="{{ path('task_patch', {'id': task.id}) }}">
+                 data-edit="{{ path('task_patch', {'id': task.id}) }}"
+                 data-delete="{{ path('task_delete', {'id': task.id}) }}"
+                 data-component="task-event">
             </div>
         {% endfor %}
     </div>
     {{ include('task/components/_new-task-modal.html.twig') }}
     {{ include('task/components/_edit-task-modal.html.twig') }}
+    {{ include('task/components/_tags-modal.html.twig') }}
 {% endblock %}

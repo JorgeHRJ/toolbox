@@ -3,25 +3,32 @@ import interactionPlugin from '@fullcalendar/interaction';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import esLocale from '@fullcalendar/core/locales/es';
 import {Modal} from 'bootstrap';
-import {initDatepicker} from "../components/datepicker";
+
+import {initDatepicker} from '../components/datepicker';
+import initTagController from './tag_controller';
 
 let calendar = null;
 let addModal = null;
 let editModal = null;
 let editDatepicker = null;
 let infoDrop = null;
+let typingTimer = null;
+const doneTypingInterval = 1000;
 
 function convertDate(dateStr) {
   return dateStr.split('/').reverse().join('-');
 }
 
+function getClassListForTaskPreview(color) {
+  return `badge bg-${color} text-white p-2`;
+}
+
 function getClassNameForEvent(color, status) {
   let className = `bg-${color} border border-light rounded p-1`;
-  console.log(parseInt(status, 10) === 1);
   if (parseInt(status, 10) === 1) {
     className = className + ' task-done';
   }
-  console.log(className);
+
   return className;
 }
 
@@ -36,13 +43,14 @@ function getEvent(id, title, date, color, status) {
   };
 }
 
-function applyDivDataset(element, id, title, date, color, status, url) {
+function applyDivDataset(element, id, title, date, color, status, editUrl, deleteUrl) {
   element.dataset.id = id;
   element.dataset.title = title;
   element.dataset.date = date;
   element.dataset.color = color;
   element.dataset.status = status;
-  element.dataset.edit = url;
+  element.dataset.edit = editUrl;
+  element.dataset.delete = deleteUrl;
   element.dataset.component = 'task-event';
 }
 
@@ -51,19 +59,47 @@ function editInDom(id, title, date, color, status) {
     .querySelector('[data-component="task-container"]')
     .querySelector(`[data-id="${id}"]`);
 
-  applyDivDataset(element, id, title, date, color, status, element.dataset.edit);
+  applyDivDataset(element, id, title, date, color, status, element.dataset.edit, element.dataset.delete);
 }
 
 function addInDom(id, title, date, color, status) {
   const container = document.querySelector('[data-component="task-container"]');
 
   let div = document.createElement('div');
-  let url = container.dataset.url;
-  url = url.replace('0', id);
+  let editUrl = container.dataset.edit;
+  editUrl = editUrl.replace('0', id);
 
-  applyDivDataset(div, id, title, date, color, status, url);
+  let deleteUrl = container.dataset.delete;
+  deleteUrl = deleteUrl.replace('0', id);
+
+  applyDivDataset(div, id, title, date, color, status, editUrl, deleteUrl);
 
   container.appendChild(div);
+}
+
+function removeReady(event) {
+  const httpRequest = event.currentTarget;
+  if (httpRequest.readyState === 4) {
+    const data = JSON.parse(httpRequest.response);
+    if (httpRequest.status === 200) {
+      const eventCalendar = calendar.getEventById(data.id);
+      if (eventCalendar) {
+        eventCalendar.remove();
+      }
+
+      if (editModal !== null) {
+        editModal.hide();
+        editModal = null;
+      }
+    }
+
+    if (httpRequest.status === 400) {
+      const alert = document
+        .querySelector('[data-component="modal-edit-task"]')
+        .querySelector('[data-component="error-message"]');
+      alert.innerText = alert.message;
+    }
+  }
 }
 
 function patchReady(event) {
@@ -89,7 +125,9 @@ function patchReady(event) {
     }
 
     if (httpRequest.status === 400) {
-      const alert = document.querySelector('[data-component="error-message"]');
+      const alert = document
+        .querySelector('[data-component="modal-edit-task"]')
+        .querySelector('[data-component="error-message"]');
       alert.innerText = alert.message;
 
       if (infoDrop !== null) {
@@ -119,10 +157,22 @@ function postReady(event) {
     }
 
     if (httpRequest.status === 400) {
-      const alert = document.querySelector('[data-component="error-message"]');
+      const alert = document
+        .querySelector('[data-component="modal-add-task"]')
+        .querySelector('[data-component="error-message"]');
       alert.innerText = alert.message;
     }
   }
+}
+
+function remove(url) {
+  const httpRequest = new XMLHttpRequest();
+
+  httpRequest.onreadystatechange = removeReady;
+  httpRequest.open('DELETE', url);
+  httpRequest.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+
+  httpRequest.send();
 }
 
 function patch(url, data) {
@@ -145,6 +195,22 @@ function post(url, data) {
   httpRequest.setRequestHeader('Content-Type', 'application/json');
 
   httpRequest.send(JSON.stringify(data));
+}
+
+function onDelete(event) {
+  event.preventDefault();
+
+  const form = document.querySelector('[data-component="modal-edit-task"]').querySelector('form');
+  const id = form.dataset.id;
+
+  const eventDom = document
+    .querySelector('[data-component="task-container"]')
+    .querySelector(`[data-id="${id}"]`)
+  if (eventDom) {
+    const url = eventDom.dataset.delete;
+
+    remove(url);
+  }
 }
 
 function onPatchSubmit(event) {
@@ -206,6 +272,47 @@ function onDropEvent(info) {
   }
 }
 
+function getBadgeClassList(color) {
+  return `badge bg-${color} text-white p-2`;
+}
+
+function handleTaskTitleInput(event, modal) {
+  const input = event.currentTarget;
+  const taskPreview = modal.querySelector('[data-component="task-preview"]');
+
+  clearTimeout(typingTimer);
+  if (input.value.trim() !== '') {
+    typingTimer = setTimeout(() => {
+      taskPreview.innerText = input.value;
+    }, doneTypingInterval);
+  }
+}
+
+function onColorButtonClicked(event, modal) {
+  const button = event.currentTarget;
+  const {color, id} = button.dataset;
+
+  const tagPreview = modal.querySelector('[data-component="task-preview"]');
+  tagPreview.classList.value = getBadgeClassList(color);
+
+  const inputTag = modal.querySelector('input[name="tag"]');
+  inputTag.value = id;
+}
+
+function initTaskPreview(modal) {
+  const inputTitle = modal.querySelector('input[name="title"]');
+  inputTitle.addEventListener('keyup', (event) => {
+    handleTaskTitleInput(event, modal);
+  });
+
+  const colorButtons = document.querySelectorAll('[data-color]');
+  colorButtons.forEach((colorButton) => {
+    colorButton.addEventListener('click', (event) => {
+      onColorButtonClicked(event, modal);
+    });
+  });
+}
+
 function openAddModal(d) {
   const modalElement = document.querySelector('[data-component="modal-add-task"]');
   if (modalElement) {
@@ -216,6 +323,8 @@ function openAddModal(d) {
 
     const form = modalElement.querySelector('form');
     form.addEventListener('submit', onPostSubmit);
+
+    initTaskPreview(modalElement);
 
     addModal = new Modal(modalElement);
     addModal.show();
@@ -240,6 +349,18 @@ function openEditModal(info) {
     const form = modalElement.querySelector('form');
     form.dataset.id = info.event.id;
     form.addEventListener('submit', onPatchSubmit);
+
+    const deleteButton = modalElement.querySelector('[data-component="task-delete"]');
+    deleteButton.addEventListener('click', onDelete);
+
+    const taskPreview = modalElement.querySelector('[data-component="task-preview"]');
+    taskPreview.innerText = info.event.title;
+    taskPreview.classList.value = getClassListForTaskPreview(eventDom.dataset.color);
+
+    const tagInput = modalElement.querySelector('input[name="tag"]');
+    tagInput.value = eventDom.dataset.tag;
+
+    initTaskPreview(modalElement);
 
     editModal = new Modal(modalElement);
     editModal.show();
@@ -266,9 +387,8 @@ function initCalendar(element) {
     selectable: true,
     editable: true,
     headerToolbar: {
-      left: 'prev,next',
-      center: 'title',
-      right: 'dayGridDay,dayGridWeek'
+      left: 'title',
+      right: 'prev,next,dayGridDay,dayGridWeek'
     },
     events: getEventsFromDom(),
     dateClick: (d) => {
@@ -304,6 +424,11 @@ function init() {
   }
 
   initEditModal();
+
+  const tagsModal = document.querySelector('[data-component="modal-tags"]');
+  if (tagsModal) {
+    initTagController();
+  }
 }
 
 export default init;
