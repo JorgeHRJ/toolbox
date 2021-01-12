@@ -3,8 +3,12 @@
         <div class="app-header-content">
             <div class="row justify-content-between align-items-center">
                 <div class="col-auto">
-                    <a id="sidepanel-toggler" class="sidepanel-toggler d-inline-block d-xl-none" href="#">
+                    <a id="sidepanel-toggler" class="sidepanel-toggler d-inline-block" href="#">
                         {{ source('icons/toggler.svg') }}
+                    </a>
+                    <a class="app-branding app-logo ml-3 p-2" href="{{ path('landing_index') }}">
+                        {{ source('icons/tools.svg') }}
+                        <span class="logo-text ml-2">TOOLBOX</span>
                     </a>
                 </div>
                 <div class="app-utilities col-auto">
