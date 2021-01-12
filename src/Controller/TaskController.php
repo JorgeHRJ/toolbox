@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\Task;
 use App\Library\Controller\BaseController;
 use App\Service\TaskService;
-use Symfony\Component\HttpFoundation\Exception\BadRequestException;
+use App\Service\TaskTagService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,11 +19,13 @@ use Symfony\Component\Serializer\SerializerInterface;
 class TaskController extends BaseController
 {
     private $taskService;
+    private $tagService;
     private $serializer;
 
-    public function __construct(TaskService $taskService, SerializerInterface $serializer)
+    public function __construct(TaskService $taskService, TaskTagService $tagService, SerializerInterface $serializer)
     {
         $this->taskService = $taskService;
+        $this->tagService = $tagService;
         $this->serializer = $serializer;
     }
 
@@ -34,8 +36,12 @@ class TaskController extends BaseController
      */
     public function index(): Response
     {
-        $tasks = $this->taskService->getFromCurrent($this->getUserInstance());
-        return $this->render('task/index.html.twig', ['tasks' => $tasks]);
+        $user = $this->getUserInstance();
+
+        $tasks = $this->taskService->getFromCurrent($user);
+        $tags = $this->tagService->getByUser($user);
+
+        return $this->render('task/index.html.twig', ['tasks' => $tasks, 'tags' => $tags]);
     }
 
     /**

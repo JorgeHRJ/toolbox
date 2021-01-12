@@ -301,6 +301,14 @@ function openEditModal(info) {
   }
 }
 
+function openTagsModal() {
+  const modalElement = document.querySelector('[data-component="modal-tags"]');
+  if (modalElement) {
+    const tagsModal = new Modal(modalElement);
+    tagsModal.show();
+  }
+}
+
 function getEventsFromDom() {
   let events = [];
   const eventsDom = document.querySelectorAll('[data-component="task-event"]');
@@ -351,6 +359,13 @@ function initEditModal() {
   }
 }
 
+function initTagsModal() {
+  const tagsModalButton = document.querySelector('[data-component="open-modal-tags"]');
+  if (tagsModalButton) {
+    tagsModalButton.addEventListener('click', openTagsModal);
+  }
+}
+
 function init() {
   const calendar = document.querySelector('[data-component="calendar"]');
   if (calendar) {
@@ -358,6 +373,7 @@ function init() {
   }
 
   initEditModal();
+  initTagsModal();
 }
 
 export default init;

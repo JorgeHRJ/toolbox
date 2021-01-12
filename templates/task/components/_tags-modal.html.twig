@@ -1,0 +1,60 @@
+<div class="modal hide" tabindex="-1" aria-hidden="true" data-component="modal-tags">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Etiquetas</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="alert alert-danger hide" data-component="error-message"></div>
+                <div class="row">
+                    <h3>Actuales</h3>
+                </div>
+                <div class="row">
+                    {% for tag in tags %}
+                        <span class="{{ "badge rounded-pill bg-#{tag.color} w-auto" }}">{{ tag.name }}</span>
+                    {% endfor %}
+                </div>
+                <hr>
+                <div class="row">
+                    <h3>Crear etiqueta</h3>
+                    <form class="row" method="POST">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Nombre</label>
+                            <input type="email" class="form-control" id="name" name="name" placeholder="Nombre">
+                        </div>
+                        <div class="mb-3">
+                            <div class="col-12 mb-2">
+                                <label for="color">Color</label>
+                                <input type="hidden" class="hide" name="color" data-component="tag-color-input">
+                            </div>
+                            <div class="col-12 mb-2">
+                                <button type="button" class="btn btn-primary text-white m-1" data-color="primary">
+                                </button>
+                                <button type="button" class="btn btn-secondary m-1" data-color="secondary">
+                                </button>
+                                <button type="button" class="btn btn-success text-white m-1" data-color="success">
+                                </button>
+                                <button type="button" class="btn btn-danger text-white m-1" data-color="danger">
+                                </button>
+                                <button type="button" class="btn btn-warning text-white m-1" data-color="warning">
+                                </button>
+                                <button type="button" class="btn btn-info text-white m-1" data-color="info"></button>
+                            </div>
+                            <div class="col-12 mb-2">
+                                <p>Resultado:
+                                    <span class="badge" data-component="tag-result"></span>
+                                </p>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary text-gray ml-auto" data-bs-dismiss="modal">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -35,4 +35,13 @@ class TaskTagService
     {
         return $this->repository->findOneBy(['user' => $user, 'name' => $name]);
     }
+
+    /**
+     * @param User $user
+     * @return TaskTag[]|array
+     */
+    public function getByUser(User $user): array
+    {
+        return $this->repository->findBy(['user' => $user]);
+    }
 }
