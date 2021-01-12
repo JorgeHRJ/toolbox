@@ -39,7 +39,7 @@ class TaskController extends BaseController
     }
 
     /**
-     * @Route("/add", name="post")
+     * @Route("/add", name="post", methods={"POST"})
      *
      * @param Request $request
      * @return Response
@@ -63,7 +63,7 @@ class TaskController extends BaseController
     }
 
     /**
-     * @Route("/edit/{id}", name="patch", requirements={"id"="\d+"})
+     * @Route("/edit/{id}", name="patch", methods={"PATCH"}, requirements={"id"="\d+"})
      *
      * @param Request $request
      * @param int $id
@@ -88,6 +88,35 @@ class TaskController extends BaseController
             $task = $this->serializer->serialize($task, 'json', ['groups' => 'show']);
 
             return new Response($task, Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return new JsonResponse(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    /**
+     * @Route("/delete/{id}", name="delete", requirements={"id"="\d+"}, methods={"DELETE"})
+     *
+     * @param Request $request
+     * @param int $id
+     * @return Response
+     */
+    public function delete(Request $request, int $id): Response
+    {
+        if (!$request->isXmlHttpRequest()) {
+            return new Response(null, Response::HTTP_BAD_REQUEST);
+        }
+
+        $user = $this->getUserInstance();
+        $task = $this->taskService->get($user, $id);
+        if (!$task instanceof Task) {
+            return new Response(null, Response::HTTP_NOT_FOUND);
+        }
+
+        try {
+            $taskId = $task->getId();
+            $this->taskService->delete($task);
+
+            return new JsonResponse(['id' => $taskId], Response::HTTP_OK);
         } catch (\Exception $e) {
             return new JsonResponse(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }

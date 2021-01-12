@@ -42,9 +42,25 @@
     border-color: #18ba70 !important;
 }
 
+.fc .fc-toolbar-title {
+    font-size: 2.7em;
+    margin-left: 20px !important;
+}
+
+.fc-next-button {
+    margin-right: 20px !important;
+    border-top-right-radius: .25em !important;
+    border-bottom-right-radius: .25em !important;
+}
+
+.fc-dayGridDay-button {
+    border-top-left-radius: .25em !important;
+    border-bottom-left-radius: .25em !important;
+}
+
 .task-done .fc-event-title {
-    font-style: italic !important;
-    text-decoration: line-through !important;
+font-style: italic !important;
+text-decoration: line-through !important;
 }
 
 /** datepicker library */

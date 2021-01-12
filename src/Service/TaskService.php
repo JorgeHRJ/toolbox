@@ -198,7 +198,25 @@ class TaskService
         try {
             return $this->update($task);
         } catch (\Exception $e) {
-            throw new \Exception('Hubo un error al crear la tarea');
+            throw new \Exception('Hubo un error al editar la tarea');
+        }
+    }
+
+    /**
+     * @param Task $task
+     * @throws \Exception
+     */
+    public function delete(Task $task): void
+    {
+        try {
+            $this->entityManager->remove($task);
+            $this->entityManager->flush();
+
+            $this->logger->info(sprintf('Task removed! ID::%s', $task->getId()));
+        } catch (\Exception $e) {
+            $this->logger->error(sprintf('Error when removing task: %s', $e->getMessage()));
+
+            throw new \Exception('Hubo un error al eliminar la tarea');
         }
     }
 }

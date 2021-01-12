@@ -13,15 +13,19 @@
             </div>
         </div>
     </div>
-    <div class="hide" data-component="task-container" data-url="{{ path('task_patch', {'id': 0}) }}">
+    <div class="hide"
+         data-component="task-container"
+         data-edit="{{ path('task_patch', {'id': 0}) }}"
+         data-delete="{{ path('task_delete', {'id': 0}) }}">
         {% for task in tasks %}
             <div data-id="{{ task.id }}"
                  data-title="{{ task.title }}"
                  data-date="{{ task.date|date('Y-m-d') }}"
                  data-color="{{ task.tag.color }}"
                  data-status="{{ task.status }}"
-                 data-component="task-event"
-                 data-edit="{{ path('task_patch', {'id': task.id}) }}">
+                 data-edit="{{ path('task_patch', {'id': task.id}) }}"
+                 data-delete="{{ path('task_delete', {'id': task.id}) }}"
+                 data-component="task-event">
             </div>
         {% endfor %}
     </div>

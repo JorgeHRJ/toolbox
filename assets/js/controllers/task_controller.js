@@ -17,11 +17,10 @@ function convertDate(dateStr) {
 
 function getClassNameForEvent(color, status) {
   let className = `bg-${color} border border-light rounded p-1`;
-  console.log(parseInt(status, 10) === 1);
   if (parseInt(status, 10) === 1) {
     className = className + ' task-done';
   }
-  console.log(className);
+
   return className;
 }
 
@@ -36,13 +35,14 @@ function getEvent(id, title, date, color, status) {
   };
 }
 
-function applyDivDataset(element, id, title, date, color, status, url) {
+function applyDivDataset(element, id, title, date, color, status, editUrl, deleteUrl) {
   element.dataset.id = id;
   element.dataset.title = title;
   element.dataset.date = date;
   element.dataset.color = color;
   element.dataset.status = status;
-  element.dataset.edit = url;
+  element.dataset.edit = editUrl;
+  element.dataset.delete = deleteUrl;
   element.dataset.component = 'task-event';
 }
 
@@ -51,19 +51,45 @@ function editInDom(id, title, date, color, status) {
     .querySelector('[data-component="task-container"]')
     .querySelector(`[data-id="${id}"]`);
 
-  applyDivDataset(element, id, title, date, color, status, element.dataset.edit);
+  applyDivDataset(element, id, title, date, color, status, element.dataset.edit, element.dataset.delete);
 }
 
 function addInDom(id, title, date, color, status) {
   const container = document.querySelector('[data-component="task-container"]');
 
   let div = document.createElement('div');
-  let url = container.dataset.url;
-  url = url.replace('0', id);
+  let editUrl = container.dataset.edit;
+  editUrl = editUrl.replace('0', id);
 
-  applyDivDataset(div, id, title, date, color, status, url);
+  let deleteUrl = container.dataset.delete;
+  deleteUrl = deleteUrl.replace('0', id);
+
+  applyDivDataset(div, id, title, date, color, status, editUrl, deleteUrl);
 
   container.appendChild(div);
+}
+
+function removeReady(event) {
+  const httpRequest = event.currentTarget;
+  if (httpRequest.readyState === 4) {
+    const data = JSON.parse(httpRequest.response);
+    if (httpRequest.status === 200) {
+      const eventCalendar = calendar.getEventById(data.id);
+      if (eventCalendar) {
+        eventCalendar.remove();
+      }
+
+      if (editModal !== null) {
+        editModal.hide();
+        editModal = null;
+      }
+    }
+
+    if (httpRequest.status === 400) {
+      const alert = document.querySelector('[data-component="error-message"]');
+      alert.innerText = alert.message;
+    }
+  }
 }
 
 function patchReady(event) {
@@ -125,6 +151,16 @@ function postReady(event) {
   }
 }
 
+function remove(url) {
+  const httpRequest = new XMLHttpRequest();
+
+  httpRequest.onreadystatechange = removeReady;
+  httpRequest.open('DELETE', url);
+  httpRequest.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+
+  httpRequest.send();
+}
+
 function patch(url, data) {
   const httpRequest = new XMLHttpRequest();
 
@@ -145,6 +181,22 @@ function post(url, data) {
   httpRequest.setRequestHeader('Content-Type', 'application/json');
 
   httpRequest.send(JSON.stringify(data));
+}
+
+function onDelete(event) {
+  event.preventDefault();
+
+  const form = document.querySelector('[data-component="modal-edit-task"]').querySelector('form');
+  const id = form.dataset.id;
+
+  const eventDom = document
+    .querySelector('[data-component="task-container"]')
+    .querySelector(`[data-id="${id}"]`)
+  if (eventDom) {
+    const url = eventDom.dataset.delete;
+
+    remove(url);
+  }
 }
 
 function onPatchSubmit(event) {
@@ -241,6 +293,9 @@ function openEditModal(info) {
     form.dataset.id = info.event.id;
     form.addEventListener('submit', onPatchSubmit);
 
+    const deleteButton = modalElement.querySelector('[data-component="task-delete"]');
+    deleteButton.addEventListener('click', onDelete);
+
     editModal = new Modal(modalElement);
     editModal.show();
   }
@@ -266,9 +321,8 @@ function initCalendar(element) {
     selectable: true,
     editable: true,
     headerToolbar: {
-      left: 'prev,next',
-      center: 'title',
-      right: 'dayGridDay,dayGridWeek'
+      left: 'title',
+      right: 'prev,next,dayGridDay,dayGridWeek'
     },
     events: getEventsFromDom(),
     dateClick: (d) => {
