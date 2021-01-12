@@ -11,3 +11,6 @@ parameters:
         -
             message: '#does not accept Doctrine\\Persistence\\ObjectRepository#'
             path: src/Service/
+        -
+            message: '#resolve the template type T in call to method#'
+            path: src/Library/Service/

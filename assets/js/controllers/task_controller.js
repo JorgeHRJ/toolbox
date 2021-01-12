@@ -12,9 +12,15 @@ let addModal = null;
 let editModal = null;
 let editDatepicker = null;
 let infoDrop = null;
+let typingTimer = null;
+const doneTypingInterval = 1000;
 
 function convertDate(dateStr) {
   return dateStr.split('/').reverse().join('-');
+}
+
+function getClassListForTaskPreview(color) {
+  return `badge bg-${color} text-white p-2`;
 }
 
 function getClassNameForEvent(color, status) {
@@ -266,6 +272,47 @@ function onDropEvent(info) {
   }
 }
 
+function getBadgeClassList(color) {
+  return `badge bg-${color} text-white p-2`;
+}
+
+function handleTaskTitleInput(event, modal) {
+  const input = event.currentTarget;
+  const taskPreview = modal.querySelector('[data-component="task-preview"]');
+
+  clearTimeout(typingTimer);
+  if (input.value.trim() !== '') {
+    typingTimer = setTimeout(() => {
+      taskPreview.innerText = input.value;
+    }, doneTypingInterval);
+  }
+}
+
+function onColorButtonClicked(event, modal) {
+  const button = event.currentTarget;
+  const {color, id} = button.dataset;
+
+  const tagPreview = modal.querySelector('[data-component="task-preview"]');
+  tagPreview.classList.value = getBadgeClassList(color);
+
+  const inputTag = modal.querySelector('input[name="tag"]');
+  inputTag.value = id;
+}
+
+function initTaskPreview(modal) {
+  const inputTitle = modal.querySelector('input[name="title"]');
+  inputTitle.addEventListener('keyup', (event) => {
+    handleTaskTitleInput(event, modal);
+  });
+
+  const colorButtons = document.querySelectorAll('[data-color]');
+  colorButtons.forEach((colorButton) => {
+    colorButton.addEventListener('click', (event) => {
+      onColorButtonClicked(event, modal);
+    });
+  });
+}
+
 function openAddModal(d) {
   const modalElement = document.querySelector('[data-component="modal-add-task"]');
   if (modalElement) {
@@ -276,6 +323,8 @@ function openAddModal(d) {
 
     const form = modalElement.querySelector('form');
     form.addEventListener('submit', onPostSubmit);
+
+    initTaskPreview(modalElement);
 
     addModal = new Modal(modalElement);
     addModal.show();
@@ -303,6 +352,15 @@ function openEditModal(info) {
 
     const deleteButton = modalElement.querySelector('[data-component="task-delete"]');
     deleteButton.addEventListener('click', onDelete);
+
+    const taskPreview = modalElement.querySelector('[data-component="task-preview"]');
+    taskPreview.innerText = info.event.title;
+    taskPreview.classList.value = getClassListForTaskPreview(eventDom.dataset.color);
+
+    const tagInput = modalElement.querySelector('input[name="tag"]');
+    tagInput.value = eventDom.dataset.tag;
+
+    initTaskPreview(modalElement);
 
     editModal = new Modal(modalElement);
     editModal.show();

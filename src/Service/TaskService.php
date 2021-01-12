@@ -75,31 +75,13 @@ class TaskService extends BaseService
      */
     public function post(User $user, array $data): Task
     {
-        $task = new Task();
-        $task->setTitle($data['title']);
-        $task->setDate(new \DateTime($data['date']));
+        /** @var Task $task */
+        $task = $this->process(new Task(), $data);
+
         $task->setStatus(Task::PENDING_STATUS);
         $task->setUser($user);
 
-        $taskTag = $this->tagService->getByName($user, 'Test');
-        if (!$taskTag instanceof TaskTag) {
-            $taskTag = new TaskTag();
-            $taskTag->setName('Test');
-            $taskTag->setColor('danger');
-            $taskTag->setUser($user);
-        }
-
-        $task->setTag($taskTag);
-
-        $errors = $this->validator->validate($task);
-        if (count($errors) > 0) {
-            $errorMessage = 'La información de la tarea a crear no es válida';
-            if ($errors instanceof ConstraintViolationList) {
-                $errorMessage = $errors->__toString();
-            }
-
-            throw new \Exception($errorMessage);
-        }
+        $this->check($task);
 
         try {
             return $this->create($task);
@@ -116,30 +98,10 @@ class TaskService extends BaseService
      */
     public function patch(Task $task, array $data): Task
     {
-        $reflectionClass = new \ReflectionClass($task);
+        /** @var Task $task */
+        $task = $this->process($task, $data);
 
-        foreach ($data as $property => $value) {
-            if (!$reflectionClass->hasProperty($property)) {
-                continue;
-            }
-
-            $reflectionProperty = new \ReflectionProperty($task, $property);
-            $matches = null;
-            if (preg_match('/@var\s+([^\s]+)/', $reflectionProperty->getDocComment(), $matches)) {
-                list(, $type) = $matches;
-                $type = str_replace(['\\', '|', 'null'], '', $type);
-
-                if (strpos($type, 'DateTime') !== false) {
-                    $value = new \DateTime($value);
-                }
-            }
-
-            $reflectionMethod = $reflectionClass->getMethod(sprintf('set%s', ucwords($property)));
-            if ($reflectionMethod instanceof \ReflectionMethod) {
-                $function = $reflectionMethod->getName();
-                $task->$function($value);
-            }
-        }
+        $this->check($task);
 
         try {
             return $this->edit($task);
@@ -162,5 +124,22 @@ class TaskService extends BaseService
     public function getRepository(): BaseRepository
     {
         return $this->repository;
+    }
+
+    /**
+     * @param Task $task
+     * @throws \Exception
+     */
+    private function check(Task $task): void
+    {
+        $errors = $this->validator->validate($task);
+        if (count($errors) > 0) {
+            $errorMessage = 'La información de la tarea a crear no es válida';
+            if ($errors instanceof ConstraintViolationList) {
+                $errorMessage = $errors->__toString();
+            }
+
+            throw new \Exception($errorMessage);
+        }
     }
 }
