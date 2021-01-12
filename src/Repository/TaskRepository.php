@@ -4,10 +4,11 @@ namespace App\Repository;
 
 use App\Entity\Task;
 use App\Entity\User;
+use App\Library\Repository\BaseRepository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-class TaskRepository extends ServiceEntityRepository
+class TaskRepository extends BaseRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
@@ -32,5 +33,10 @@ class TaskRepository extends ServiceEntityRepository
             ->setParameter('userId', $user->getId());
 
         return $qb->getQuery()->getResult();
+    }
+
+    public function getFilterFields(): array
+    {
+        return [];
     }
 }

@@ -6,20 +6,16 @@ use _HumbugBoxce6e9e339315\Roave\BetterReflection\Reflection\Adapter\ReflectionC
 use App\Entity\Task;
 use App\Entity\TaskTag;
 use App\Entity\User;
+use App\Library\Repository\BaseRepository;
+use App\Library\Service\BaseService;
 use App\Repository\TaskRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class TaskService
+class TaskService extends BaseService
 {
-    /** @var EntityManagerInterface */
-    private $entityManager;
-
-    /** @var LoggerInterface */
-    private $logger;
-
     /** @var ValidatorInterface */
     private $validator;
 
@@ -35,21 +31,10 @@ class TaskService
         TaskTagService $tagService,
         ValidatorInterface $validator
     ) {
-        $this->entityManager = $entityManager;
-        $this->logger = $logger;
+        parent::__construct($entityManager, $logger);
         $this->validator = $validator;
         $this->tagService = $tagService;
         $this->repository = $this->entityManager->getRepository(Task::class);
-    }
-
-    /**
-     * @param User $user
-     * @param int $id
-     * @return Task|null
-     */
-    public function get(User $user, int $id): ?Task
-    {
-        return $this->repository->findOneBy(['id' => $id, 'user' => $user]);
     }
 
     /**
@@ -80,45 +65,6 @@ class TaskService
             $startMonth->format('Y-m-d'),
             $endMonth->format('Y-m-d')
         );
-    }
-
-    /**
-     * @param Task $task
-     * @return Task
-     * @throws \Exception
-     */
-    public function create(Task $task): Task
-    {
-        try {
-            $this->entityManager->persist($task);
-            $this->entityManager->flush();
-
-            $this->logger->info(sprintf('Task created! ID %d', $task->getId()));
-
-            return $task;
-        } catch (\Exception $e) {
-            $this->logger->error(sprintf('Error when creating task: %s', $e->getMessage()));
-            throw $e;
-        }
-    }
-
-    /**
-     * @param Task $task
-     * @return Task
-     * @throws \Exception
-     */
-    public function update(Task $task): Task
-    {
-        try {
-            $this->entityManager->flush();
-
-            $this->logger->info(sprintf('Task updated! ID %d', $task->getId()));
-
-            return $task;
-        } catch (\Exception $e) {
-            $this->logger->error(sprintf('Error when updating task: %s', $e->getMessage()));
-            throw $e;
-        }
     }
 
     /**
@@ -196,27 +142,25 @@ class TaskService
         }
 
         try {
-            return $this->update($task);
+            return $this->edit($task);
         } catch (\Exception $e) {
             throw new \Exception('Hubo un error al editar la tarea');
         }
     }
 
     /**
-     * @param Task $task
-     * @throws \Exception
+     * @return array
      */
-    public function delete(Task $task): void
+    public function getSortFields(): array
     {
-        try {
-            $this->entityManager->remove($task);
-            $this->entityManager->flush();
+        return [];
+    }
 
-            $this->logger->info(sprintf('Task removed! ID::%s', $task->getId()));
-        } catch (\Exception $e) {
-            $this->logger->error(sprintf('Error when removing task: %s', $e->getMessage()));
-
-            throw new \Exception('Hubo un error al eliminar la tarea');
-        }
+    /**
+     * @return TaskRepository
+     */
+    public function getRepository(): BaseRepository
+    {
+        return $this->repository;
     }
 }

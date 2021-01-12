@@ -3,7 +3,9 @@ import interactionPlugin from '@fullcalendar/interaction';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import esLocale from '@fullcalendar/core/locales/es';
 import {Modal} from 'bootstrap';
-import {initDatepicker} from "../components/datepicker";
+
+import {initDatepicker} from '../components/datepicker';
+import initTagController from './tag_controller';
 
 let calendar = null;
 let addModal = null;
@@ -86,7 +88,9 @@ function removeReady(event) {
     }
 
     if (httpRequest.status === 400) {
-      const alert = document.querySelector('[data-component="error-message"]');
+      const alert = document
+        .querySelector('[data-component="modal-edit-task"]')
+        .querySelector('[data-component="error-message"]');
       alert.innerText = alert.message;
     }
   }
@@ -115,7 +119,9 @@ function patchReady(event) {
     }
 
     if (httpRequest.status === 400) {
-      const alert = document.querySelector('[data-component="error-message"]');
+      const alert = document
+        .querySelector('[data-component="modal-edit-task"]')
+        .querySelector('[data-component="error-message"]');
       alert.innerText = alert.message;
 
       if (infoDrop !== null) {
@@ -145,7 +151,9 @@ function postReady(event) {
     }
 
     if (httpRequest.status === 400) {
-      const alert = document.querySelector('[data-component="error-message"]');
+      const alert = document
+        .querySelector('[data-component="modal-add-task"]')
+        .querySelector('[data-component="error-message"]');
       alert.innerText = alert.message;
     }
   }
@@ -301,14 +309,6 @@ function openEditModal(info) {
   }
 }
 
-function openTagsModal() {
-  const modalElement = document.querySelector('[data-component="modal-tags"]');
-  if (modalElement) {
-    const tagsModal = new Modal(modalElement);
-    tagsModal.show();
-  }
-}
-
 function getEventsFromDom() {
   let events = [];
   const eventsDom = document.querySelectorAll('[data-component="task-event"]');
@@ -359,13 +359,6 @@ function initEditModal() {
   }
 }
 
-function initTagsModal() {
-  const tagsModalButton = document.querySelector('[data-component="open-modal-tags"]');
-  if (tagsModalButton) {
-    tagsModalButton.addEventListener('click', openTagsModal);
-  }
-}
-
 function init() {
   const calendar = document.querySelector('[data-component="calendar"]');
   if (calendar) {
@@ -373,7 +366,11 @@ function init() {
   }
 
   initEditModal();
-  initTagsModal();
+
+  const tagsModal = document.querySelector('[data-component="modal-tags"]');
+  if (tagsModal) {
+    initTagController();
+  }
 }
 
 export default init;

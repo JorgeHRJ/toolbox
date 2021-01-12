@@ -1,6 +1,6 @@
 <div class="modal hide" tabindex="-1" aria-hidden="true" data-component="modal-tags">
     <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
+        <form class="modal-content" method="POST" action="{{ path('tasktag_post') }}">
             <div class="modal-header">
                 <h5 class="modal-title">Etiquetas</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -10,18 +10,18 @@
                 <div class="row">
                     <h3>Actuales</h3>
                 </div>
-                <div class="row">
+                <div class="row" data-component="tags-container">
                     {% for tag in tags %}
-                        <span class="{{ "badge rounded-pill bg-#{tag.color} w-auto" }}">{{ tag.name }}</span>
+                        <span class="{{ "badge rounded-pill bg-#{tag.color} w-auto mr-1" }}">{{ tag.name }}</span>
                     {% endfor %}
                 </div>
                 <hr>
                 <div class="row">
                     <h3>Crear etiqueta</h3>
-                    <form class="row" method="POST">
+                    <div class="row">
                         <div class="mb-3">
                             <label for="name" class="form-label">Nombre</label>
-                            <input type="email" class="form-control" id="name" name="name" placeholder="Nombre">
+                            <input type="text" class="form-control" id="name" name="name" placeholder="Nombre">
                         </div>
                         <div class="mb-3">
                             <div class="col-12 mb-2">
@@ -43,18 +43,19 @@
                             </div>
                             <div class="col-12 mb-2">
                                 <p>Resultado:
-                                    <span class="badge" data-component="tag-result"></span>
+                                    <span class="badge badge rounded-pill bg-secondary" data-component="tag-preview"></span>
                                 </p>
                             </div>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
+                <button type="submit" class="btn btn-primary text-white">Añadir</button>
                 <button type="button" class="btn btn-secondary text-gray ml-auto" data-bs-dismiss="modal">
                     Cerrar
                 </button>
             </div>
-        </div>
+        </form>
     </div>
 </div>

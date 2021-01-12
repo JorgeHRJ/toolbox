@@ -2,6 +2,7 @@
 
 namespace App\Library\Service;
 
+use App\Entity\User;
 use App\Library\Repository\BaseRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -84,13 +85,13 @@ abstract class BaseService
     }
 
     /**
+     * @param User $user
      * @param int $id
-     *
      * @return object|null
      */
-    public function get(int $id)
+    public function get(User $user, int $id): ?object
     {
-        return $this->getRepository()->findOneBy(['id' => $id]);
+        return $this->getRepository()->findOneBy(['id' => $id, 'user' => $user]);
     }
 
     /**

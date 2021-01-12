@@ -120,7 +120,7 @@ class TaskController extends BaseController
 
         try {
             $taskId = $task->getId();
-            $this->taskService->delete($task);
+            $this->taskService->remove($task);
 
             return new JsonResponse(['id' => $taskId], Response::HTTP_OK);
         } catch (\Exception $e) {
