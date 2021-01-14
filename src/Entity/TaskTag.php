@@ -10,6 +10,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=TaskTagRepository::class)
+ * @ORM\Table(name="tasktag")
  */
 class TaskTag
 {
