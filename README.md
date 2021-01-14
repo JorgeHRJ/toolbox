@@ -6,6 +6,7 @@ Stack:
 - Symfony 5.2
 - PHP 7.4 + mariaDB + nginx
 - MailCatcher (for development)
+- GitHub Actions for CI/CD purposes
 
 In this project is used:
 - Symfony UX (Stimulus) + Webpack Encore in the frontend
