@@ -100,6 +100,7 @@ abstract class BaseService
     }
 
     /**
+     * @param User $user
      * @param string|null $filter
      * @param int|null $page
      * @param int|null $limit
@@ -109,6 +110,7 @@ abstract class BaseService
      * @return array
      */
     public function getAll(
+        User $user,
         string $filter = null,
         int $page = null,
         int $limit = null,
@@ -122,18 +124,20 @@ abstract class BaseService
 
         $offset = $page !== null && $limit !== null ? ($page - 1) * $limit : null;
 
-        $entities = $this->getRepository()->getAll($filter, $orderBy, $limit, $offset);
-        $total = $this->getRepository()->getAllCount($filter);
+        $entities = $this->getRepository()->getAll($user, $filter, $orderBy, $limit, $offset);
+        $total = $this->getRepository()->getAllCount($user, $filter);
 
         return ['total' => $total, 'data' => $entities];
     }
 
     /**
+     * @param User $user
+     * @param string|null $filter
      * @return int
      */
-    public function getAllCount(): int
+    public function getAllCount(User $user, string $filter = null): int
     {
-        return $this->getRepository()->getAllCount(null);
+        return $this->getRepository()->getAllCount($user, $filter);
     }
 
     /**
