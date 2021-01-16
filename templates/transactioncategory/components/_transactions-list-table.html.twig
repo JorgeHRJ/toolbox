@@ -13,15 +13,32 @@
         <tbody>
         {% for category in categories %}
             <tr>
+                {% set month = category.months.first %}
                 <td class="cell">{{ category.title }}</td>
-                <td class="cell">{{ category.months.first.expected }}</td>
-                <td class="cell">{{ category.months.first.value }}</td>
+                <td class="cell">{{ month.expected }}</td>
+                <td class="cell">{{ month.value }}</td>
                 <td class="cell">
-                    {{ category.months.first.expected - category.months.first.value }}
+                    {{ month.expected - month.value }}
                 </td>
                 <td class="cell">{{ get_peridiocity_text(category.periodicity) }}</td>
-                <td class="cell"></td>
+                <td class="cell">
+                    <a class="btn-sm app-btn-secondary"
+                       href="{{ path('transaction_new', {'monthId': month.id}) }}"
+                       title="Añadir movimiento">
+                        {{ source('icons/plus-sm.svg') }} Movimiento
+                    </a>
+                </td>
             </tr>
+            {% for transaction in month.transactions %}
+                <tr>
+                    <td class="cell"><span class="ml-3">{{ "> #{transaction.title}" }}</span></td>
+                    <td class="cell"></td>
+                    <td class="cell">{{ transaction.amount }}</td>
+                    <td class="cell"></td>
+                    <td class="cell"></td>
+                    <td class="cell"></td>
+                </tr>
+            {% endfor %}
         {% endfor %}
         </tbody>
     </table>

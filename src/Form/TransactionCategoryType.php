@@ -8,7 +8,6 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use function Sodium\add;
 
 class TransactionCategoryType extends AbstractType
 {
@@ -17,12 +16,12 @@ class TransactionCategoryType extends AbstractType
         $builder
             ->add('title', TextType::class, [
                 'required' => true,
-                'label' => 'Título',
+                'label' => 'Título *',
                 'attr' => ['placeholder' => 'Título de la categoría']
             ])
             ->add('periodicity', ChoiceType::class, [
                 'required' => true,
-                'label' => 'Peridiocidad',
+                'label' => 'Peridiocidad *',
                 'attr' => ['placeholder' => 'Peridiocidad de la categoría'],
                 'choices' => [
                     'Ninguna' => TransactionCategory::NO_PERIDIOCITY,
@@ -31,7 +30,7 @@ class TransactionCategoryType extends AbstractType
             ])
             ->add('type', ChoiceType::class, [
                 'required' => true,
-                'label' => 'Tipo',
+                'label' => 'Tipo *',
                 'attr' => ['placeholder' => 'Tipo de la categoría'],
                 'choices' => [
                     'Gasto' => TransactionCategory::EXPENSE_TYPE,
@@ -40,7 +39,7 @@ class TransactionCategoryType extends AbstractType
             ])
             ->add('date', TextType::class, [
                 'required' => true,
-                'label' => 'Fecha (mes-año)',
+                'label' => 'Fecha (mes-año) *',
                 'mapped' => false,
                 'help' => 'En caso de tener peridiocidad mensual, se irá creando a partir de ese mes'
             ])

@@ -15,7 +15,7 @@ class TransactionMonthType extends AbstractType
         $builder
             ->add('expected', MoneyType::class, [
                 'required' => true,
-                'label' => 'Previsión'
+                'label' => 'Previsión *'
             ])
         ;
     }
