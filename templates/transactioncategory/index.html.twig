@@ -1,0 +1,105 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Monedero{% endblock %}
+{% block bodyAttr %}data-controller="transactioncategory"{% endblock %}
+
+{% block content %}
+    <nav id="orders-table-tab" class="orders-table-tab app-nav-tabs nav shadow-sm flex-column flex-sm-row mb-4">
+        <a class="flex-sm-fill text-sm-center nav-link active"
+           id="expenses-tab"
+           data-bs-toggle="tab"
+           href="#expenses"
+           role="tab"
+           aria-controls="expenses"
+           aria-selected="true">
+            Gastos
+        </a>
+        <a class="flex-sm-fill text-sm-center nav-link"
+           id="incomes-tab"
+           data-bs-toggle="tab"
+           href="#incomes"
+           role="tab"
+           aria-controls="incomes"
+           aria-selected="true">
+            Ingresos
+        </a>
+    </nav>
+    <div class="tab-content" id="orders-table-tab-content">
+        <div class="tab-pane fade active show" id="expenses" role="tabpanel" aria-labelledby="expenses-tab">
+            <div class="app-card app-card-orders-table shadow-sm mb-5">
+                <div class="app-card-body">
+                    {% if expenses is empty %}
+                        {{ include('components/no-results.html.twig') }}
+                    {% else %}
+                        <div class="table-responsive">
+                            <table class="table app-table-hover mb-0 text-left">
+                                <thead>
+                                <tr>
+                                    <th class="cell">Título</th>
+                                    <th class="cell">Previsión</th>
+                                    <th class="cell">Gastos</th>
+                                    <th class="cell">Balance</th>
+                                    <th class="cell">Peridiocidad</th>
+                                    <th class="cell">Acciones</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for expense in expenses %}
+                                    <tr>
+                                        <td class="cell">{{ expense.title }}</td>
+                                        <td class="cell">{{ expense.months.first.expected }}</td>
+                                        <td class="cell">{{ expense.months.first.value }}</td>
+                                        <td class="cell">
+                                            {{ expense.months.first.expected - expense.months.first.value }}
+                                        </td>
+                                        <td class="cell">{{ get_peridiocity_text(expense.periodicity) }}</td>
+                                        <td class="cell"></td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="incomes" role="tabpanel" aria-labelledby="incomes-tab">
+            <div class="app-card app-card-orders-table mb-5">
+                <div class="app-card-body">
+                    {% if incomes is empty %}
+                        {{ include('components/no-results.html.twig') }}
+                    {% else %}
+                        <div class="table-responsive">
+                            <table class="table app-table-hover mb-0 text-left">
+                                <thead>
+                                <tr>
+                                    <th class="cell">Título</th>
+                                    <th class="cell">Previsión</th>
+                                    <th class="cell">Gastos</th>
+                                    <th class="cell">Balance</th>
+                                    <th class="cell">Peridiocidad</th>
+                                    <th class="cell">Acciones</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for income in incomes %}
+                                    <tr>
+                                        <td class="cell">{{ income.title }}</td>
+                                        <td class="cell">{{ income.months.first.expected }}</td>
+                                        <td class="cell">{{ income.months.first.value }}</td>
+                                        <td class="cell">
+                                            {{ income.months.first.expected - income.months.first.value }}
+                                        </td>
+                                        <td class="cell">{{ get_peridiocity_text(income.periodicity) }}</td>
+                                        <td class="cell"></td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

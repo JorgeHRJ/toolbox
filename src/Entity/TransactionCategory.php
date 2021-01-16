@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Library\Traits\Entity\TimestampableTrait;
 use App\Repository\TransactionCategoryRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -62,6 +64,21 @@ class TransactionCategory
     private $type;
 
     /**
+     * @var User|null
+     *
+     * @ORM\ManyToOne(targetEntity=User::class)
+     * @ORM\JoinColumn(name="transactioncategory_user", referencedColumnName="user_id", nullable=false)
+     */
+    private $user;
+
+    /**
+     * @var Collection|null
+     *
+     * @ORM\OneToMany(targetEntity=TransactionMonth::class, mappedBy="category", cascade={"persist", "remove"})
+     */
+    private $months;
+
+    /**
      * @var \DateTimeInterface|null
      *
      * @Assert\Type("\DateTimeInterface")
@@ -80,6 +97,11 @@ class TransactionCategory
      * @ORM\Column(name="transactioncategory_modified_at", type="datetime", nullable=true)
      */
     private $modifiedAt;
+
+    public function __construct()
+    {
+        $this->months = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -122,26 +144,53 @@ class TransactionCategory
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getUser(): ?User
     {
-        return $this->createdAt;
+        return $this->user;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    public function setUser(?User $user): self
     {
-        $this->createdAt = $createdAt;
+        $this->user = $user;
 
         return $this;
     }
 
-    public function getModifiedAt(): ?\DateTimeInterface
+    /**
+     * @return Collection|TransactionMonth[]
+     */
+    public function getMonths(): Collection
     {
-        return $this->modifiedAt;
+        return $this->months;
     }
 
-    public function setModifiedAt(?\DateTimeInterface $modifiedAt): self
+    /**
+     * @param TransactionMonth $month
+     * @return $this
+     */
+    public function addMonth(TransactionMonth $month): self
     {
-        $this->modifiedAt = $modifiedAt;
+        if (!$this->months->contains($month)) {
+            $this->months[] = $month;
+            $month->setCategory($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param TransactionMonth $month
+     * @return $this
+     */
+    public function removeMonth(TransactionMonth $month): self
+    {
+        if ($this->months->contains($month)) {
+            $this->months->removeElement($month);
+            // set the owning side to null (unless already changed)
+            if ($month->getCategory() === $this) {
+                $month->setCategory(null);
+            }
+        }
 
         return $this;
     }

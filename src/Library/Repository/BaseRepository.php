@@ -2,6 +2,7 @@
 
 namespace App\Library\Repository;
 
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
@@ -18,6 +19,7 @@ abstract class BaseRepository extends ServiceEntityRepository
     abstract public function getFilterFields(): array;
 
     /**
+     * @param User $user
      * @param string|null $filter
      * @param array|null $orderBy
      * @param int|null $limit
@@ -25,12 +27,13 @@ abstract class BaseRepository extends ServiceEntityRepository
      *
      * @return mixed
      */
-    public function getAll(string $filter = null, array $orderBy = null, int $limit = null, int $offset = null)
+    public function getAll(User $user, string $filter = null, array $orderBy = null, int $limit = null, int $offset = null)
     {
         $alias = 't';
         $qb = $this->createQueryBuilder($alias);
 
-        $this->setFilter($alias, $qb, $filter);
+        $this->setFilter($qb, $alias, $filter);
+        $this->setUserRestriction($user, $qb, $alias);
 
         if (!empty($orderBy)) {
             foreach ($orderBy as $field => $dir) {
@@ -47,16 +50,19 @@ abstract class BaseRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param User $user
      * @param string|null $filter
      *
      * @return int
      */
-    public function getAllCount(?string $filter)
+    public function getAllCount(User $user, ?string $filter)
     {
         $alias = 't';
 
         $qb = $this->createQueryBuilder($alias)->select(sprintf('count(%s.id)', $alias));
-        $this->setFilter($alias, $qb, $filter);
+
+        $this->setFilter($qb, $alias, $filter);
+        $this->setUserRestriction($user, $qb, $alias);
 
         try {
             return $qb->getQuery()->getSingleScalarResult();
@@ -72,7 +78,7 @@ abstract class BaseRepository extends ServiceEntityRepository
      * @param QueryBuilder $qb
      * @param string|null $filter
      */
-    protected function setFilter(string $alias, QueryBuilder $qb, ?string $filter): void
+    protected function setFilter(QueryBuilder $qb, string $alias, ?string $filter): void
     {
         if (!$filter) {
             return;
@@ -83,5 +89,16 @@ abstract class BaseRepository extends ServiceEntityRepository
             $qb->orWhere(sprintf('%s LIKE :%s_filter', sprintf('%s.%s', $alias, $field), $field));
             $qb->setParameter(sprintf('%s_filter', $field), sprintf('%%%s%%', $filter));
         }
+    }
+
+    /**
+     * @param User $user
+     * @param string $alias
+     * @param QueryBuilder $qb
+     */
+    protected function setUserRestriction(User $user, QueryBuilder $qb, string $alias): void
+    {
+        $qb->andWhere(sprintf('%s.user = :userId', $alias));
+        $qb->setParameter('userId', $user->getId());
     }
 }

@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Library\Traits\Entity\TimestampableTrait;
 use App\Repository\TransactionMonthRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -62,6 +64,13 @@ class TransactionMonth
     private $category;
 
     /**
+     * @var Collection|null
+     *
+     * @ORM\OneToMany(targetEntity=Transaction::class, mappedBy="month", cascade={"persist", "remove"})
+     */
+    private $transactions;
+
+    /**
      * @var \DateTimeInterface|null
      *
      * @Assert\Type("\DateTimeInterface")
@@ -80,6 +89,11 @@ class TransactionMonth
      * @ORM\Column(name="transactionmonth_modified_at", type="datetime", nullable=true)
      */
     private $modifiedAt;
+
+    public function __construct()
+    {
+        $this->transactions = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -142,6 +156,45 @@ class TransactionMonth
     public function setCategory(?TransactionCategory $category): self
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Transaction[]
+     */
+    public function getTransactions(): Collection
+    {
+        return $this->transactions;
+    }
+
+    /**
+     * @param Transaction $transaction
+     * @return $this
+     */
+    public function addTransaction(Transaction $transaction): self
+    {
+        if (!$this->transactions->contains($transaction)) {
+            $this->transactions[] = $transaction;
+            $transaction->setMonth($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Transaction $transaction
+     * @return $this
+     */
+    public function removeMonth(Transaction $transaction): self
+    {
+        if ($this->transactions->contains($transaction)) {
+            $this->transactions->removeElement($transaction);
+            // set the owning side to null (unless already changed)
+            if ($transaction->getMonth() === $this) {
+                $transaction->setMonth(null);
+            }
+        }
 
         return $this;
     }

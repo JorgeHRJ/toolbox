@@ -3,48 +3,45 @@
 namespace App\Repository;
 
 use App\Entity\TransactionCategory;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Entity\User;
+use App\Library\Repository\BaseRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * @method TransactionCategory|null find($id, $lockMode = null, $lockVersion = null)
- * @method TransactionCategory|null findOneBy(array $criteria, array $orderBy = null)
- * @method TransactionCategory[]    findAll()
- * @method TransactionCategory[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
- */
-class TransactionCategoryRepository extends ServiceEntityRepository
+class TransactionCategoryRepository extends BaseRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, TransactionCategory::class);
     }
 
-    // /**
-    //  * @return TransactionCategory[] Returns an array of TransactionCategory objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param User $user
+     * @param int $type
+     * @param string $month
+     * @param string $year
+     * @return TransactionCategory[]|array
+     */
+    public function findByTypeMonthAndYear(User $user, int $type, string $year, string $month): array
     {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('t.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $qb = $this->createQueryBuilder('tc');
+        $qb
+            ->select('tc')
+            ->addSelect('tm')
+            ->addSelect('t')
+            ->leftJoin('tc.months', 'tm', 'WITH', 'tm.month = :month AND tm.year = :year')
+            ->leftJoin('tm.transactions', 't')
+            ->where('tc.user = :userId')
+            ->andWhere('tc.type = :type')
+            ->setParameter('userId', $user->getId())
+            ->setParameter('type', $type)
+            ->setParameter('month', $month)
+            ->setParameter('year', $year);
 
-    /*
-    public function findOneBySomeField($value): ?TransactionCategory
-    {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        return $qb->getQuery()->getResult();
     }
-    */
+
+    public function getFilterFields(): array
+    {
+        return [];
+    }
 }
