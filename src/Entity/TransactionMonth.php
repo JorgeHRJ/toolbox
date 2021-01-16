@@ -58,7 +58,7 @@ class TransactionMonth
     /**
      * @var TransactionCategory|null
      *
-     * @ORM\ManyToOne(targetEntity=TransactionCategory::class)
+     * @ORM\ManyToOne(targetEntity=TransactionCategory::class, inversedBy="months")
      * @ORM\JoinColumn(name="transactionmonth_category", referencedColumnName="transactioncategory_id", nullable=false)
      */
     private $category;
