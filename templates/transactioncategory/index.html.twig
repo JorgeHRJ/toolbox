@@ -14,7 +14,8 @@
         'attr': {
             'controller': 'transactioncategory'
         }
-    }
+    },
+    'utilities': 'transactioncategory/components/_new-category-button.html.twig'
 } %}
 
 {% block content %}
@@ -45,34 +46,7 @@
                     {% if expenses is empty %}
                         {{ include('components/no-results.html.twig') }}
                     {% else %}
-                        <div class="table-responsive">
-                            <table class="table app-table-hover mb-0 text-left">
-                                <thead>
-                                <tr>
-                                    <th class="cell">Título</th>
-                                    <th class="cell">Previsión</th>
-                                    <th class="cell">Gastos</th>
-                                    <th class="cell">Balance</th>
-                                    <th class="cell">Peridiocidad</th>
-                                    <th class="cell">Acciones</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {% for expense in expenses %}
-                                    <tr>
-                                        <td class="cell">{{ expense.title }}</td>
-                                        <td class="cell">{{ expense.months.first.expected }}</td>
-                                        <td class="cell">{{ expense.months.first.value }}</td>
-                                        <td class="cell">
-                                            {{ expense.months.first.expected - expense.months.first.value }}
-                                        </td>
-                                        <td class="cell">{{ get_peridiocity_text(expense.periodicity) }}</td>
-                                        <td class="cell"></td>
-                                    </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
+                        {{ include('transactioncategory/components/_transactions-list-table.html.twig', {'categories': expenses}) }}
                     {% endif %}
                 </div>
             </div>
@@ -83,34 +57,7 @@
                     {% if incomes is empty %}
                         {{ include('components/no-results.html.twig') }}
                     {% else %}
-                        <div class="table-responsive">
-                            <table class="table app-table-hover mb-0 text-left">
-                                <thead>
-                                <tr>
-                                    <th class="cell">Título</th>
-                                    <th class="cell">Previsión</th>
-                                    <th class="cell">Gastos</th>
-                                    <th class="cell">Balance</th>
-                                    <th class="cell">Peridiocidad</th>
-                                    <th class="cell">Acciones</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {% for income in incomes %}
-                                    <tr>
-                                        <td class="cell">{{ income.title }}</td>
-                                        <td class="cell">{{ income.months.first.expected }}</td>
-                                        <td class="cell">{{ income.months.first.value }}</td>
-                                        <td class="cell">
-                                            {{ income.months.first.expected - income.months.first.value }}
-                                        </td>
-                                        <td class="cell">{{ get_peridiocity_text(income.periodicity) }}</td>
-                                        <td class="cell"></td>
-                                    </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
+                        {{ include('transactioncategory/components/_transactions-list-table.html.twig', {'categories': incomes}) }}
                     {% endif %}
                 </div>
             </div>

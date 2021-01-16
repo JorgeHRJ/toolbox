@@ -48,7 +48,7 @@ class TransactionCategory
     /**
      * @var int|null
      *
-     * @Assert\Choice(choices="self::PERIDIOCITIES")
+     * @Assert\Choice(choices=TransactionCategory::PERIDIOCITIES, message="Elige una peridiocidad válida")
      *
      * @ORM\Column(name="transactioncategory_peridiocity", type="integer", nullable=false)
      */
@@ -57,7 +57,7 @@ class TransactionCategory
     /**
      * @var int|null
      *
-     * @Assert\Choice(choices="self::TYPES")
+     * @Assert\Choice(choices=TransactionCategory::TYPES, message="Elige una peridiocidad válida")
      *
      * @ORM\Column(name="transactioncategory_type", type="integer", nullable=false)
      */

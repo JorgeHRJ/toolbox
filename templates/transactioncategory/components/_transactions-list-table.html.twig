@@ -1,0 +1,28 @@
+<div class="table-responsive p-3">
+    <table class="table app-table-hover mb-0 text-left">
+        <thead>
+        <tr>
+            <th class="cell">Título</th>
+            <th class="cell">Previsión</th>
+            <th class="cell">Gastos</th>
+            <th class="cell">Balance</th>
+            <th class="cell">Peridiocidad</th>
+            <th class="cell">Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for category in categories %}
+            <tr>
+                <td class="cell">{{ category.title }}</td>
+                <td class="cell">{{ category.months.first.expected }}</td>
+                <td class="cell">{{ category.months.first.value }}</td>
+                <td class="cell">
+                    {{ category.months.first.expected - category.months.first.value }}
+                </td>
+                <td class="cell">{{ get_peridiocity_text(category.periodicity) }}</td>
+                <td class="cell"></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>

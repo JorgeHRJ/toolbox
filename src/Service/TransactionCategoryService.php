@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\TransactionCategory;
+use App\Entity\TransactionMonth;
 use App\Entity\User;
 use App\Library\Repository\BaseRepository;
 use App\Library\Service\BaseService;
@@ -19,6 +20,34 @@ class TransactionCategoryService extends BaseService
     {
         parent::__construct($entityManager, $logger);
         $this->repository = $entityManager->getRepository(TransactionCategory::class);
+    }
+
+    /**
+     * @param User $user
+     * @param TransactionCategory $transactionCategory
+     * @param TransactionMonth $transactionMonth
+     * @param string $date
+     * @return TransactionCategory
+     * @throws \Exception
+     */
+    public function new(
+        User $user,
+        TransactionCategory $transactionCategory,
+        TransactionMonth $transactionMonth,
+        string $date
+    ): TransactionCategory {
+        list($month, $year) = explode('/', $date);
+
+        $transactionMonth->setValue((string) 0);
+        $transactionMonth->setYear((int) $year);
+        $transactionMonth->setMonth((int) $month);
+        $transactionMonth->setCategory($transactionCategory);
+
+        $transactionCategory->addMonth($transactionMonth);
+
+        $transactionCategory->setUser($user);
+
+        return $this->create($transactionCategory);
     }
 
     /**
