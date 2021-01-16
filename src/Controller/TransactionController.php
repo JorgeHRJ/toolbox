@@ -61,7 +61,8 @@ class TransactionController extends BaseController
 
             try {
                 $transaction->setMonth($month);
-                $month->setValue($month->getValue() + $transaction->getAmount());
+                $value = ((int) $month->getValue()) + ((int) $transaction->getAmount());
+                $month->setValue((string) $value);
 
                 $this->transactionService->create($transaction);
                 $this->addFlash('app_success', '¡Movimiento creado con éxito!');

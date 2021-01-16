@@ -1,9 +1,8 @@
 {% extends 'layout.html.twig' %}
 
-{% set title = "Nuevo movimiento para #{month.category.title}" %}
 {% page_setup {
-    'title': title,
-    'header': title,
+    'title': "Nuevo movimiento para #{month.category.title}",
+    'header': "Nuevo movimiento para #{month.category.title}",
     'subheader': 'Rellena el formulario para crear un nuevo movimiento',
     'breadcrumbs': [
         {
