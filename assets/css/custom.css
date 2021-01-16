@@ -8,6 +8,10 @@
     height: 24px;
 }
 
+.bg-none {
+    background-color: transparent;
+}
+
 /* pace library */
 .pace {
     -webkit-pointer-events: none;

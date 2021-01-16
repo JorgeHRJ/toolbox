@@ -1,7 +1,21 @@
 {% extends 'layout.html.twig' %}
 
-{% block title %}Monedero{% endblock %}
-{% block bodyAttr %}data-controller="transactioncategory"{% endblock %}
+{% page_setup {
+    'title': 'Monedero',
+    'header': 'Monedero',
+    'subheader': 'Listado de gastos e ingresos',
+    'breadcrumbs': [
+        {
+            'name': 'Monedero',
+            'main': true
+        }
+    ],
+    'body': {
+        'attr': {
+            'controller': 'transactioncategory'
+        }
+    }
+} %}
 
 {% block content %}
     <nav id="orders-table-tab" class="orders-table-tab app-nav-tabs nav shadow-sm flex-column flex-sm-row mb-4">

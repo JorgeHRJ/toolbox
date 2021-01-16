@@ -1,0 +1,19 @@
+<div class="row g-3 mb-2 align-items-center justify-content-between">
+    <div class="col-auto">
+        <h1 class="app-page-title mb-1">{{ get_header() }}</h1>
+        {% set subheader = get_subheader() %}
+        {% if subheader is not empty %}
+            <p>{{ subheader }}</p>
+        {% endif %}
+    </div>
+    {% set utilities = get_utilities() %}
+    {% if utilities is not empty %}
+        <div class="col-auto">
+            <div class="page-utilities">
+                <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
+                    {{ utilities|raw }}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <title>Toolbox | {% block title %}{% endblock %}</title>
+    <title>Toolbox | {{ get_title() }}</title>
 
     <meta charset="UTF-8">
     <meta name="description" content="">
@@ -19,7 +19,7 @@
         <link type="text/css" rel="stylesheet" href="{{ preload(asset('build/app.css'), {as: 'style'}) }}"/>
     {% endblock %}
 </head>
-<body class="app {% block bodyClass %}{% endblock %}" {% block bodyAttr %}{% endblock %}>
+<body class="app {{ get_body_class() }}" {{ get_body_attr() }}>
 {% block body %}{% endblock %}
 
 {% block translations %}{% endblock %}

@@ -1,7 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Entrar{% endblock %}
-{% block bodyClass %}app app-login p-0{% endblock %}
+{% page_setup {
+    'title': 'Entrar',
+    'body': {
+        'class': 'app app-login p-0'
+    }
+} %}
 
 {% block body %}
     <div class="row g-0 app-auth-wrapper">

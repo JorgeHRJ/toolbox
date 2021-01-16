@@ -1,24 +1,26 @@
 {% extends 'layout.html.twig' %}
 
-{% block title %}Semanal{% endblock %}
-{% block bodyAttr %}data-controller="task"{% endblock %}
+{% page_setup {
+    'title': 'Semanal',
+    'header': 'Semanal',
+    'subheader': 'Organización de tareas semana a semana',
+    'breadcrumbs': [
+        {
+            'name': 'Semanal',
+            'main': true
+        }
+    ],
+    'body': {
+        'attr': {
+            'controller': 'task'
+        }
+    },
+    'utilities': 'task/components/_tags-button.html.twig'
+} %}
 
 {% block content %}
     <div class="app-card shadow-sm mb-4">
         <div class="inner">
-            <div class="app-card-header p-3">
-                <div class="row justify-content-between align-items-center">
-                    <div class="col-auto"></div>
-                    <div class="col-auto">
-                        <div class="card-header-action">
-                            <button class="btn btn-primary text-white" data-component="open-modal-tags">
-                                {{ source('icons/tags.svg') }}
-                                Etiquetas
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <div class="app-card-body p-4">
                 <div class="row gx-5 gy-3">
                     <div class="calendar" data-component="calendar"></div>
