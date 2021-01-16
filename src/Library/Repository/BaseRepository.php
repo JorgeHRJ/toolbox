@@ -27,8 +27,13 @@ abstract class BaseRepository extends ServiceEntityRepository
      *
      * @return mixed
      */
-    public function getAll(User $user, string $filter = null, array $orderBy = null, int $limit = null, int $offset = null)
-    {
+    public function getAll(
+        User $user,
+        string $filter = null,
+        array $orderBy = null,
+        int $limit = null,
+        int $offset = null
+    ) {
         $alias = 't';
         $qb = $this->createQueryBuilder($alias);
 
