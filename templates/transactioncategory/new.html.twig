@@ -42,9 +42,9 @@
                         </div>
                         <div class="mb-3">
                             {{ form_label(form.date) }}
-                            {{ form_widget(form.date,
-                                {'attr': {'class': 'form-control', 'data-component': 'datepicker' }}
-                            ) }}
+                            {{ form_widget(form.date, {
+                                'attr': {'class': 'form-control', 'data-component': 'datepicker'}
+                            }) }}
                             <small>{{ form_help(form.date) }}</small>
                         </div>
                         <div class="mb-3">

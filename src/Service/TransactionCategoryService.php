@@ -27,7 +27,7 @@ class TransactionCategoryService extends BaseService
      * @param TransactionCategory $transactionCategory
      * @param TransactionMonth $transactionMonth
      * @param string $date
-     * @return TransactionCategory|object
+     * @return TransactionCategory
      * @throws \Exception
      */
     public function new(
