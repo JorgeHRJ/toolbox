@@ -20,6 +20,15 @@ class TransactionService extends BaseService
         $this->repository = $entityManager->getRepository(Transaction::class);
     }
 
+    /**
+     * @param int $id
+     * @return Transaction|null
+     */
+    public function getById(int $id): ?Transaction
+    {
+        return $this->repository->find($id);
+    }
+
     public function getSortFields(): array
     {
         return [];

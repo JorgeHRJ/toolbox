@@ -41,7 +41,13 @@
                     <td class="cell">{{ transaction.amount }}</td>
                     <td class="cell"></td>
                     <td class="cell"></td>
-                    <td class="cell"></td>
+                    <td class="cell">
+                        <a class="btn-sm app-btn-secondary ml-1 p-2"
+                           href="{{ path('transaction_edit', {'id': transaction.id}) }}"
+                           title="Editar movimiento">
+                            {{ source('icons/pencil-sm.svg') }} Editar
+                        </a>
+                    </td>
                 </tr>
             {% endfor %}
         {% endfor %}
