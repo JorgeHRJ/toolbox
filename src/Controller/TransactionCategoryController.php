@@ -3,11 +3,14 @@
 namespace App\Controller;
 
 use App\Entity\TransactionCategory;
+use App\Entity\TransactionMonth;
 use App\Form\TransactionCategoryType;
 use App\Library\Controller\BaseController;
 use App\Service\TransactionCategoryService;
+use App\Service\TransactionMonthService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -17,11 +20,15 @@ class TransactionCategoryController extends BaseController
 {
     const LIST_LIMIT = 10;
 
-    private $transactionCategoryService;
+    private $categoryService;
+    private $monthService;
 
-    public function __construct(TransactionCategoryService $transactionCategoryService)
-    {
-        $this->transactionCategoryService = $transactionCategoryService;
+    public function __construct(
+        TransactionCategoryService $categoryService,
+        TransactionMonthService $monthService
+    ) {
+        $this->categoryService = $categoryService;
+        $this->monthService = $monthService;
     }
 
     /**
@@ -41,13 +48,13 @@ class TransactionCategoryController extends BaseController
             $month = $now->format('m');
         }
 
-        $incomes = $this->transactionCategoryService->getByTypeMonthAndYear(
+        $incomes = $this->categoryService->getByTypeMonthAndYear(
             $user,
             TransactionCategory::INCOME_TYPE,
             $year,
             $month
         );
-        $expenses = $this->transactionCategoryService->getByTypeMonthAndYear(
+        $expenses = $this->categoryService->getByTypeMonthAndYear(
             $user,
             TransactionCategory::EXPENSE_TYPE,
             $year,
@@ -80,7 +87,7 @@ class TransactionCategoryController extends BaseController
             }
 
             try {
-                $this->transactionCategoryService->new(
+                $this->categoryService->new(
                     $this->getUserInstance(),
                     $category,
                     $form->get('month')->getData(),
@@ -95,5 +102,55 @@ class TransactionCategoryController extends BaseController
         }
 
         return $this->render('transactioncategory/new.html.twig', ['form' => $form->createView()]);
+    }
+
+    /**
+     * @Route("/editar/{monthId}", name="edit", requirements={"monthId"="\d+"})
+     *
+     * @param Request $request
+     * @param int $monthId
+     * @return Response
+     */
+    public function edit(Request $request, int $monthId): Response
+    {
+        $user = $this->getUserInstance();
+        $month = $this->monthService->getById($monthId);
+        if (!$month instanceof TransactionMonth) {
+            throw new NotFoundHttpException();
+        }
+
+        $category = $month->getCategory();
+        if ($category->getUser()->getId() !== $user->getId()) {
+            throw new NotFoundHttpException();
+        }
+
+        $form = $this->createForm(TransactionCategoryType::class, $category);
+        $form->get('month')->get('expected')->setData($month->getExpected());
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted()) {
+            if (!$form->isValid()) {
+                $this->addFlash('app_error', $this->getFormErrorMessagesList($form, true));
+                return $this->render('transactioncategory/edit.html.twig', ['form' => $form->createView()]);
+            }
+
+            try {
+                /** @var TransactionMonth $monthForm */
+                $monthForm = $form->get('month')->getData();
+                $month->setExpected($monthForm->getExpected());
+
+                $this->categoryService->edit($category);
+                $this->monthService->edit($month);
+
+                $this->addFlash('app_success', '¡Categoría editada con éxito!');
+
+                return $this->redirectToRoute('transactioncategory_index');
+            } catch (\Exception $e) {
+                $this->addFlash('app_error', 'Hubo un problema a la hora de editada la categoría');
+            }
+        }
+
+        return $this->render('transactioncategory/edit.html.twig', ['form' => $form->createView()]);
     }
 }

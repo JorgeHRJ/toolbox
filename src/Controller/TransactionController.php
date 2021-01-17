@@ -38,8 +38,6 @@ class TransactionController extends BaseController
      */
     public function new(Request $request, int $monthId): Response
     {
-        $user = $this->getUserInstance();
-
         $month = $this->monthService->getById($monthId);
         if (!$month instanceof TransactionMonth) {
             throw new NotFoundHttpException();
@@ -61,7 +59,7 @@ class TransactionController extends BaseController
 
             try {
                 $transaction->setMonth($month);
-                $value = ((int) $month->getValue()) + ((int) $transaction->getAmount());
+                $value = ((float) $month->getValue()) + ((float) $transaction->getAmount());
                 $month->setValue((string) $value);
 
                 $this->transactionService->create($transaction);
@@ -74,6 +72,59 @@ class TransactionController extends BaseController
         }
 
         return $this->render('transaction/new.html.twig', [
+            'form' => $form->createView(),
+            'month' => $month
+        ]);
+    }
+
+    /**
+     * @Route("/movimientos/{id}/editar", name="edit", requirements={"monthId"="\d+"})
+     *
+     * @param Request $request
+     * @param int $id
+     * @return Response
+     */
+    public function edit(Request $request, int $id): Response
+    {
+        $transaction = $this->transactionService->getById($id);
+        if (!$transaction instanceof Transaction) {
+            throw new NotFoundHttpException();
+        }
+
+        $user = $this->getUserInstance();
+        $month = $transaction->getMonth();
+        if ($month->getCategory()->getUser()->getId() !== $user->getId()) {
+            throw new NotFoundHttpException();
+        }
+
+        $previousAmount = $transaction->getAmount();
+
+        $form = $this->createForm(TransactionType::class, $transaction);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted()) {
+            if (!$form->isValid()) {
+                $this->addFlash('app_error', $this->getFormErrorMessagesList($form, true));
+                return $this->render('transaction/edit.html.twig', [
+                    'form' => $form->createView(),
+                    'month' => $month
+                ]);
+            }
+
+            try {
+                $value = ((float) $month->getValue() - (float) $previousAmount) + ((float) $transaction->getAmount());
+                $month->setValue((string) $value);
+
+                $this->transactionService->edit($transaction);
+                $this->addFlash('app_success', '¡Movimiento editado con éxito!');
+
+                return $this->redirectToRoute('transactioncategory_index');
+            } catch (\Exception $e) {
+                $this->addFlash('app_error', 'Hubo un problema a la hora de editar el movimiento');
+            }
+        }
+
+        return $this->render('transaction/edit.html.twig', [
             'form' => $form->createView(),
             'month' => $month
         ]);
