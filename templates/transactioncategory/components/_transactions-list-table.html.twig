@@ -18,14 +18,19 @@
                 <td class="cell">{{ month.expected }}</td>
                 <td class="cell">{{ month.value }}</td>
                 <td class="cell">
-                    {{ month.expected - month.value }}
+                    {{ (month.expected - month.value)|number_format(2) }}
                 </td>
                 <td class="cell">{{ get_peridiocity_text(category.periodicity) }}</td>
                 <td class="cell">
-                    <a class="btn-sm app-btn-secondary"
+                    <a class="btn-sm app-btn-secondary ml-1 p-2"
                        href="{{ path('transaction_new', {'monthId': month.id}) }}"
                        title="Añadir movimiento">
                         {{ source('icons/plus-sm.svg') }} Movimiento
+                    </a>
+                    <a class="btn-sm app-btn-secondary ml-1 p-2"
+                       href="{{ path('transactioncategory_edit', {'monthId': month.id}) }}"
+                       title="Editar categoría">
+                        {{ source('icons/pencil-sm.svg') }} Editar
                     </a>
                 </td>
             </tr>

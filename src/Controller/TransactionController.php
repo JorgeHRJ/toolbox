@@ -61,7 +61,7 @@ class TransactionController extends BaseController
 
             try {
                 $transaction->setMonth($month);
-                $value = ((int) $month->getValue()) + ((int) $transaction->getAmount());
+                $value = ((float) $month->getValue()) + ((float) $transaction->getAmount());
                 $month->setValue((string) $value);
 
                 $this->transactionService->create($transaction);
