@@ -1,4 +1,4 @@
-import { Tooltip, Popover, Dropdown, Alert } from 'bootstrap';
+import { Tooltip, Popover, Dropdown, Alert, Collapse } from 'bootstrap';
 import Pace from 'pace-js';
 
 function initPace() {
@@ -31,6 +31,12 @@ function initBootstrapComponents() {
   const alertTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="alert"]'));
   const alertList = alertTriggerList.map((alertTriggerEl) => {
     return new Alert(alertTriggerEl);
+  });
+
+  // init collapse
+  const collapseTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="collapse"]'));
+  const collapseList = collapseTriggerList.map((collapseTriggerEl) => {
+    return new Collapse(collapseTriggerEl);
   });
 }
 
