@@ -141,6 +141,9 @@
     "phpmd/phpmd": {
         "version": "2.9.1"
     },
+    "phpstan/extension-installer": {
+        "version": "1.1.0"
+    },
     "phpstan/phpstan": {
         "version": "0.12.65"
     },
