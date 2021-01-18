@@ -822,10 +822,10 @@
     ical.js "^1.4.0"
     tslib "^2.0.3"
 
-"@fullcalendar/core@^5.5.0":
-  version "5.5.0"
-  resolved "https://registry.yarnpkg.com/@fullcalendar/core/-/core-5.5.0.tgz#08373ce9b68a88ea3d48caf7a682a8261d90a3c7"
-  integrity sha512-NHyrH6AP1zRRCWsK0NuY/bZFQes1UaGB2pukMv86A0Yq1BI7Y7m9u/yH7D0/ZCaNkCLVxrSlIwAOtMQxPPITdg==
+"@fullcalendar/core@^5.5.1":
+  version "5.5.1"
+  resolved "https://registry.yarnpkg.com/@fullcalendar/core/-/core-5.5.1.tgz#310adf23d5323b435a00f7df6f68eaf2f6087f39"
+  integrity sha512-6OAtYhgWekZExakbB3NUiIPZHsebBQQfwdWpccYYEKb5DZi3mf4gUb8CCrvfBp6YXx0hhYNlglPLcfJgxpy5Bg==
   dependencies:
     "@fullcalendar/common" "~5.5.0"
     preact "^10.0.5"
@@ -7584,10 +7584,10 @@ validate-npm-package-license@^3.0.1:
     spdx-correct "^3.0.0"
     spdx-expression-parse "^3.0.0"
 
-vanillajs-datepicker@^1.0.3:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/vanillajs-datepicker/-/vanillajs-datepicker-1.1.1.tgz#97f6aacb1a07765a44611b5825992fe2010bebc0"
-  integrity sha512-rvws7iIGWUCM5XaH9dSmyNGQtt+Jl3IlohBjy/hjDs1Vnet+tQRhx6Dr7wq4f9CiN07sHC+663VAyGgObGmOcg==
+vanillajs-datepicker@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/vanillajs-datepicker/-/vanillajs-datepicker-1.1.2.tgz#e666eff6b014a016f114eb50e447ff74a48fb428"
+  integrity sha512-ATnGZRznbAT1ghuXEIderk3/+ylPXfm/ESiobG7R7HuS62/fCFFEPS1Q55NCDj0w8EBq/RzIiPUU6NpxW2VE3A==
 
 vary@~1.1.2:
   version "1.1.2"

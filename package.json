@@ -18,7 +18,7 @@
         "build": "encore production --progress"
     },
     "dependencies": {
-        "@fullcalendar/core": "^5.5.0",
+        "@fullcalendar/core": "^5.5.1",
         "@fullcalendar/daygrid": "^5.5.0",
         "@fullcalendar/interaction": "^5.5.0",
         "@popperjs/core": "^2.5.4",
@@ -29,6 +29,6 @@
         "eslint-plugin-import": "^2.14.0",
         "pace": "^0.0.4",
         "pace-js": "^1.0.2",
-        "vanillajs-datepicker": "^1.0.3"
+        "vanillajs-datepicker": "^1.1.2"
     }
 }
