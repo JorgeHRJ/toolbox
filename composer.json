@@ -44,7 +44,9 @@
     "require-dev": {
         "friendsoftwig/twigcs": "^4.0",
         "phpmd/phpmd": "^2.8",
+        "phpstan/extension-installer": "^1.1",
         "phpstan/phpstan": "^0.12.17",
+        "phpstan/phpstan-symfony": "^0.12.14",
         "squizlabs/php_codesniffer": "^3.5",
         "symfony/debug-bundle": "^5.2",
         "symfony/maker-bundle": "^1.0",

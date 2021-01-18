@@ -14,3 +14,5 @@ parameters:
         -
             message: '#resolve the template type T in call to method#'
             path: src/Library/Service/
+    symfony:
+        container_xml_path: 'var/cache/dev/App_KernelDevDebugContainer.xml'
