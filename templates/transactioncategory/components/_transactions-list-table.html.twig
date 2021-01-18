@@ -42,6 +42,11 @@
                        title="Editar categoría">
                         {{ source('icons/pencil-sm.svg') }} Editar
                     </a>
+                    <a class="btn-sm app-btn-secondary ml-1 p-2"
+                       href="{{ path('transactioncategory_delete', {'id': category.id}) }}"
+                       title="Eliminar categoría">
+                        {{ source('icons/trash-sm.svg') }} Eliminar
+                    </a>
                 </td>
             </tr>
             {% for transaction in month.transactions %}
@@ -57,6 +62,11 @@
                            href="{{ path('transaction_edit', {'id': transaction.id}) }}"
                            title="Editar movimiento">
                             {{ source('icons/pencil-sm.svg') }} Editar
+                        </a>
+                        <a class="btn-sm app-btn-secondary ml-1 p-2"
+                           href="{{ path('transaction_delete', {'id': transaction.id}) }}"
+                           title="Editar movimiento">
+                            {{ source('icons/trash-sm.svg') }} Eliminar
                         </a>
                     </td>
                 </tr>
