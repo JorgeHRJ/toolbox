@@ -1,0 +1,61 @@
+{% extends 'layout.html.twig' %}
+
+{% page_setup {
+    'title': 'Nueva categoría',
+    'header': 'Nueva categoría',
+    'subheader': 'Rellena el formulario para crear una nueva categoría',
+    'breadcrumbs': [
+        {
+            'name': 'Monedero',
+            'path': path('transactioncategory_index')
+        },
+        {
+            'name': 'Nueva categoría',
+            'main': true
+        }
+    ],
+    'body': {
+        'attr': {
+            'controller': 'transactioncategory'
+        }
+    }
+} %}
+
+{% block content %}
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="app-card app-card-settings shadow-sm p-4">
+                <div class="app-card-body">
+                    {{ include('components/flash.html.twig') }}
+                    {{ form_start(form, {'attr': {'class': 'mt-1', 'autocomplete': 'off'}}) }}
+                        <div class="mb-3">
+                            {{ form_label(form.title) }}
+                            {{ form_widget(form.title, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_label(form.periodicity) }}
+                            {{ form_widget(form.periodicity, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_label(form.type) }}
+                            {{ form_widget(form.type, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_label(form.date) }}
+                            {{ form_widget(form.date, {
+                                'attr': {'class': 'form-control', 'data-component': 'datepicker'}
+                            }) }}
+                            <small>{{ form_help(form.date) }}</small>
+                        </div>
+                        <div class="mb-3">
+                            {{ form_label(form.month.expected) }}
+                            {{ form_widget(form.month.expected, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <button type="submit" class="btn app-btn-primary">Enviar</button>
+                    {{ form_widget(form._token) }}
+                    {{ form_end(form, {'render_rest': false}) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

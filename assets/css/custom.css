@@ -8,6 +8,16 @@
     height: 24px;
 }
 
+.icon-sm {
+    font-size: 1.25rem;
+    width: 1em;
+    height: 1em;
+}
+
+.bg-none {
+    background-color: transparent;
+}
+
 /* pace library */
 .pace {
     -webkit-pointer-events: none;

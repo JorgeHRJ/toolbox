@@ -1,14 +1,16 @@
 import { Datepicker } from 'vanillajs-datepicker';
 import es from "vanillajs-datepicker/js/i18n/locales/es";
 
-function initDatepicker(element) {
+function initDatepicker(element, options = {}) {
   Object.assign(Datepicker.locales, es);
 
-  return new Datepicker(element, {
+  const defaultOptions = {
     buttonClass: 'btn',
-    format: 'dd/mm/yyyy',
     language: 'es'
-  });
+  };
+  const finalOptions = Object.assign(defaultOptions, options);
+
+  return new Datepicker(element, finalOptions);
 }
 
 function initDatepickerComponent() {

@@ -1,0 +1,77 @@
+<div class="table-responsive p-3">
+    <table class="table app-table-hover mb-0 text-left">
+        <thead>
+        <tr class="bg-primary pt-1 pb-1">
+            <th>#</th>
+            <th>Título</th>
+            <th>Previsión</th>
+            <th>Gastos</th>
+            <th>Balance</th>
+            <th>Peridiocidad</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for category in categories %}
+            {% set identificator = "accordion-#{category.id}" %}
+            <tr class="table-active">
+                {% set month = category.months.first %}
+                <td class="cell">
+                    <button class="btn-sm app-btn-secondary p-1"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="{{ "##{identificator}" }}">
+                        {{ source('icons/chevron-down-sm.svg') }}
+                    </button>
+                </td>
+                <td class="cell">{{ category.title }}</td>
+                <td class="cell">{{ month.expected }}</td>
+                <td class="cell">{{ month.value }}</td>
+                <td class="cell">
+                    {{ (month.expected - month.value)|number_format(2) }}
+                </td>
+                <td class="cell">{{ get_peridiocity_text(category.periodicity) }}</td>
+                <td class="cell">
+                    <a class="btn-sm app-btn-secondary ml-1 p-2"
+                       href="{{ path('transaction_new', {'monthId': month.id}) }}"
+                       title="Añadir movimiento">
+                        {{ source('icons/plus-sm.svg') }} Movimiento
+                    </a>
+                    <a class="btn-sm app-btn-secondary ml-1 p-2"
+                       href="{{ path('transactioncategory_edit', {'monthId': month.id}) }}"
+                       title="Editar categoría">
+                        {{ source('icons/pencil-sm.svg') }} Editar
+                    </a>
+                    <a class="btn-sm app-btn-secondary ml-1 p-2"
+                       href="{{ path('transactioncategory_delete', {'id': category.id}) }}"
+                       title="Eliminar categoría">
+                        {{ source('icons/trash-sm.svg') }} Eliminar
+                    </a>
+                </td>
+            </tr>
+            {% for transaction in month.transactions %}
+                <tr id="{{ identificator }}" class="accordion-collapse collapse">
+                    <td class="cell"></td>
+                    <td class="cell"><span class="ml-3">{{ transaction.title }}</span></td>
+                    <td class="cell"></td>
+                    <td class="cell">{{ transaction.amount }}</td>
+                    <td class="cell"></td>
+                    <td class="cell"></td>
+                    <td class="cell">
+                        <a class="btn-sm app-btn-secondary ml-1 p-2"
+                           href="{{ path('transaction_edit', {'id': transaction.id}) }}"
+                           title="Editar movimiento">
+                            {{ source('icons/pencil-sm.svg') }} Editar
+                        </a>
+                        <a class="btn-sm app-btn-secondary ml-1 p-2"
+                           href="{{ path('transaction_delete', {'id': transaction.id}) }}"
+                           title="Editar movimiento">
+                            {{ source('icons/trash-sm.svg') }} Eliminar
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        {% endfor %}
+        </tbody>
+    </table>
+</div>

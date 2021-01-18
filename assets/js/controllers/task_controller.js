@@ -412,7 +412,8 @@ function initEditModal() {
   if (modalElement) {
     const datepickerElement = modalElement.querySelector('[data-component="datepicker"]');
     if (datepickerElement) {
-      editDatepicker = initDatepicker(datepickerElement);
+      const datepickerOptions = {format: 'dd/mm/yyyy'};
+      editDatepicker = initDatepicker(datepickerElement, datepickerOptions);
     }
   }
 }

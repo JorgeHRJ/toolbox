@@ -1,0 +1,67 @@
+{% extends 'layout.html.twig' %}
+
+{% page_setup {
+    'title': 'Monedero',
+    'header': 'Monedero',
+    'subheader': 'Listado de gastos e ingresos',
+    'breadcrumbs': [
+        {
+            'name': 'Monedero',
+            'main': true
+        }
+    ],
+    'body': {
+        'attr': {
+            'controller': 'transactioncategory'
+        }
+    },
+    'utilities': 'transactioncategory/components/_new-category-button.html.twig'
+} %}
+
+{% block content %}
+    <nav id="orders-table-tab" class="orders-table-tab app-nav-tabs nav shadow-sm flex-column flex-sm-row mb-4">
+        <a class="flex-sm-fill text-sm-center nav-link active"
+           id="expenses-tab"
+           data-bs-toggle="tab"
+           href="#expenses"
+           role="tab"
+           aria-controls="expenses"
+           aria-selected="true">
+            Gastos
+        </a>
+        <a class="flex-sm-fill text-sm-center nav-link"
+           id="incomes-tab"
+           data-bs-toggle="tab"
+           href="#incomes"
+           role="tab"
+           aria-controls="incomes"
+           aria-selected="true">
+            Ingresos
+        </a>
+    </nav>
+    {{ include('components/flash.html.twig') }}
+    <div class="tab-content" id="orders-table-tab-content">
+        <div class="tab-pane fade active show" id="expenses" role="tabpanel" aria-labelledby="expenses-tab">
+            <div class="app-card app-card-orders-table shadow-sm mb-5">
+                <div class="app-card-body">
+                    {% if expenses is empty %}
+                        {{ include('components/no-results.html.twig') }}
+                    {% else %}
+                        {{ include('transactioncategory/components/_transactions-list-table.html.twig', {'categories': expenses}) }}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="incomes" role="tabpanel" aria-labelledby="incomes-tab">
+            <div class="app-card app-card-orders-table mb-5">
+                <div class="app-card-body">
+                    {% if incomes is empty %}
+                        {{ include('components/no-results.html.twig') }}
+                    {% else %}
+                        {{ include('transactioncategory/components/_transactions-list-table.html.twig', {'categories': incomes}) }}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% set breadcrumbs = get_breadcrumbs() %}
+{% if breadcrumbs is not empty %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb bg-none">
+            <li class="breadcrumb-item"><a href="{{ path('landing_index') }}">Inicio</a></li>
+            {% for breadcrumb in breadcrumbs %}
+                {% if breadcrumb.path is defined and breadcrumb.path is not empty %}
+                    <li class="breadcrumb-item"><a href="{{ breadcrumb.path }}">{{ breadcrumb.name }}</a></li>
+                {% else %}
+                    <li class="breadcrumb-item active" aria-current="page">{{ breadcrumb.name }}</li>
+                {% endif %}
+            {% endfor %}
+        </ol>
+    </nav>
+{% endif %}

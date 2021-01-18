@@ -1,0 +1,41 @@
+{% extends 'layout.html.twig' %}
+
+{% page_setup {
+    'title': "Editar movimiento de #{month.category.title}",
+    'header': "Nuevo movimiento de #{month.category.title}",
+    'subheader': 'Rellena el formulario para editar el movimiento',
+    'breadcrumbs': [
+    {
+        'name': 'Monedero',
+        'path': path('transactioncategory_index')
+    },
+    {
+        'name': 'Editar movimiento',
+        'main': true
+    }
+]
+    } %}
+
+{% block content %}
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="app-card app-card-settings shadow-sm p-4">
+                <div class="app-card-body">
+                    {{ include('components/flash.html.twig') }}
+                    {{ form_start(form, {'attr': {'class': 'mt-1', 'autocomplete': 'off'}}) }}
+                    <div class="mb-3">
+                        {{ form_label(form.title) }}
+                        {{ form_widget(form.title, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form_label(form.amount) }}
+                        {{ form_widget(form.amount, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <button type="submit" class="btn app-btn-primary">Enviar</button>
+                    {{ form_widget(form._token) }}
+                    {{ form_end(form, {'render_rest': false}) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

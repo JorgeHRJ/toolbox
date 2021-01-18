@@ -6,9 +6,12 @@ Stack:
 - Symfony 5.2
 - PHP 7.4 + mariaDB + nginx
 - MailCatcher (for development)
+- GitHub Actions for CI/CD purposes
 
-In this project is used:
-- Symfony UX (Stimulus) + Webpack Encore in the frontend
+Some interesting implementations:
+- [Symfony UX](https://symfony.com/blog/new-in-symfony-the-ux-initiative-a-new-javascript-ecosystem-for-symfony) with [Stimulus](https://stimulus.hotwire.dev/)
+- [Webpack Encore](https://symfony.com/doc/current/frontend.html)
+- [FullCalendar](https://fullcalendar.io/) JS library
 
 ## Requirements
 
