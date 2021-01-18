@@ -28,7 +28,7 @@ class TransactionCategoryRepository extends BaseRepository
             ->select('tc')
             ->addSelect('tm')
             ->addSelect('t')
-            ->leftJoin('tc.months', 'tm', 'WITH', 'tm.month = :month AND tm.year = :year')
+            ->join('tc.months', 'tm', 'WITH', 'tm.month = :month AND tm.year = :year')
             ->leftJoin('tm.transactions', 't')
             ->where('tc.user = :userId')
             ->andWhere('tc.type = :type')
@@ -36,6 +36,26 @@ class TransactionCategoryRepository extends BaseRepository
             ->setParameter('type', $type)
             ->setParameter('month', $month)
             ->setParameter('year', $year);
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @param string $year
+     * @param string $month
+     * @return TransactionCategory[]|array
+     */
+    public function findMonthlyFromPreviousMonth(string $year, string $month): array
+    {
+        $qb = $this->createQueryBuilder('tc');
+        $qb
+            ->select('tc')
+            ->addSelect('tm')
+            ->join('tc.months', 'tm', 'WITH', 'tm.month = :month AND tm.year = :year')
+            ->where('tc.periodicity = :monthly')
+            ->setParameter('month', $month)
+            ->setParameter('year', $year)
+            ->setParameter('monthly', TransactionCategory::MONTHLY_PERIDIOCITY);
 
         return $qb->getQuery()->getResult();
     }
