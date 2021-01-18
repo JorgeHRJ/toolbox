@@ -78,7 +78,7 @@ class TransactionController extends BaseController
     }
 
     /**
-     * @Route("/movimientos/{id}/editar", name="edit", requirements={"monthId"="\d+"})
+     * @Route("/movimientos/{id}/editar", name="edit", requirements={"id"="\d+"})
      *
      * @param Request $request
      * @param int $id
@@ -128,5 +128,39 @@ class TransactionController extends BaseController
             'form' => $form->createView(),
             'month' => $month
         ]);
+    }
+
+    /**
+     * @Route("/movimientos/{id}/eliminar", name="delete", requirements={"id"="\d+"})
+     *
+     * @param int $id
+     * @return Response
+     */
+    public function delete(int $id): Response
+    {
+        $user = $this->getUserInstance();
+        $transaction = $this->transactionService->getById($id);
+        if (!$transaction instanceof Transaction) {
+            throw new NotFoundHttpException();
+        }
+
+        if ($transaction->getMonth()->getCategory()->getUser()->getId() !== $user->getId()) {
+            throw new NotFoundHttpException();
+        }
+
+        try {
+            $month = $transaction->getMonth();
+            $newValue = (float) $month->getValue() - (float) $transaction->getAmount();
+            $month->setValue((string) $newValue);
+            $this->monthService->edit($month);
+
+            $this->transactionService->remove($transaction);
+
+            $this->addFlash('app_success', '¡Movimiento eliminado con éxito!');
+        } catch (\Exception $e) {
+            $this->addFlash('app_error', 'Hubo un error a la hora de eliminar el movimiento');
+        }
+
+        return $this->redirectToRoute('transactioncategory_index');
     }
 }

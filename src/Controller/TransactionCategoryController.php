@@ -153,4 +153,29 @@ class TransactionCategoryController extends BaseController
 
         return $this->render('transactioncategory/edit.html.twig', ['form' => $form->createView()]);
     }
+
+    /**
+     * @Route("/eliminar/{id}", name="delete", requirements={"id"="\d+"})
+     *
+     * @param int $id
+     * @return Response
+     */
+    public function delete(int $id): Response
+    {
+        $user = $this->getUserInstance();
+        $category = $this->categoryService->get($user, $id);
+        if (!$category instanceof TransactionCategory) {
+            throw new NotFoundHttpException();
+        }
+
+        try {
+            $this->categoryService->remove($category);
+
+            $this->addFlash('app_success', '¡Categoría eliminada con éxito!');
+        } catch (\Exception $e) {
+            $this->addFlash('app_error', 'Hubo un error a la hora de eliminar la categoría');
+        }
+
+        return $this->redirectToRoute('transactioncategory_index');
+    }
 }
