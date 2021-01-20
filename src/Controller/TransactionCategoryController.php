@@ -8,6 +8,7 @@ use App\Form\TransactionCategoryType;
 use App\Library\Controller\BaseController;
 use App\Service\TransactionCategoryService;
 use App\Service\TransactionMonthService;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -15,6 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/monedero", name="transactioncategory_")
+ * @IsGranted("ROLE_TRANSACTION")
  */
 class TransactionCategoryController extends BaseController
 {
@@ -114,15 +116,12 @@ class TransactionCategoryController extends BaseController
     public function edit(Request $request, int $monthId): Response
     {
         $user = $this->getUserInstance();
-        $month = $this->monthService->getById($monthId);
+        $month = $this->monthService->get($user, $monthId);
         if (!$month instanceof TransactionMonth) {
             throw new NotFoundHttpException();
         }
 
         $category = $month->getCategory();
-        if ($category->getUser()->getId() !== $user->getId()) {
-            throw new NotFoundHttpException();
-        }
 
         $form = $this->createForm(TransactionCategoryType::class, $category);
         $form->get('month')->get('expected')->setData($month->getExpected());

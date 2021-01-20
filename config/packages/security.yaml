@@ -19,6 +19,7 @@ security:
         main:
             lazy: true
             provider: app_user_provider
+            user_checker: App\Security\UserChecker
             logout:
                 path: security_logout
             guard:
@@ -39,5 +40,13 @@ security:
         - { path: ^/, roles: ROLE_USER }
 
     role_hierarchy:
-        ROLE_ADMIN: [ROLE_USER, ROLE_ALLOWED_TO_SWITCH]
-        ROLE_USER: ROLE_USER
+        ROLE_ADMIN:
+            - ROLE_TASK
+            - ROLE_TRANSACTION
+            - ROLE_ALLOWED_TO_SWITCH
+        ROLE_TASK:
+            - ROLE_USER
+        ROLE_TRANSACTION:
+            - ROLE_USER
+        ROLE_USER:
+            - ROLE_USER
