@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Library\Controller\BaseController;
 use App\Service\TaskTagService;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,6 +14,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * @Route("/semanal/etiquetas", name="tasktag_")
+ * @IsGranted("ROLE_TASK")
  */
 class TaskTagController extends BaseController
 {

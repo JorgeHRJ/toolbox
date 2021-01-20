@@ -1,5 +1,7 @@
 # Toolbox
 
+![Continuous Integration](https://github.com/JorgeHRJ/toolbox/workflows/Continuous%20Integration/badge.svg)
+
 App with some tools and experiments.
 
 Stack:

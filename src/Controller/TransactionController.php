@@ -8,6 +8,7 @@ use App\Form\TransactionType;
 use App\Library\Controller\BaseController;
 use App\Service\TransactionMonthService;
 use App\Service\TransactionService;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -15,6 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/monedero", name="transaction_")
+ * @IsGranted("ROLE_TRANSACTION")
  */
 class TransactionController extends BaseController
 {
@@ -38,7 +40,8 @@ class TransactionController extends BaseController
      */
     public function new(Request $request, int $monthId): Response
     {
-        $month = $this->monthService->getById($monthId);
+        $user = $this->getUserInstance();
+        $month = $this->monthService->get($user, $monthId);
         if (!$month instanceof TransactionMonth) {
             throw new NotFoundHttpException();
         }
@@ -62,7 +65,7 @@ class TransactionController extends BaseController
                 $value = ((float) $month->getValue()) + ((float) $transaction->getAmount());
                 $month->setValue((string) $value);
 
-                $this->transactionService->create($transaction);
+                $this->transactionService->new($transaction, $user);
                 $this->addFlash('app_success', '¡Movimiento creado con éxito!');
 
                 return $this->redirectToRoute('transactioncategory_index');
@@ -86,17 +89,13 @@ class TransactionController extends BaseController
      */
     public function edit(Request $request, int $id): Response
     {
-        $transaction = $this->transactionService->getById($id);
+        $user = $this->getUserInstance();
+        $transaction = $this->transactionService->get($user, $id);
         if (!$transaction instanceof Transaction) {
             throw new NotFoundHttpException();
         }
 
-        $user = $this->getUserInstance();
         $month = $transaction->getMonth();
-        if ($month->getCategory()->getUser()->getId() !== $user->getId()) {
-            throw new NotFoundHttpException();
-        }
-
         $previousAmount = $transaction->getAmount();
 
         $form = $this->createForm(TransactionType::class, $transaction);
@@ -139,12 +138,8 @@ class TransactionController extends BaseController
     public function delete(int $id): Response
     {
         $user = $this->getUserInstance();
-        $transaction = $this->transactionService->getById($id);
+        $transaction = $this->transactionService->get($user, $id);
         if (!$transaction instanceof Transaction) {
-            throw new NotFoundHttpException();
-        }
-
-        if ($transaction->getMonth()->getCategory()->getUser()->getId() !== $user->getId()) {
             throw new NotFoundHttpException();
         }
 

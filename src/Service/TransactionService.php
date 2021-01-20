@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Transaction;
+use App\Entity\User;
 use App\Library\Repository\BaseRepository;
 use App\Library\Service\BaseService;
 use App\Repository\TransactionRepository;
@@ -18,6 +19,13 @@ class TransactionService extends BaseService
     {
         parent::__construct($entityManager, $logger);
         $this->repository = $entityManager->getRepository(Transaction::class);
+    }
+
+    public function new(Transaction $transaction, User $user): Transaction
+    {
+        $transaction->setUser($user);
+
+        return $this->create($transaction);
     }
 
     /**
