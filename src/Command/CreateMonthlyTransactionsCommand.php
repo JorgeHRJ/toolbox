@@ -63,6 +63,7 @@ class CreateMonthlyTransactionsCommand extends Command
             $month->setValue('0.0');
             $month->setExpected($lastMonth->getExpected());
             $month->setCategory($category);
+            $month->setUser($lastMonth->getUser());
 
             $this->entityManager->persist($month);
             $this->logger->info(

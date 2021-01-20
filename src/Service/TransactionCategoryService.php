@@ -42,6 +42,7 @@ class TransactionCategoryService extends BaseService
         $transactionMonth->setYear((int) $year);
         $transactionMonth->setMonth((int) $month);
         $transactionMonth->setCategory($transactionCategory);
+        $transactionMonth->setUser($user);
 
         $transactionCategory->addMonth($transactionMonth);
 
