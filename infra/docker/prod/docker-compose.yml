@@ -19,7 +19,6 @@ services:
         image: toolbox-php
         links:
             - db
-            - mailcatcher
         volumes:
             - ${APP_DIR}:/home/app:cached
         network_mode: bridge
