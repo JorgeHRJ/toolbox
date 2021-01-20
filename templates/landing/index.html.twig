@@ -23,7 +23,7 @@
             {% if item.title != 'Inicio' %}
                 <div class="col-12 col-lg-4">
                     <div class="app-card app-card-basic d-flex flex-column align-items-start shadow-sm">
-                        <div class="app-card-header p-3 border-bottom-0">
+                        <div class="app-card-header p-3 pb-2 border-bottom-0">
                             <div class="row align-items-center gx-3">
                                 <div class="col-auto">
                                     <div class="app-icon-holder">{{ source(item.icon) }}</div>
@@ -32,6 +32,9 @@
                                     <h3 class="app-card-title">{{ item.title }}</h3>
                                 </div>
                             </div>
+                        </div>
+                        <div class="app-card-body px-4 pb-2">
+                            <div class="intro">{{ item.description }}</div>
                         </div>
                         <a class="app-card-link-mask" href="{{ path(item.routeName) }}"></a>
                     </div>
