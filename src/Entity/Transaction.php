@@ -51,6 +51,14 @@ class Transaction
     private $month;
 
     /**
+     * @var User|null
+     *
+     * @ORM\ManyToOne(targetEntity=User::class)
+     * @ORM\JoinColumn(name="transaction_user", referencedColumnName="user_id", nullable=false)
+     */
+    private $user;
+
+    /**
      * @var \DateTimeInterface|null
      *
      * @Assert\Type("\DateTimeInterface")
@@ -107,6 +115,18 @@ class Transaction
     public function setMonth(?TransactionMonth $month): self
     {
         $this->month = $month;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }

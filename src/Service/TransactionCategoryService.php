@@ -42,6 +42,7 @@ class TransactionCategoryService extends BaseService
         $transactionMonth->setYear((int) $year);
         $transactionMonth->setMonth((int) $month);
         $transactionMonth->setCategory($transactionCategory);
+        $transactionMonth->setUser($user);
 
         $transactionCategory->addMonth($transactionMonth);
 
@@ -61,6 +62,17 @@ class TransactionCategoryService extends BaseService
     {
         return $this->repository->findByTypeMonthAndYear($user, $type, $year, $month);
     }
+
+    /**
+     * @param string $year
+     * @param string $month
+     * @return TransactionCategory[]|array
+     */
+    public function getMonthlyFromPreviousMonth(string $year, string $month): array
+    {
+        return $this->repository->findMonthlyFromPreviousMonth($year, $month);
+    }
+
 
     public function getSortFields(): array
     {

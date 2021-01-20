@@ -11,33 +11,18 @@
         </div>
         <nav id="app-nav-main" class="app-nav app-nav-main flex-grow-1">
             <ul class="app-menu list-unstyled accordion" id="menu-accordion">
-                <li class="nav-item">
-                    <a class="nav-link {{ 'landing' in app.request.get('_route') ? 'active' : '' }}"
-                       href="{{ path('landing_index') }}">
+                {% set menu = get_menu() %}
+                {% for item in menu %}
+                    <li class="nav-item">
+                        <a class="nav-link {{ item.isActive ? 'active' }}"
+                           href="{{ path(item.routeName) }}">
                         <span class="nav-icon">
-                            {{ source('icons/home.svg') }}
+                            {{ source(item.icon) }}
                         </span>
-                        <span class="nav-link-text">Inicio</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ 'task' in app.request.get('_route') ? 'active' : '' }}"
-                       href="{{ path('task_index') }}">
-                        <span class="nav-icon">
-                            {{ source('icons/calendar-week.svg') }}
-                        </span>
-                        <span class="nav-link-text">Semanal</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ 'transaction' in app.request.get('_route') ? 'active' : '' }}"
-                       href="{{ path('transactioncategory_index') }}">
-                        <span class="nav-icon">
-                            {{ source('icons/wallet.svg') }}
-                        </span>
-                        <span class="nav-link-text">Monedero</span>
-                    </a>
-                </li>
+                            <span class="nav-link-text">{{ item.title }}</span>
+                        </a>
+                    </li>
+                {% endfor %}
             </ul>
         </nav>
     </div>

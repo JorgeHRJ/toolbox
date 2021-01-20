@@ -6,6 +6,7 @@ use App\Entity\Task;
 use App\Library\Controller\BaseController;
 use App\Service\TaskService;
 use App\Service\TaskTagService;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,6 +16,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * @Route("/semanal", name="task_")
+ * @IsGranted("ROLE_TASK")
  */
 class TaskController extends BaseController
 {
