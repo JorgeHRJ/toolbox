@@ -95,7 +95,7 @@ class MenuService
         }
 
         $route = $request->attributes->get('_route');
-        return explode($route, '_')[0];
+        return explode('_', $route)[0];
     }
 
     /**
