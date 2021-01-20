@@ -47,6 +47,7 @@ class MenuService
     {
         $landingItem = new MenuItem(
             'Inicio',
+            '',
             $this->isActive('landing'),
             'landing_index',
             'ROLE_USER',
@@ -54,6 +55,7 @@ class MenuService
         );
         $taskItem = new MenuItem(
             'Semanal',
+            'Lleva tu lista de tareas semanal',
             $this->isActive('task'),
             'task_index',
             'ROLE_TASK',
@@ -61,6 +63,7 @@ class MenuService
         );
         $transactionItem = new MenuItem(
             'Monedero',
+            'Gestiona tu presupuesto personal mes a mes',
             $this->isActive('transaction'),
             'transactioncategory_index',
             'ROLE_TRANSACTION',

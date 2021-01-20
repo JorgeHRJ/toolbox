@@ -7,6 +7,9 @@ class MenuItem
     /** @var string */
     private $title;
 
+    /** @var string */
+    private $description;
+
     /** @var bool */
     private $isActive;
 
@@ -24,17 +27,19 @@ class MenuItem
 
     public function __construct(
         string $title,
+        string $description,
         bool $isActive,
         string $routeName,
         string $role,
         string $icon,
         array $submenus = []
     ) {
+        $this->title = $title;
+        $this->description = $description;
         $this->isActive = $isActive;
         $this->routeName = $routeName;
         $this->role = $role;
         $this->icon = $icon;
-        $this->title = $title;
         $this->submenus = $submenus;
     }
 
@@ -52,6 +57,22 @@ class MenuItem
     public function setTitle(string $title): void
     {
         $this->title = $title;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string $description
+     */
+    public function setDescription(string $description): void
+    {
+        $this->description = $description;
     }
 
     /**
