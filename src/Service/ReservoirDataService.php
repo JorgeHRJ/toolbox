@@ -51,6 +51,11 @@ class ReservoirDataService extends BaseService
         $this->repository = $entityManager->getRepository(ReservoirData::class);
     }
 
+    public function getData(): array
+    {
+        return $this->repository->getData();
+    }
+
     public function getSortFields(): array
     {
         return [];
@@ -89,7 +94,7 @@ class ReservoirDataService extends BaseService
         $articlesLinks = $this->getArticlesLinks($processedDates, self::LA_PALMA_AGUAS_BASE_URL);
 
         $processes = $this->getProcessesFromArticles($articlesLinks);
-        //$processes = $this->processService->findAll();
+
         $this->handle($processes);
     }
 

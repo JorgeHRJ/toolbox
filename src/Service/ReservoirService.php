@@ -42,6 +42,15 @@ class ReservoirService extends BaseService
     }
 
     /**
+     * @param int $id
+     * @return Reservoir|null
+     */
+    public function getWithData(int $id): ?Reservoir
+    {
+        return $this->repository->getWithData($id);
+    }
+
+    /**
      * @param string $name
      * @return Reservoir|null
      */

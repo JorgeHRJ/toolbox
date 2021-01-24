@@ -11,12 +11,18 @@ use Psr\Log\LoggerInterface;
 
 class ReservoirProcessService extends BaseService
 {
+    private $storageService;
+
     /** @var ReservoirProcessRepository */
     private $repository;
 
-    public function __construct(EntityManagerInterface $entityManager, LoggerInterface $logger)
-    {
+    public function __construct(
+        StorageService $storageService,
+        EntityManagerInterface $entityManager,
+        LoggerInterface $logger
+    ) {
         parent::__construct($entityManager, $logger);
+        $this->storageService = $storageService;
         $this->repository = $entityManager->getRepository(ReservoirProcess::class);
     }
 
@@ -30,14 +36,23 @@ class ReservoirProcessService extends BaseService
         return $this->create($process);
     }
 
-    public function findAll(): array
-    {
-        return $this->repository->findAll();
-    }
-
     public function getProcessedDates(): array
     {
         return $this->repository->getProcessedDates();
+    }
+
+    /**
+     * @param ReservoirProcess $process
+     * @return string
+     */
+    public function getFilenamePath(ReservoirProcess $process): string
+    {
+        return sprintf(
+            '%s/%s/%s',
+            $this->storageService->getStorageFolder(),
+            StorageService::RESERVOIR_FOLDER,
+            $process->getFilename()
+        );
     }
 
     public function getSortFields(): array

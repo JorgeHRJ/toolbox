@@ -10,7 +10,8 @@ import initTheme from './js/modules/theme';
 
 // import controllers
 import initTaskController from './js/controllers/task_controller';
-import initTransactionCategory from './js/controllers/transactioncategory_controller';
+import initTransactionCategoryController from './js/controllers/transactioncategory_controller';
+import initReservoirController from './js/controllers/reservoir_controller';
 
 initTheme();
 
@@ -19,5 +20,9 @@ if (document.querySelector('[data-controller="task"]')) {
 }
 
 if (document.querySelector('[data-controller="transactioncategory"]')) {
-  initTransactionCategory();
+  initTransactionCategoryController();
+}
+
+if (document.querySelector('[data-controller="reservoir"]')) {
+  initReservoirController();
 }

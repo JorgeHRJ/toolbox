@@ -13,6 +13,22 @@ class ReservoirDataRepository extends BaseRepository
         parent::__construct($registry, ReservoirData::class);
     }
 
+    /**
+     * @return ReservoirData[]|array
+     */
+    public function getData(): array
+    {
+        $qb = $this->createQueryBuilder('rd');
+        $qb
+            ->select('rd, r, rm, rp')
+            ->join('rd.reservoir', 'r')
+            ->join('r.municipality', 'rm')
+            ->join('rd.process', 'rp')
+            ->groupBy('r.id');
+
+        return $qb->getQuery()->getResult();
+    }
+
     public function getFilterFields(): array
     {
         return [];
