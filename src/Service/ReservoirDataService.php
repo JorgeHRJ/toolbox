@@ -87,7 +87,7 @@ class ReservoirDataService extends BaseService
     /**
      * @throws \Throwable
      */
-    public function processData()
+    public function processData(): void
     {
         $processedDates = $this->processService->getProcessedDates();
 
@@ -145,6 +145,8 @@ class ReservoirDataService extends BaseService
      * @param array $municipalities
      * @return array
      * @throws \Exception
+     *
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     private function parse(ReservoirProcess $process, array $municipalities): array
     {
