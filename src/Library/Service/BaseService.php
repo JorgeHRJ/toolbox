@@ -90,12 +90,16 @@ abstract class BaseService
     }
 
     /**
-     * @param User $user
+     * @param User|null $user
      * @param int $id
      * @return object|null
      */
-    public function get(User $user, int $id): ?object
+    public function get(?User $user, int $id): ?object
     {
+        if (!$user instanceof User) {
+            return $this->getRepository()->find($id);
+        }
+
         return $this->getRepository()->findOneBy(['id' => $id, 'user' => $user]);
     }
 

@@ -69,8 +69,16 @@ class MenuService
             'ROLE_TRANSACTION',
             'icons/wallet.svg'
         );
+        $reservoirItem = new MenuItem(
+            'Balsas',
+            'Visualiza estadísticas de las balsas de la isla de La Palma',
+            $this->isActive('reservoir'),
+            'reservoir_index',
+            'ROLE_RESERVOIR',
+            'icons/droplet-half.svg'
+        );
 
-        return [$landingItem, $taskItem, $transactionItem];
+        return [$landingItem, $taskItem, $transactionItem, $reservoirItem];
     }
 
     /**
