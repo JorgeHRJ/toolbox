@@ -20,8 +20,6 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class TransactionCategoryController extends BaseController
 {
-    const LIST_LIMIT = 10;
-
     private $categoryService;
     private $monthService;
 

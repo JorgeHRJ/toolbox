@@ -25,7 +25,8 @@ class User implements UserInterface
     const ROLE_USER = 'ROLE_USER';
     const ROLE_TASK = 'ROLE_TASK';
     const ROLE_TRANSACTION = 'ROLE_TRANSACTION';
-    const ROLES = [self::ROLE_ADMIN, self::ROLE_TASK, self::ROLE_TRANSACTION, self::ROLE_USER];
+    const ROLE_RESERVOIR = 'ROLE_RESERVOIR';
+    const ROLES = [self::ROLE_ADMIN, self::ROLE_TASK, self::ROLE_TRANSACTION, self::ROLE_RESERVOIR, self::ROLE_USER];
 
     const DISABLED_STATUS = 0;
     const ENABLED_STATUS = 1;

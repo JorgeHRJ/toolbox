@@ -77,8 +77,16 @@ class MenuService
             'ROLE_RESERVOIR',
             'icons/droplet-half.svg'
         );
+        $usersItem = new MenuItem(
+            'Usuarios',
+            'Listado de usuarios actuales de Toolbox',
+            $this->isActive('user'),
+            'user_index',
+            'ROLE_ADMIN',
+            'icons/people.svg'
+        );
 
-        return [$landingItem, $taskItem, $transactionItem, $reservoirItem];
+        return [$landingItem, $taskItem, $transactionItem, $reservoirItem, $usersItem];
     }
 
     /**

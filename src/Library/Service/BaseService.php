@@ -104,7 +104,7 @@ abstract class BaseService
     }
 
     /**
-     * @param User $user
+     * @param User|null $user
      * @param string|null $filter
      * @param int|null $page
      * @param int|null $limit
@@ -114,7 +114,7 @@ abstract class BaseService
      * @return array
      */
     public function getAll(
-        User $user,
+        User $user = null,
         string $filter = null,
         int $page = null,
         int $limit = null,
