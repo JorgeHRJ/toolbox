@@ -38,9 +38,13 @@ class UserRegistrationType extends AbstractType
                 'label' => 'Contraseña',
                 'attr' => ['placeholder' => 'Si se deja vacío, se crea una aleatoriamente']
             ])
-            ->add('status', CheckboxType::class, [
-                'required' => false,
-                'label' => 'Estado'
+            ->add('status', ChoiceType::class, [
+                'required' => true,
+                'label' => 'Estado',
+                'choices' => [
+                    'Deshabilitado' => User::DISABLED_STATUS,
+                    'Habilitado' => User::ENABLED_STATUS,
+                ]
             ])
             ->add('roles', ChoiceType::class, [
                 'required' => true,
