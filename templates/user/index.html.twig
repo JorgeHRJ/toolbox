@@ -43,7 +43,13 @@
                                         <span class="badge rounded-pill bg-secondary">{{ role }}</span>
                                     {% endfor %}
                                 </td>
-                                <td class="cell"></td>
+                                <td class="cell">
+                                    <a class="btn-sm app-btn-secondary ml-1 p-2"
+                                       href="{{ path('user_edit', {'id': user.id}) }}"
+                                       title="Editar usuario">
+                                        {{ source('icons/pencil-sm.svg') }} Editar
+                                    </a>
+                                </td>
                             </tr>
                         {% endfor %}
                         </tbody>

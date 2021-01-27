@@ -1,0 +1,44 @@
+{% extends 'layout.html.twig' %}
+
+{% page_setup {
+    'title': 'Mi cuenta',
+    'header': 'Mi cuenta',
+    'breadcrumbs': [
+        {
+            'name': 'Mi cuenta',
+            'main': true
+        },
+    ]
+} %}
+
+{% block content %}
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="app-card app-card-settings shadow-sm p-4">
+                <div class="app-card-body">
+                    {{ include('components/flash.html.twig') }}
+                    {{ form_start(form, {'attr': {'class': 'mt-1', 'autocomplete': 'off'}}) }}
+                    <div class="mb-3">
+                        {{ form_label(form.email) }}
+                        {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form_label(form.currentPassword) }}
+                        {{ form_widget(form.currentPassword, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form_label(form.newPassword.first) }}
+                        {{ form_widget(form.newPassword.first, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form_label(form.newPassword.second) }}
+                        {{ form_widget(form.newPassword.second, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <button type="submit" class="btn app-btn-primary">Enviar</button>
+                    {{ form_widget(form._token) }}
+                    {{ form_end(form, {'render_rest': false}) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -3,16 +3,27 @@
 namespace App\Form;
 
 use App\Entity\User;
+use App\Library\Utils\Stringify;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserRegistrationType extends AbstractType
 {
+    private $encoder;
+
+    public function __construct(UserPasswordEncoderInterface $encoder)
+    {
+        $this->encoder = $encoder;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -47,6 +58,23 @@ class UserRegistrationType extends AbstractType
                 ]
             ])
         ;
+
+        $builder->addEventListener(
+            FormEvents::POST_SUBMIT,
+            function (FormEvent $event) {
+                $form = $event->getForm();
+
+                /** @var User $user */
+                $user = $event->getForm()->getData();
+                if (empty($user->getPassword())) {
+                    $password = $form->get('password')->getData() !== null
+                        ? $form->get('password')->getData()
+                        : Stringify::randomStr(12);
+                    $password = $this->encoder->encodePassword($user, $password);
+                    $user->setPassword($password);
+                }
+            }
+        );
     }
 
     public function configureOptions(OptionsResolver $resolver): void
