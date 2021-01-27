@@ -55,7 +55,7 @@ function initDetailChart() {
       }]
     },
     options: {
-      responsive: true,
+      responsive: false,
       tooltips: {
         mode: 'index',
         intersect: false,
@@ -106,7 +106,7 @@ function initIndexChart() {
       }]
     },
     options: {
-      responsive: true,
+      responsive: false,
       tooltips: {
         mode: 'index',
         intersect: false,
