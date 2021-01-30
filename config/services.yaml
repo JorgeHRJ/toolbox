@@ -19,4 +19,4 @@ services:
 
     App\Service\StorageService:
         arguments:
-            $storageFolder: '%kernel.project_dir%/storage'
+            $storageFolder: '%env(STORAGE_DIR)%'

@@ -105,19 +105,33 @@ class ReservoirDataService extends BaseService
     {
         $municipalities = $this->municipalityService->getNames();
 
+        $success = [];
+        $failed = [];
+
         foreach ($processes as $process) {
-            $parsedItems = $this->parse($process, $municipalities);
-            foreach ($parsedItems as $item) {
-                $municipality = $this->municipalityService->getByName($item['municipality_name']);
-                if (!$municipality instanceof ReservoirMunicipality) {
-                    continue;
+            try {
+                $parsedItems = $this->parse($process, $municipalities);
+                foreach ($parsedItems as $item) {
+                    $municipality = $this->municipalityService->getByName($item['municipality_name']);
+                    if (!$municipality instanceof ReservoirMunicipality) {
+                        continue;
+                    }
+
+                    $reservoir = $this->getOrCreateReservoir($municipality, $item['reservoir_name'], $item['capacity']);
+
+                    $this->new($reservoir, $process, $item['fillness']);
                 }
 
-                $reservoir = $this->getOrCreateReservoir($municipality, $item['reservoir_name'], $item['capacity']);
-
-                $this->new($reservoir, $process, $item['fillness']);
+                if (!in_array($process->getId(), $success)) {
+                    $success[] = $process->getId();
+                }
+            } catch (\Exception $e) {
+                $failed[] = $process->getId();
             }
         }
+
+        $this->processService->updateStatus($success, ReservoirProcess::DONE_STATUS);
+        $this->processService->updateStatus($failed, ReservoirProcess::ERROR_STATUS);
     }
 
     /**
@@ -312,10 +326,13 @@ class ReservoirDataService extends BaseService
      */
     private function hasDate(array $dates, string $text): bool
     {
-        foreach ($dates as $date) {
-            if (strpos($date, $text) !== false) {
-                return true;
-            }
+        $dateFromText = $this->extractDate($text);
+        if ($dateFromText === null) {
+            return false;
+        }
+
+        if (in_array($dateFromText, $dates)) {
+            return true;
         }
 
         return false;

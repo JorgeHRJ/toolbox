@@ -55,6 +55,11 @@ class ReservoirProcessService extends BaseService
         );
     }
 
+    public function updateStatus(array $ids, int $status): void
+    {
+        $this->repository->updateStatus($ids, $status);
+    }
+
     public function getSortFields(): array
     {
         return [];

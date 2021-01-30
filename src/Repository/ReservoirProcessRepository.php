@@ -32,6 +32,19 @@ class ReservoirProcessRepository extends BaseRepository
         }, $result);
     }
 
+    public function updateStatus(array $ids, int $status): void
+    {
+        $qb = $this->createQueryBuilder('rp');
+        $qb
+            ->update()
+            ->set('rp.status', '?1')
+            ->where('rp.id IN (?2)')
+            ->setParameter(1, $status)
+            ->setParameter(2, $ids);
+
+        $qb->getQuery()->execute();
+    }
+
     public function getFilterFields(): array
     {
         return [];
