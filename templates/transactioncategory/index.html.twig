@@ -47,7 +47,8 @@
                     {% if expenses is empty %}
                         {{ include('components/no-results.html.twig') }}
                     {% else %}
-                        {{ include('transactioncategory/components/_transactions-list-table.html.twig', {'categories': expenses}) }}
+                        {{ include('transactioncategory/components/_transactions-list-table.html.twig',
+                            {'categories': expenses, 'type': 'expenses'}) }}
                     {% endif %}
                 </div>
             </div>
@@ -58,7 +59,8 @@
                     {% if incomes is empty %}
                         {{ include('components/no-results.html.twig') }}
                     {% else %}
-                        {{ include('transactioncategory/components/_transactions-list-table.html.twig', {'categories': incomes}) }}
+                        {{ include('transactioncategory/components/_transactions-list-table.html.twig',
+                            {'categories': incomes, 'type': 'incomes'}) }}
                     {% endif %}
                 </div>
             </div>

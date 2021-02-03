@@ -5,7 +5,7 @@
             <th>#</th>
             <th>Título</th>
             <th>Previsión</th>
-            <th>Gastos</th>
+            <th>Actual</th>
             <th>Balance</th>
             <th>Peridiocidad</th>
             <th>Acciones</th>
@@ -28,7 +28,11 @@
                 <td class="cell">{{ month.expected }}</td>
                 <td class="cell">{{ month.value }}</td>
                 <td class="cell">
-                    {{ (month.expected - month.value)|number_format(2) }}
+                    {% if type == 'expenses' %}
+                        {{ (month.expected - month.value)|number_format(2) }}
+                    {% elseif type == 'incomes' %}
+                        {{ (month.value - month.expected)|number_format(2) }}
+                    {% endif %}
                 </td>
                 <td class="cell">{{ get_peridiocity_text(category.periodicity) }}</td>
                 <td class="cell">
