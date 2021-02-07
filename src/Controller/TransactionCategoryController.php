@@ -61,9 +61,12 @@ class TransactionCategoryController extends BaseController
             $month
         );
 
+        $balance = $this->categoryService->getBalance($user, $year, $month);
+
         return $this->render('transactioncategory/index.html.twig', [
             'incomes' => $incomes,
-            'expenses' => $expenses
+            'expenses' => $expenses,
+            'balance' => $balance
         ]);
     }
 

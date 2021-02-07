@@ -73,6 +73,67 @@ class TransactionCategoryService extends BaseService
         return $this->repository->findMonthlyFromPreviousMonth($year, $month);
     }
 
+    public function getBalance(User $user, string $year, string $month): array
+    {
+        $data = [];
+
+        $date = new \DateTime(sprintf('%s/%s/01', $year, $month));
+        $data[sprintf('%s %s', $this->getSpanishMonth($month), $year)]
+            = $this->getBalanceDataFromMonth($user, $date);
+
+        for ($i = 1; $i < 6; $i++) {
+            $date = $date->modify('-1 month');
+
+            $month = $date->format('m');
+            $year = $date->format('Y');
+
+            $data[sprintf('%s %s', $this->getSpanishMonth($month), $year)]
+                = $this->getBalanceDataFromMonth($user, $date);
+        }
+
+        return array_reverse($data);
+    }
+
+    private function getBalanceDataFromMonth(User $user, \DateTimeInterface $date): array
+    {
+        $year = $date->format('Y');
+        $month = $date->format('m');
+
+        $incomes = $this->getByTypeMonthAndYear(
+            $user,
+            TransactionCategory::INCOME_TYPE,
+            $year,
+            $month
+        );
+        $totalIncomes = 0;
+        foreach ($incomes as $income) {
+            $totalIncomes += $income->getMonths()[0]->getValue();
+        }
+
+        $expenses = $this->getByTypeMonthAndYear(
+            $user,
+            TransactionCategory::EXPENSE_TYPE,
+            $year,
+            $month
+        );
+        $totalExpenses = 0;
+        foreach ($expenses as $expense) {
+            $totalExpenses += $expense->getMonths()[0]->getValue();
+        }
+
+        return ['total_incomes' => $totalIncomes, 'total_expenses' => $totalExpenses];
+    }
+
+    private function getSpanishMonth(string $month): string
+    {
+        $months = [
+            '01' => 'enero', '02' => 'febrero', '03' => 'marzo', '04' => 'abril', '05' => 'mayo',
+            '06' => 'junio', '07' => 'julio', '08' => 'agosto', '09' => 'septiembre', '10' => 'octubre',
+            '11' => 'noviembre', '12' => 'diciembre'
+        ];
+
+        return $months[$month];
+    }
 
     public function getSortFields(): array
     {
