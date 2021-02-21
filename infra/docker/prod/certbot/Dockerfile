@@ -19,8 +19,4 @@ RUN apt-get install -y python3-pip
 RUN add-apt-repository -y ppa:certbot/certbot
 RUN apt-get install -y certbot
 
-#RUN apt-get purge -y python3-cryptography
-#RUN pip3 install cryptography
-#RUN pip3 install certbot_dns_route53==0.22.2
-
 CMD ["/bin/bash"]
