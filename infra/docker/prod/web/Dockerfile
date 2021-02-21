@@ -22,5 +22,6 @@ RUN rm /etc/nginx/sites-enabled/default
 WORKDIR /home/app
 
 EXPOSE 80
+EXPOSE 443
 
 CMD ["nginx"]

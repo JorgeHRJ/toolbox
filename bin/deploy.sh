@@ -6,6 +6,7 @@ git checkout master
 git pull origin master
 
 cd infra/docker/prod
+cp dist.env .env
 docker-compose down
 docker-compose up -d --build
 cd ../../../
