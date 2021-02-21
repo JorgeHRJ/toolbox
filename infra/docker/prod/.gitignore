@@ -5,3 +5,4 @@ _rabbitmq/*
 letsencrypt/*
 !letsencrypt/.gitkeep
 .env
+web/certs/*
