@@ -77,9 +77,7 @@ class ReservoirController extends BaseController
         }
 
         $path = $this->processService->getFilenamePath($process);
-        var_dump($path);
-        var_dump(file_exists($path));
-        die();
+
         $response = new BinaryFileResponse($path);
         $response->headers->set('Content-Type', 'application/pdf');
         $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $process->getFilename());
