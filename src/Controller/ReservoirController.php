@@ -42,9 +42,9 @@ class ReservoirController extends BaseController
      */
     public function index(): Response
     {
-        $data = $this->dataService->getData();
+        $reservoirs = $this->reservoirService->getAllWithData();
 
-        return $this->render('reservoir/index.html.twig', ['data' => $data]);
+        return $this->render('reservoir/index.html.twig', ['reservoirs' => $reservoirs]);
     }
 
     /**

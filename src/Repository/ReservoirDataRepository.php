@@ -24,6 +24,7 @@ class ReservoirDataRepository extends BaseRepository
             ->join('rd.reservoir', 'r')
             ->join('r.municipality', 'rm')
             ->join('rd.process', 'rp')
+            ->orderBy('rp.date', 'DESC')
             ->groupBy('r.id');
 
         return $qb->getQuery()->getResult();

@@ -42,6 +42,14 @@ class ReservoirService extends BaseService
     }
 
     /**
+     * @return Reservoir[]|array
+     */
+    public function getAllWithData(): array
+    {
+        return $this->repository->getAllWithData();
+    }
+
+    /**
      * @param int $id
      * @return Reservoir|null
      */

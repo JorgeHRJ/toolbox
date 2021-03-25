@@ -14,6 +14,22 @@ class ReservoirRepository extends BaseRepository
     }
 
     /**
+     * @return Reservoir[]|array
+     */
+    public function getAllWithData(): array
+    {
+        $qb = $this->createQueryBuilder('r');
+        $qb
+            ->select('r, rd, rm, rp')
+            ->join('r.data', 'rd')
+            ->join('r.municipality', 'rm')
+            ->join('rd.process', 'rp')
+            ->orderBy('rp.date', 'DESC');
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
      * @param int $id
      * @return Reservoir|null
      */
@@ -26,7 +42,8 @@ class ReservoirRepository extends BaseRepository
             ->join('r.data', 'rd')
             ->join('rd.process', 'rp')
             ->where('r.id = :reservoirId')
-            ->setParameter('reservoirId', $id);
+            ->setParameter('reservoirId', $id)
+            ->orderBy('rp.date', 'DESC');
 
         return $qb->getQuery()->getOneOrNullResult();
     }
