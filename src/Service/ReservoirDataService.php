@@ -90,7 +90,7 @@ class ReservoirDataService extends BaseService
     public function processData(): void
     {
         $processedDates = $this->processService->getProcessedDates();
-        dump($processedDates);die();
+
         $articlesLinks = $this->getArticlesLinks($processedDates, self::LA_PALMA_AGUAS_BASE_URL);
 
         $processes = $this->getProcessesFromArticles($articlesLinks);
