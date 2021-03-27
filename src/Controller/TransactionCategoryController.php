@@ -44,8 +44,8 @@ class TransactionCategoryController extends BaseController
 
         if ($year === null && $month === null) {
             $now = new \DateTime();
-            $year = $now->format('Y');
-            $month = $now->format('m');
+            $year = (int) $now->format('Y');
+            $month = (int) $now->format('m');
         }
 
         $incomes = $this->categoryService->getByTypeMonthAndYear(

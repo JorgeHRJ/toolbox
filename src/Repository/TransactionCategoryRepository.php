@@ -5,6 +5,9 @@ namespace App\Repository;
 use App\Entity\TransactionCategory;
 use App\Entity\User;
 use App\Library\Repository\BaseRepository;
+use Doctrine\ORM\AbstractQuery;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 class TransactionCategoryRepository extends BaseRepository
@@ -17,11 +20,11 @@ class TransactionCategoryRepository extends BaseRepository
     /**
      * @param User $user
      * @param int $type
-     * @param string $month
-     * @param string $year
+     * @param int $month
+     * @param int $year
      * @return TransactionCategory[]|array
      */
-    public function findByTypeMonthAndYear(User $user, int $type, string $year, string $month): array
+    public function findByTypeMonthAndYear(User $user, int $type, int $year, int $month): array
     {
         $qb = $this->createQueryBuilder('tc');
         $qb
@@ -58,6 +61,36 @@ class TransactionCategoryRepository extends BaseRepository
             ->setParameter('monthly', TransactionCategory::MONTHLY_PERIDIOCITY);
 
         return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @param User $user
+     * @param int $type
+     * @param int $year
+     * @param int $month
+     * @return float
+     */
+    public function getTypeTotalValuesFromMonthYear(User $user, int $type, int $year, int $month): float
+    {
+        $qb = $this->createQueryBuilder('tc');
+        $qb
+            ->select('SUM(tm.value)')
+            ->join('tc.months', 'tm')
+            ->where('tc.user = :userId')
+            ->andWhere('tc.type = :type')
+            ->andWhere('tm.year = :year')
+            ->andWhere('tm.month = :month')
+            ->setParameter('userId', $user->getId())
+            ->setParameter('type', $type)
+            ->setParameter('year', $year)
+            ->setParameter('month', $month);
+
+        try {
+            $result = $qb->getQuery()->getSingleResult(AbstractQuery::HYDRATE_SINGLE_SCALAR);
+            return $result !== null ? $result : 0.00;
+        } catch (NoResultException | NonUniqueResultException $e) {
+            return 0.00;
+        }
     }
 
     public function getFilterFields(): array
