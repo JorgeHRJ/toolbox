@@ -60,6 +60,9 @@ class TaskService extends BaseService
         $startMonth->modify('first day of this month');
         $endMonth->modify('last day of this month');
 
+        $startMonth->modify('-3 months');
+        $endMonth->modify('+1 month');
+
         return $this->repository->getBetweenDates(
             $user,
             $startMonth->format('Y-m-d'),
