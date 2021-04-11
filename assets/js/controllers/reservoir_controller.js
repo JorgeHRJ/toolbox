@@ -1,8 +1,28 @@
 import Chart from 'chart.js';
 
 let indexChart = null;
+let fillnessChart = null;
+let capacityChart = null;
 
-function getDetailAxisData() {
+function getDetailAxisCapacityData() {
+  let x = [];
+  let y = [];
+
+  const rows = document.querySelectorAll('tbody tr');
+  rows.forEach((row) => {
+    const dateCell = row.querySelector('[data-date]');
+    const { date } = dateCell.dataset;
+    x.push(date);
+
+    const capacityCell = row.querySelector('[data-capacity]');
+    const { capacity } = capacityCell.dataset;
+    y.push(capacity);
+  });
+
+  return {x: x.reverse(), y: y.reverse()};
+}
+
+function getDetailAxisFillnessData() {
   let x = [];
   let y = [];
 
@@ -38,11 +58,20 @@ function getIndexAxisData() {
   return {x: x, y: y};
 }
 
-function initDetailChart() {
-  const axisData = getDetailAxisData();
+function getStatYLabel(value) {
+  const finalValue = value.toLocaleString();
+  const unit = finalValue.length <= 3 ? '%' : 'm³';
+  return `${finalValue} ${unit}`;
+}
 
-  const ctx = document.querySelector('[data-component="reservoir-detail-stats"]').getContext('2d');
-  indexChart = new Chart(ctx, {
+function getStatLabelTooltip(tooltipItem) {
+  const finalValue = tooltipItem.value;
+  const unit = finalValue.length <= 3 ? '%' : 'm³';
+  return `${finalValue} ${unit}`;
+}
+
+function getDetailChartOptions(axisData) {
+  return {
     type: 'line',
     data: {
       labels: axisData.x,
@@ -55,7 +84,7 @@ function initDetailChart() {
       }]
     },
     options: {
-      responsive: false,
+      responsive: true,
       tooltips: {
         mode: 'index',
         intersect: false,
@@ -69,24 +98,35 @@ function initDetailChart() {
         bodyFontColor: '#252930',
         titleFontColor: '#252930',
         callbacks: {
-          label: function(tooltipItem) {
-            return tooltipItem.value + ' %';
-          }
+          label: getStatLabelTooltip
         }
       },
       scales: {
         yAxes: [{
           ticks: {
             beginAtZero: true,
-            stepSize: 20,
-            userCallback: (value) => {
-              return value + ' %';
-            }
+            //stepSize: 20,
+            //padding: 200,
+            userCallback: getStatYLabel
           }
         }]
       }
     }
-  });
+  };
+}
+
+function initDetailCharts() {
+  const axisFillnessData = getDetailAxisFillnessData();
+  const axisCapacityData = getDetailAxisCapacityData();
+
+  const fillnessOptions = getDetailChartOptions(axisFillnessData);
+  const capacityOptions = getDetailChartOptions(axisCapacityData);
+
+  const fillnessCtx = document.querySelector('[data-component="historical-fillness-stats"]').getContext('2d');
+  const capacityCtx = document.querySelector('[data-component="historical-capacity-stats"]').getContext('2d');
+
+  fillnessChart = new Chart(fillnessCtx, fillnessOptions);
+  capacityChart = new Chart(capacityCtx, capacityOptions);
 }
 
 function initIndexChart() {
@@ -145,7 +185,7 @@ function initIndex() {
 }
 
 function initDetail() {
-  initDetailChart();
+  initDetailCharts();
 }
 
 function init() {

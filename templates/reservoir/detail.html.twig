@@ -40,16 +40,26 @@
             </div>
         </div>
         <div class="row g-4 mb-4">
-            <div class="col-12">
+            <div class="col-12 col-lg-6">
                 <div class="app-card app-card-chart h-100 shadow-sm">
                     <div class="app-card-header p-3 border-0">
-                        <h4 class="app-card-title">Datos históricos</h4>
+                        <h4 class="app-card-title">Porcentaje de llenado en el tiempo</h4>
                     </div>
-                    <div class="app-card-body p-3 justify-content-center">
-                        <div class="d-flex justify-content-center">
-                            <div class="chart-container" style="height: 450px; width: 600px">
-                                <canvas height="450" width="600" data-component="reservoir-detail-stats"></canvas>
-                            </div>
+                    <div class="app-card-body p-3 p-lg-4">
+                        <div class="chart-container">
+                            <canvas data-component="historical-fillness-stats"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-lg-6">
+                <div class="app-card app-card-chart h-100 shadow-sm">
+                    <div class="app-card-header p-3 border-0">
+                        <h4 class="app-card-title">Volumen embalsado en el tiempo</h4>
+                    </div>
+                    <div class="app-card-body p-3 p-lg-4">
+                        <div class="chart-container">
+                            <canvas data-component="historical-capacity-stats"></canvas>
                         </div>
                     </div>
                 </div>
@@ -62,6 +72,7 @@
                         <thead>
                         <tr class="bg-primary pt-1 pb-1">
                             <th>Llenado</th>
+                            <th>Volumen embalsado</th>
                             <th>Fecha actualización</th>
                             <th>Archivo</th>
                         </tr>
@@ -71,6 +82,10 @@
                             <tr>
                                 <td class="cell" data-fillness="{{ data.fillness }}">
                                     {{ data.fillness }} %
+                                </td>
+                                {% set capacity = get_reservoir_data_capacity(data) %}
+                                <td class="cell" data-capacity="{{ capacity }}">
+                                    {{ capacity }} m<sup>3</sup>
                                 </td>
                                 <td class="cell" data-date="{{ data.process.date|date('d/m/Y') }}">
                                     {{ data.process.date|date('d/m/Y') }}
