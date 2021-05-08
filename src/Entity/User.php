@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Library\Traits\Entity\TimestampableTrait;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -87,6 +89,16 @@ class User implements UserInterface
      * @ORM\Column(name="user_modified_at", type="datetime", nullable=true)
      */
     private $modifiedAt;
+
+    /**
+     * @ORM\OneToMany(targetEntity=CyclistRace::class, mappedBy="user")
+     */
+    private $cyclistRaces;
+
+    public function __construct()
+    {
+        $this->cyclistRaces = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -183,5 +195,35 @@ class User implements UserInterface
     public function setStatus(?int $status): void
     {
         $this->status = $status;
+    }
+
+    /**
+     * @return Collection|CyclistRace[]
+     */
+    public function getCyclistRaces(): Collection
+    {
+        return $this->cyclistRaces;
+    }
+
+    public function addCyclistRace(CyclistRace $cyclistRace): self
+    {
+        if (!$this->cyclistRaces->contains($cyclistRace)) {
+            $this->cyclistRaces[] = $cyclistRace;
+            $cyclistRace->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCyclistRace(CyclistRace $cyclistRace): self
+    {
+        if ($this->cyclistRaces->removeElement($cyclistRace)) {
+            // set the owning side to null (unless already changed)
+            if ($cyclistRace->getUser() === $this) {
+                $cyclistRace->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }
