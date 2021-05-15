@@ -2,25 +2,21 @@
 
 namespace App\Service;
 
-use App\Entity\Race;
+use App\Entity\GrandTour;
 use App\Library\Repository\BaseRepository;
 use App\Library\Service\BaseService;
-use App\Repository\RaceRepository;
+use App\Repository\GrandTourRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 
-class RaceService extends BaseService
+class GrandTourService extends BaseService
 {
-    private RaceRepository $repository;
+    private GrandTourRepository $repository;
+
     public function __construct(EntityManagerInterface $entityManager, LoggerInterface $logger)
     {
         parent::__construct($entityManager, $logger);
-        $this->repository = $entityManager->getRepository(Race::class);
-    }
-
-    public function getByName(string $name): ?Race
-    {
-        return $this->repository->findOneBy(['name' => $name]);
+        $this->repository = $entityManager->getRepository(GrandTour::class);
     }
 
     public function getSortFields(): array

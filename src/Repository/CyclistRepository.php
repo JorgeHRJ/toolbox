@@ -3,48 +3,18 @@
 namespace App\Repository;
 
 use App\Entity\Cyclist;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Library\Repository\BaseRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * @method Cyclist|null find($id, $lockMode = null, $lockVersion = null)
- * @method Cyclist|null findOneBy(array $criteria, array $orderBy = null)
- * @method Cyclist[]    findAll()
- * @method Cyclist[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
- */
-class CyclistRepository extends ServiceEntityRepository
+class CyclistRepository extends BaseRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Cyclist::class);
     }
 
-    // /**
-    //  * @return Cyclist[] Returns an array of Cyclist objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function getFilterFields(): array
     {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('c.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        return [];
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Cyclist
-    {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

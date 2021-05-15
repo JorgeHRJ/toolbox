@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Library\Traits\Entity\TimestampableTrait;
 use App\Repository\CyclistRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -30,29 +32,50 @@ class Cyclist
 
     /**
      * @Assert\DateTime()
-     * @ORM\Column(name="cyclist_birthdate", type="datetime", nullable=false)
+     * @ORM\Column(name="cyclist_birthdate", type="datetime", nullable=true)
      */
-    private \DateTime $birthDate;
+    private ?\DateTime $birthDate;
 
     /**
-     * @ORM\Column(name="cyclist_nationality", type="string", length=128, nullable=false)
+     * @ORM\Column(name="cyclist_nationality", type="string", length=128, nullable=true)
      */
-    private string $nationality;
+    private ?string $nationality;
 
     /**
-     * @ORM\Column(name="cyclist_height", type="string", length=16, nullable=false)
+     * @ORM\Column(name="cyclist_height", type="string", length=16, nullable=true)
      */
-    private string $height;
+    private ?string $height;
 
     /**
-     * @ORM\Column(name="cyclist_weight", type="string", length=16, nullable=false)
+     * @ORM\Column(name="cyclist_weight", type="string", length=16, nullable=true)
      */
-    private string $weight;
+    private ?string $weight;
 
     /**
-     * @ORM\Column(name="cyclist_location", type="string", length=128, nullable=false)
+     * @ORM\Column(name="cyclist_location", type="string", length=128, nullable=true)
      */
-    private string $location;
+    private ?string $location;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Team::class, inversedBy="cyclists")
+     * @ORM\JoinColumn(name="cyclist_team", referencedColumnName="team_id", nullable=false)
+     */
+    private Team $team;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Win::class, mappedBy="cyclist", orphanRemoval=true)
+     */
+    private Collection $wins;
+
+    /**
+     * @ORM\OneToMany(targetEntity=GrandTour::class, mappedBy="cyclist", orphanRemoval=true)
+     */
+    private Collection $grandTours;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Classic::class, mappedBy="cyclist", orphanRemoval=true)
+     */
+    private Collection $classics;
 
     /**
      * @Gedmo\Timestampable(on="create")
@@ -65,6 +88,13 @@ class Cyclist
      * @ORM\Column(name="cyclist_modified_at", type="datetime", nullable=true)
      */
     private \DateTime $modifiedAt;
+
+    public function __construct()
+    {
+        $this->wins = new ArrayCollection();
+        $this->grandTours = new ArrayCollection();
+        $this->classics = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -88,7 +118,7 @@ class Cyclist
         return $this->birthDate;
     }
 
-    public function setBirthDate(\DateTime $birthDate): self
+    public function setBirthDate(?\DateTime $birthDate): self
     {
         $this->birthDate = $birthDate;
 
@@ -100,7 +130,7 @@ class Cyclist
         return $this->nationality;
     }
 
-    public function setNationality(string $nationality): self
+    public function setNationality(?string $nationality): self
     {
         $this->nationality = $nationality;
 
@@ -112,7 +142,7 @@ class Cyclist
         return $this->height;
     }
 
-    public function setHeight(string $height): self
+    public function setHeight(?string $height): self
     {
         $this->height = $height;
 
@@ -124,7 +154,7 @@ class Cyclist
         return $this->weight;
     }
 
-    public function setWeight(string $weight): self
+    public function setWeight(?string $weight): self
     {
         $this->weight = $weight;
 
@@ -136,9 +166,111 @@ class Cyclist
         return $this->location;
     }
 
-    public function setLocation(string $location): self
+    public function setLocation(?string $location): self
     {
         $this->location = $location;
+
+        return $this;
+    }
+
+    public function getTeam(): ?Team
+    {
+        return $this->team;
+    }
+
+    public function setTeam(?Team $team): self
+    {
+        $this->team = $team;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Win[]
+     */
+    public function getWins(): Collection
+    {
+        return $this->wins;
+    }
+
+    public function addWin(Win $win): self
+    {
+        if (!$this->wins->contains($win)) {
+            $this->wins[] = $win;
+            $win->setCyclist($this);
+        }
+
+        return $this;
+    }
+
+    public function removeWin(Win $win): self
+    {
+        if ($this->wins->removeElement($win)) {
+            // set the owning side to null (unless already changed)
+            if ($win->getCyclist() === $this) {
+                $win->setCyclist(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|GrandTour[]
+     */
+    public function getGrandTours(): Collection
+    {
+        return $this->grandTours;
+    }
+
+    public function addGrandTour(GrandTour $grandTour): self
+    {
+        if (!$this->grandTours->contains($grandTour)) {
+            $this->grandTours[] = $grandTour;
+            $grandTour->setCyclist($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGrandTour(GrandTour $grandTour): self
+    {
+        if ($this->grandTours->removeElement($grandTour)) {
+            // set the owning side to null (unless already changed)
+            if ($grandTour->getCyclist() === $this) {
+                $grandTour->setCyclist(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Classic[]
+     */
+    public function getClassics(): Collection
+    {
+        return $this->classics;
+    }
+
+    public function addClassic(Classic $classic): self
+    {
+        if (!$this->classics->contains($classic)) {
+            $this->classics[] = $classic;
+            $classic->setCyclist($this);
+        }
+
+        return $this;
+    }
+
+    public function removeClassic(Classic $classic): self
+    {
+        if ($this->classics->removeElement($classic)) {
+            // set the owning side to null (unless already changed)
+            if ($classic->getCyclist() === $this) {
+                $classic->setCyclist(null);
+            }
+        }
 
         return $this;
     }

@@ -2,25 +2,21 @@
 
 namespace App\Service;
 
-use App\Entity\Race;
+use App\Entity\Win;
 use App\Library\Repository\BaseRepository;
 use App\Library\Service\BaseService;
-use App\Repository\RaceRepository;
+use App\Repository\WinRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 
-class RaceService extends BaseService
+class WinService extends BaseService
 {
-    private RaceRepository $repository;
+    private WinRepository $repository;
+
     public function __construct(EntityManagerInterface $entityManager, LoggerInterface $logger)
     {
         parent::__construct($entityManager, $logger);
-        $this->repository = $entityManager->getRepository(Race::class);
-    }
-
-    public function getByName(string $name): ?Race
-    {
-        return $this->repository->findOneBy(['name' => $name]);
+        $this->repository = $entityManager->getRepository(Win::class);
     }
 
     public function getSortFields(): array

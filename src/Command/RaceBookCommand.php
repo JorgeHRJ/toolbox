@@ -3,7 +3,7 @@
 namespace App\Command;
 
 use App\Entity\User;
-use App\Service\RaceService;
+use App\Service\RaceBook\RaceBookService;
 use App\Service\UserService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -15,12 +15,12 @@ class RaceBookCommand extends Command
 {
     const COMMAND_NAME = 'toolbox:race:process';
 
-    private RaceService $raceService;
+    private RaceBookService $raceBookService;
     private UserService $userService;
 
-    public function __construct(RaceService $raceService, UserService $userService)
+    public function __construct(RaceBookService $raceBookService, UserService $userService)
     {
-        $this->raceService = $raceService;
+        $this->raceBookService = $raceBookService;
         $this->userService = $userService;
         parent::__construct(self::COMMAND_NAME);
     }
@@ -48,7 +48,7 @@ class RaceBookCommand extends Command
             return self::FAILURE;
         }
 
-        $this->raceService->process($user, $url);
+        $this->raceBookService->process($user, $url);
 
         return self::SUCCESS;
     }

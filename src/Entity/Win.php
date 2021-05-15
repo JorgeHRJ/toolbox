@@ -43,6 +43,12 @@ class Win
     private \DateTime $date;
 
     /**
+     * @ORM\ManyToOne(targetEntity=Cyclist::class, inversedBy="wins")
+     * @ORM\JoinColumn(name="win_cyclist", referencedColumnName="cyclist_id", nullable=false)
+     */
+    private Cyclist $cyclist;
+
+    /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(name="win_created_at", type="datetime", nullable=false)
      */
@@ -103,6 +109,18 @@ class Win
     public function setDate(\DateTime $date): self
     {
         $this->date = $date;
+
+        return $this;
+    }
+
+    public function getCyclist(): ?Cyclist
+    {
+        return $this->cyclist;
+    }
+
+    public function setCyclist(?Cyclist $cyclist): self
+    {
+        $this->cyclist = $cyclist;
 
         return $this;
     }
