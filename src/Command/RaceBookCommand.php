@@ -30,7 +30,6 @@ class RaceBookCommand extends Command
         $this
             ->setName(self::COMMAND_NAME)
             ->setDescription('Process Race Book from URL')
-            ->addArgument('userId', InputArgument::REQUIRED, 'User ID')
             ->addArgument('url', InputArgument::REQUIRED, 'URL')
         ;
     }
@@ -39,16 +38,12 @@ class RaceBookCommand extends Command
     {
         $style = new SymfonyStyle($input, $output);
 
-        $userId = (int) $input->getArgument('userId');
         $url = (string) $input->getArgument('url');
-
-        $user = $this->userService->get(null, $userId);
-        if (!$user instanceof User) {
-            $style->error('Usuario no encontrado!');
-            return self::FAILURE;
+        $users = $this->userService->getByRoles([User::ROLE_RACEBOOK, User::ROLE_ADMIN]);
+        dump($users);die();
+        foreach ($users as $user) {
+            $this->raceBookService->process($user, $url);
         }
-
-        $this->raceBookService->process($user, $url);
 
         return self::SUCCESS;
     }
