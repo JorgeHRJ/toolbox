@@ -16,6 +16,7 @@ use App\Service\RaceService;
 use App\Service\TeamService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 class RaceBookProcessor
 {
@@ -25,6 +26,7 @@ class RaceBookProcessor
     private CyclistRaceService $cyclistRaceService;
     private EntityManagerInterface $entityManager;
     private LoggerInterface $logger;
+    private SluggerInterface $slugger;
 
     public function __construct(
         RaceService $raceService,
@@ -32,7 +34,8 @@ class RaceBookProcessor
         CyclistService $cyclistService,
         CyclistRaceService $cyclistRaceService,
         EntityManagerInterface $entityManager,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        SluggerInterface $slugger
     ) {
         $this->raceService = $raceService;
         $this->teamService = $teamService;
@@ -40,6 +43,7 @@ class RaceBookProcessor
         $this->cyclistRaceService = $cyclistRaceService;
         $this->entityManager = $entityManager;
         $this->logger = $logger;
+        $this->slugger = $slugger;
     }
 
     public function processTeamsData(User $user, Race $race, array $teamsData): void
@@ -62,16 +66,18 @@ class RaceBookProcessor
             return $race;
         }
 
+        $year = $raceData['start_date']->format('Y');
+
         $race = new Race();
         $race
             ->setName($raceData['name'])
+            ->setSlug($this->slugger->slug(strtolower(sprintf('%s %s', $raceData['name'], $year))))
+            ->setYear($year)
             ->setCategory($raceData['category'])
             ->setUciTour($raceData['uci_tour'])
             ->setStartlistUrl($raceData['url'])
             ->setStartDate($raceData['start_date'])
             ->setEndDate($raceData['end_date']);
-
-        $race->setYear($race->getStartDate()->format('Y'));
 
         /** @var Race $race */
         $race = $this->raceService->create($race);
@@ -89,7 +95,9 @@ class RaceBookProcessor
         }
 
         $team = new Team();
-        $team->setName($name);
+        $team
+            ->setName($name)
+            ->setSlug($this->slugger->slug(strtolower($name)));
 
         /** @var Team $team */
         $team = $this->teamService->create($team);
@@ -110,6 +118,7 @@ class RaceBookProcessor
 
         $cyclist
             ->setName($data['name'])
+            ->setSlug($this->slugger->slug(strtolower($data['name'])))
             ->setTeam($team)
             ->setBirthDate($data['birthdate'])
             ->setNationality($data['nationality'])

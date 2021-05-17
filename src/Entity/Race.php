@@ -6,10 +6,12 @@ use App\Library\Traits\Entity\TimestampableTrait;
 use App\Repository\RaceRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=RaceRepository::class)
  * @ORM\Table(name="race")
+ * @UniqueEntity("slug")
  */
 class Race
 {
@@ -26,6 +28,11 @@ class Race
      * @ORM\Column(name="race_name", type="string", length=128, nullable=false)
      */
     private string $name;
+
+    /**
+     * @ORM\Column(name="race_slug", type="string", length=255, unique=true, nullable=false)
+     */
+    private string $slug;
 
     /**
      * @ORM\Column(name="race_startlist_url", type="string", length=255, nullable=false)
@@ -82,6 +89,18 @@ class Race
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
 
         return $this;
     }

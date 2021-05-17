@@ -12,6 +12,7 @@ use Psr\Log\LoggerInterface;
 class RaceService extends BaseService
 {
     private RaceRepository $repository;
+
     public function __construct(EntityManagerInterface $entityManager, LoggerInterface $logger)
     {
         parent::__construct($entityManager, $logger);
@@ -21,6 +22,11 @@ class RaceService extends BaseService
     public function getByName(string $name): ?Race
     {
         return $this->repository->findOneBy(['name' => $name]);
+    }
+
+    public function getBySlug(string $slug): ?Race
+    {
+        return $this->repository->findOneBy(['slug' => $slug]);
     }
 
     public function getSortFields(): array

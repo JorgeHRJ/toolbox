@@ -28,6 +28,11 @@ class CyclistRace
     private int $dorsal;
 
     /**
+     * @ORM\Column(name="cyclistrace_comment", type="json", nullable=false)
+     */
+    private ?array $comment = [];
+
+    /**
      * @ORM\ManyToOne(targetEntity=Cyclist::class)
      * @ORM\JoinColumn(name="cyclistrace_cyclist", referencedColumnName="cyclist_id", nullable=false)
      */
@@ -70,6 +75,18 @@ class CyclistRace
     public function setDorsal(int $dorsal): self
     {
         $this->dorsal = $dorsal;
+
+        return $this;
+    }
+
+    public function getComment(): ?array
+    {
+        return $this->comment;
+    }
+
+    public function setComment(?array $comment): self
+    {
+        $this->comment = $comment;
 
         return $this;
     }

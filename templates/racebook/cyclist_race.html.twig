@@ -1,0 +1,172 @@
+{% extends 'layout.html.twig' %}
+
+{% page_setup {
+    'title': "Libro de Ruta - #{cyclist_race.cyclist.name} - #{cyclist_race.race.name} (#{cyclist_race.race.year})",
+    'header': "Libro de Ruta de #{cyclist_race.cyclist.name} - #{cyclist_race.race.name} (#{cyclist_race.race.year})",
+    'breadcrumbs': [
+        {
+            'name': 'Libro de Ruta',
+            'path': path('racebook_index')
+        },
+        {
+            'name': "#{cyclist_race.race.name} (#{cyclist_race.race.year})",
+            'path': path('racebook_race', {'raceSlug': cyclist_race.race.slug})
+        },
+        {
+            'name': "#{cyclist_race.cyclist.name}",
+            'main': true
+        }
+    ]
+} %}
+
+{% block content %}
+    <div class="app-card shadow-sm mb-4 border-left-decoration" role="alert">
+        <div class="inner">
+            <div class="app-card-body p-3 p-lg-4">
+                <h3 class="mb-3">{{ cyclist_race.cyclist.name }}</h3>
+                <div class="row gx-5 gy-3">
+                    <div class="col-12">
+                        <ul>
+                            <li><strong>Dorsal en la carrera:</strong> {{ cyclist_race.dorsal }}</li>
+                            <li><strong>Nacionalidad:</strong> {{ cyclist_race.cyclist.nationality }}</li>
+                            <li><strong>Localidad:</strong> {{ cyclist_race.cyclist.location }}</li>
+                            <li><strong>Fecha de nacimiento:</strong> {{ cyclist_race.cyclist.birthDate|date('d/m/Y') }}</li>
+                            <li><strong>Altura:</strong> {{ cyclist_race.cyclist.height }}</li>
+                            <li><strong>Peso:</strong> {{ cyclist_race.cyclist.weight }}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <nav id="stats-table-tab" class="orders-table-tab app-nav-tabs nav shadow-sm flex-column flex-sm-row mb-4">
+        <a class="flex-sm-fill text-sm-center nav-link active"
+           id="stats-wins-tab"
+           data-bs-toggle="tab"
+           href="#stats-wins"
+           role="tab"
+           aria-controls="orders-all"
+           aria-selected="true">
+            Victorias
+        </a>
+        <a class="flex-sm-fill text-sm-center nav-link"
+           id="stats-grandtours-tab"
+           data-bs-toggle="tab"
+           href="#stats-grandtours"
+           role="tab"
+           aria-controls="orders-paid"
+           aria-selected="false">
+            Grandes Vueltas
+        </a>
+        <a class="flex-sm-fill text-sm-center nav-link"
+           id="stats-classics-tab"
+           data-bs-toggle="tab"
+           href="#stats-classics"
+           role="tab"
+           aria-controls="orders-pending"
+           aria-selected="false">
+            Monumentos
+        </a>
+    </nav>
+    <div class="tab-content" id="orders-table-tab-content">
+        <div class="tab-pane fade show active" id="stats-wins" role="tabpanel" aria-labelledby="stats-wins-tab">
+            <div class="app-card app-card-orders-table shadow-sm mb-5">
+                <div class="app-card-body">
+                    <div class="table-responsive">
+                        <table class="table app-table-hover mb-0 text-left">
+                            <thead>
+                            <tr>
+                                <th class="cell">Carrera</th>
+                                <th class="cell">Tipo</th>
+                                <th class="cell">Categoría</th>
+                                <th class="cell">Fecha</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for win in cyclist_race.cyclist.wins %}
+                                <tr>
+                                    <td class="cell">{{ win.race }}</td>
+                                    <td class="cell">{{ beautify_win_type(win.type) }}</td>
+                                    <td class="cell">{{ win.class }}</td>
+                                    <td class="cell">{{ win.date|date('d/m/Y') }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="stats-grandtours" role="tabpanel" aria-labelledby="stats-grandtours-tab">
+            <div class="app-card app-card-orders-table mb-5">
+                <div class="app-card-body">
+                    <div class="table-responsive">
+                        <table class="table mb-0 text-left">
+                            <thead>
+                            <tr>
+                                <th class="cell">Gran Vuelta</th>
+                                <th class="cell">Resultado</th>
+                                <th class="cell">Año</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for grandtour in cyclist_race.cyclist.grandTours %}
+                                <tr>
+                                    <td class="cell">{{ grandtour.name }}</td>
+                                    <td class="cell">{{ beautify_grandtour_gc(grandtour.gc) }}</td>
+                                    <td class="cell">{{ grandtour.season }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="stats-classics" role="tabpanel" aria-labelledby="stats-classics-tab">
+            <div class="app-card app-card-orders-table mb-5">
+                <div class="app-card-body">
+                    <div class="table-responsive p-3">
+                        <table class="table app-table-hover mb-0 text-left">
+                            <thead>
+                            <tr>
+                                <th class="cell">Carrera</th>
+                                <th class="cell">Resultado</th>
+                                <th class="cell">Año</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for classic in cyclist_race.cyclist.classics %}
+                                <tr>
+                                    <td class="cell">{{ classic.name }}</td>
+                                    <td class="cell">{{ classic.result }}</td>
+                                    <td class="cell">{{ classic.season }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="app-card app-card-settings shadow-sm p-4">
+                <div class="app-card-body">
+                    {{ form_start(form, {'attr': {'class': 'mt-1', 'autocomplete': 'off'}}) }}
+                    <div class="mb-3">
+                        <h2>{{ form_label(form.comment) }}</h2>
+                        <hr>
+                        {{ form_widget(form.comment, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <button type="submit" class="btn app-btn-primary">Guardar</button>
+                    {{ form_widget(form._token) }}
+                    {{ form_end(form, {'render_rest': false}) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -115,11 +115,12 @@ class RaceBookCrawler
                             preg_match_all('/^(\d+)([^\d]+)/', $node->text(), $match);
                             if (isset($match[1]) && isset($match[2])) {
                                 $dorsal = $match[1][0];
-                                $name = $this->parseName($match[2][0]);
 
-                                $cyclistData = ['name' => $name, 'dorsal' => $dorsal];
+                                $cyclistData = ['dorsal' => $dorsal];
 
                                 $cyclistContent = $this->client->call($cyclistUrl);
+                                $cyclistData['name'] = $this->getCyclistName($cyclistContent);
+
                                 $cyclistData = array_merge($cyclistData, $this->crawlCyclistData($cyclistContent));
 
                                 $cyclistUrlParts = explode('/', $cyclistUrl);
@@ -351,18 +352,14 @@ class RaceBookCrawler
         return $data;
     }
 
-    private function parseName(string $name): string
+    private function getCyclistName(string $cyclistContent): string
     {
-        $match = null;
-        preg_match_all('/\b[A-Z]+(?:\s+[A-Z]+)*\b/', $name, $match);
+        $crawler = new Crawler($cyclistContent);
+        $cyclistNameNode = $crawler
+            ->filter('.page-title h1')
+            ->first();
 
-        $lastname = $match[0][0] ?? null;
-        if ($lastname === null) {
-            return $name;
-        }
-
-        $name = trim(str_replace($lastname, '', $name));
-
-        return sprintf('%s %s', $name, ucwords(strtolower($lastname)));
+        $cyclistName = $cyclistNameNode->text();
+        return preg_replace(array('/\s{2,}/', '/[\t\n]/'), ' ', $cyclistName);
     }
 }

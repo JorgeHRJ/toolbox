@@ -22,6 +22,36 @@ class CyclistRaceService extends BaseService
         $this->repository = $entityManager->getRepository(CyclistRace::class);
     }
 
+    /**
+     * @param User $user
+     * @param Race $race
+     * @return CyclistRace[]
+     */
+    public function getByUserAndRace(User $user, Race $race): array
+    {
+        return $this->repository->getByUserAndRace($user, $race);
+    }
+
+    public function getByUserRaceSlugAndCyclistSlug(User $user, string $raceSlug, string $cyclistSlug): ?CyclistRace
+    {
+        return $this->repository->getByUserRaceSlugAndCyclistSlug($user, $raceSlug, $cyclistSlug);
+    }
+
+    /**
+     * @param CyclistRace[] $cyclistRaces
+     * @return array
+     */
+    public function makeTeamCentered(array $cyclistRaces): array
+    {
+        $data = [];
+        foreach ($cyclistRaces as $cyclistRace) {
+            $teamName = $cyclistRace->getCyclist()->getTeam()->getName();
+            $data[$teamName][] = $cyclistRace;
+        }
+
+        return $data;
+    }
+
     public function getByUserCyclistRace(User $user, Cyclist $cyclist, Race $race): ?CyclistRace
     {
         return $this->repository->findOneBy(['user' => $user, 'cyclist' => $cyclist, 'race' => $race]);

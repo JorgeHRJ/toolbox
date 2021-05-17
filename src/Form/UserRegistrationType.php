@@ -58,7 +58,8 @@ class UserRegistrationType extends AbstractType
                     'Administrador' => User::ROLE_ADMIN,
                     'Semanal' => User::ROLE_TASK,
                     'Monedero' => User::ROLE_TRANSACTION,
-                    'Balsas' => User::ROLE_RESERVOIR
+                    'Balsas' => User::ROLE_RESERVOIR,
+                    'Libro de Ruta' => User::ROLE_RACEBOOK
                 ]
             ])
         ;

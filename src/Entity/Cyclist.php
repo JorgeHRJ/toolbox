@@ -8,11 +8,13 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=CyclistRepository::class)
  * @ORM\Table(name="cyclist")
+ * @UniqueEntity("slug")
  */
 class Cyclist
 {
@@ -29,6 +31,11 @@ class Cyclist
      * @ORM\Column(name="cyclist_name", type="string", length=128, nullable=false)
      */
     private string $name;
+
+    /**
+     * @ORM\Column(name="cyclist_slug", type="string", length=255, unique=true, nullable=false)
+     */
+    private string $slug;
 
     /**
      * @Assert\DateTime()
@@ -64,16 +71,19 @@ class Cyclist
 
     /**
      * @ORM\OneToMany(targetEntity=Win::class, mappedBy="cyclist", orphanRemoval=true)
+     * @ORM\OrderBy({"date" = "DESC"})
      */
     private Collection $wins;
 
     /**
      * @ORM\OneToMany(targetEntity=GrandTour::class, mappedBy="cyclist", orphanRemoval=true)
+     * @ORM\OrderBy({"season" = "DESC"})
      */
     private Collection $grandTours;
 
     /**
      * @ORM\OneToMany(targetEntity=Classic::class, mappedBy="cyclist", orphanRemoval=true)
+     * @ORM\OrderBy({"season" = "DESC"})
      */
     private Collection $classics;
 
@@ -109,6 +119,18 @@ class Cyclist
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
 
         return $this;
     }
@@ -178,7 +200,7 @@ class Cyclist
         return $this->team;
     }
 
-    public function setTeam(?Team $team): self
+    public function setTeam(Team $team): self
     {
         $this->team = $team;
 

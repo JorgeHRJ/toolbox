@@ -1,0 +1,63 @@
+{% extends 'layout.html.twig' %}
+
+{% page_setup {
+    'title': "Libro de Ruta - #{race.name} (#{race.year})",
+    'header': "Libro de Ruta de #{race.name} (#{race.year})",
+    'breadcrumbs': [
+        {
+            'name': 'Libro de Ruta',
+            'path': path('racebook_index')
+        },
+        {
+            'name': "#{race.name} (#{race.year})",
+            'main': true
+        }
+    ],
+} %}
+
+{% block content %}
+    <div class="row mt-2 g-4">
+        <p>
+            Este es tu libro de ruta de {{ "#{race.name} (#{race.year})" }}. Selecciona algún ciclista si deseas
+            ver más información de él, además de poder editar la misma si deseas.
+        </p>
+        {% for team, cyclistRaces in teams %}
+            <div class="col-12 col-lg-4">
+                <div class="app-card app-card-stats-table h-100 shadow-sm">
+                    <div class="app-card-header p-3 pb-0 border-bottom-0">
+                        <div class="row align-items-center gx-3">
+                            <div class="col-auto"></div>
+                            <div class="col-auto">
+                                <h2>{{ team }}</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="app-card-body px-4 pb-2">
+                        <div class="table-responsive">
+                            <table class="table table-borderless mb-0">
+                                <tbody>
+                                {% for cyclistRace in cyclistRaces %}
+                                    <tr>
+                                        <td>{{ cyclistRace.cyclist.name }}</td>
+                                        <td>
+                                            <a class="btn-sm app-btn-secondary"
+                                               href="{{ path('racebook_cyclist_race',
+                                                   {
+                                                       'raceSlug': cyclistRace.race.slug,
+                                                       'cyclistSlug': cyclistRace.cyclist.slug
+                                                   }) }}">
+                                                En detalle
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
