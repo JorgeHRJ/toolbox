@@ -1,0 +1,40 @@
+{% extends 'layout.html.twig' %}
+
+{% page_setup {
+    'title': 'Libro de Ruta',
+    'header': 'Libro de Ruta',
+    'breadcrumbs': [
+        {
+            'name': 'Libro de Ruta',
+            'main': true
+        }
+    ],
+} %}
+
+{% block content %}
+<div class="row g-4">
+    <p>
+        Con Libro de Ruta puedes diseñar tener tu propia guía para seguir las carreras de la temporada ciclista.
+        ¡Comienza seleccionando una carrera!
+    </p>
+    {% if data is empty %}
+        {{ include('components/no-results.html.twig') }}
+    {% else %}
+        {% for race in data %}
+            <div class="col-12 col-lg-4">
+                <div class="app-card app-card-basic d-flex flex-column align-items-start shadow-sm">
+                    <div class="app-card-header p-3 pb-2 border-bottom-0">
+                        <div class="row align-items-center gx-3">
+                            <div class="col-auto"></div>
+                            <div class="col-auto">
+                                <h3>{{ "#{race.name} (#{race.year})" }}</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <a class="app-card-link-mask" href="{{ path('racebook_race', {'raceSlug': race.slug}) }}"></a>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>
+{% endblock %}

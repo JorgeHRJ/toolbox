@@ -4,7 +4,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": ">=7.2.5",
+        "php": ">=7.4",
         "ext-ctype": "*",
         "ext-dom": "*",
         "ext-iconv": "*",
@@ -37,6 +37,7 @@
         "symfony/proxy-manager-bridge": "5.2.*",
         "symfony/security-bundle": "5.2.*",
         "symfony/serializer": "5.2.*",
+        "symfony/string": "5.2.*",
         "symfony/twig-bundle": "^5.2",
         "symfony/validator": "5.2.*",
         "symfony/web-link": "5.2.*",
