@@ -18,7 +18,7 @@ class CyclistRaceType extends AbstractType
                 'label' => 'Tus notas',
                 'attr' => [
                     'placeholder' =>
-                        'Redacta aquí los comentarios que deseees sobre el ciclista para esta carrera.'
+                        'Redacta aquí los comentarios que desees sobre el ciclista para esta carrera.'
                 ]
             ])
         ;

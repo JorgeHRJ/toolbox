@@ -47,12 +47,12 @@ class Race
     /**
      * @ORM\Column(name="race_start_date", type="datetime", nullable=false)
      */
-    private \DateTime $startDate;
+    private \DateTimeInterface $startDate;
 
     /**
      * @ORM\Column(name="race_end_date", type="datetime", nullable=false)
      */
-    private \DateTime $endDate;
+    private \DateTimeInterface $endDate;
 
     /**
      * @ORM\Column(name="race_category", type="string", length=64, nullable=false)
@@ -68,13 +68,13 @@ class Race
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(name="race_created_at", type="datetime", nullable=false)
      */
-    private \DateTime $createdAt;
+    private \DateTimeInterface $createdAt;
 
     /**
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(name="race_modified_at", type="datetime", nullable=true)
      */
-    private \DateTime $modifiedAt;
+    private \DateTimeInterface $modifiedAt;
 
     public function getId(): ?int
     {
@@ -129,24 +129,24 @@ class Race
         return $this;
     }
 
-    public function getStartDate(): ?\DateTime
+    public function getStartDate(): ?\DateTimeInterface
     {
         return $this->startDate;
     }
 
-    public function setStartDate(\DateTime $startDate): self
+    public function setStartDate(\DateTimeInterface $startDate): self
     {
         $this->startDate = $startDate;
 
         return $this;
     }
 
-    public function getEndDate(): ?\DateTime
+    public function getEndDate(): ?\DateTimeInterface
     {
         return $this->endDate;
     }
 
-    public function setEndDate(\DateTime $endDate): self
+    public function setEndDate(\DateTimeInterface $endDate): self
     {
         $this->endDate = $endDate;
 

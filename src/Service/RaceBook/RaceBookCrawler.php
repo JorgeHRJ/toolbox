@@ -246,7 +246,6 @@ class RaceBookCrawler
                     'date' => new \DateTime($typeWin[$dateTableIndex])
                 ];
             }
-
         }
 
         return $winsData;

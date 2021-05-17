@@ -21,7 +21,7 @@
             Este es tu libro de ruta de {{ "#{race.name} (#{race.year})" }}. Selecciona algún ciclista si deseas
             ver más información de él, además de poder editar la misma si deseas.
         </p>
-        {% for team, cyclistRaces in teams %}
+        {% for team, cyclist_races in teams %}
             <div class="col-12 col-lg-4">
                 <div class="app-card app-card-stats-table h-100 shadow-sm">
                     <div class="app-card-header p-3 pb-0 border-bottom-0">
@@ -37,15 +37,15 @@
                         <div class="table-responsive">
                             <table class="table table-borderless mb-0">
                                 <tbody>
-                                {% for cyclistRace in cyclistRaces %}
+                                {% for cyclist_race in cyclist_races %}
                                     <tr>
-                                        <td>{{ cyclistRace.cyclist.name }}</td>
+                                        <td>{{ cyclist_race.cyclist.name }}</td>
                                         <td>
                                             <a class="btn-sm app-btn-secondary"
                                                href="{{ path('racebook_cyclist_race',
                                                    {
-                                                       'raceSlug': cyclistRace.race.slug,
-                                                       'cyclistSlug': cyclistRace.cyclist.slug
+                                                       'raceSlug': cyclist_race.race.slug,
+                                                       'cyclistSlug': cyclist_race.cyclist.slug
                                                    }) }}">
                                                 En detalle
                                             </a>

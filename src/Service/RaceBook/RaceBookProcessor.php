@@ -142,53 +142,68 @@ class RaceBookProcessor
         }
 
         if (isset($data['wins'])) {
-            foreach ($data['wins'] as $winData) {
-                $win = new Win();
-                $win
-                    ->setRace($winData['race'])
-                    ->setType($winData['type'])
-                    ->setClass($winData['class'])
-                    ->setDate($winData['date'])
-                    ->setCyclist($cyclist);
-
-                $this->entityManager->persist($win);
-            }
-            $this->entityManager->flush();
+            $this->processCyclistWins($cyclist, $data['wins']);
         }
 
         if (isset($data['grand_tours'])) {
-            foreach ($data['grand_tours'] as $grandTourData) {
-                $grandTour = new GrandTour();
-                $grandTour
-                    ->setSeason($grandTourData['season'])
-                    ->setName($grandTourData['grand_tour'])
-                    ->setGc($grandTourData['gc'])
-                    ->setCyclist($cyclist);
-
-                $this->entityManager->persist($grandTour);
-            }
-
-            $this->entityManager->flush();
+            $this->processCyclistGrandTours($cyclist, $data['grand_tours']);
         }
 
         if (isset($data['classics'])) {
-            foreach ($data['classics'] as $classicData) {
-                $classic = new Classic();
-                $classic
-                    ->setName($classicData['classic'])
-                    ->setSeason($classicData['season'])
-                    ->setResult($classicData['result'])
-                    ->setCyclist($cyclist);
-
-                $this->entityManager->persist($classic);
-            }
-
-            $this->entityManager->flush();
+            $this->processCyclistClassics($cyclist, $data['classics']);
         }
 
         $this->logger->info(sprintf('Races data for cyclist %s processed!', $cyclist->getName()));
 
         return $cyclist;
+    }
+
+    private function processCyclistWins(Cyclist $cyclist, array $winsData): void
+    {
+        foreach ($winsData as $winData) {
+            $win = new Win();
+            $win
+                ->setRace($winData['race'])
+                ->setType($winData['type'])
+                ->setClass($winData['class'])
+                ->setDate($winData['date'])
+                ->setCyclist($cyclist);
+
+            $this->entityManager->persist($win);
+        }
+        $this->entityManager->flush();
+    }
+
+    private function processCyclistGrandTours(Cyclist $cyclist, array $grandToursData): void
+    {
+        foreach ($grandToursData as $grandTourData) {
+            $grandTour = new GrandTour();
+            $grandTour
+                ->setSeason($grandTourData['season'])
+                ->setName($grandTourData['grand_tour'])
+                ->setGc($grandTourData['gc'])
+                ->setCyclist($cyclist);
+
+            $this->entityManager->persist($grandTour);
+        }
+
+        $this->entityManager->flush();
+    }
+
+    private function processCyclistClassics(Cyclist $cyclist, array $classicsData): void
+    {
+        foreach ($classicsData as $classicData) {
+            $classic = new Classic();
+            $classic
+                ->setName($classicData['classic'])
+                ->setSeason($classicData['season'])
+                ->setResult($classicData['result'])
+                ->setCyclist($cyclist);
+
+            $this->entityManager->persist($classic);
+        }
+
+        $this->entityManager->flush();
     }
 
     private function processCyclistRace(User $user, Race $race, Cyclist $cyclist, int $dorsal): void

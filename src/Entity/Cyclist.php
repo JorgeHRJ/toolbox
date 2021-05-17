@@ -67,7 +67,7 @@ class Cyclist
      * @ORM\ManyToOne(targetEntity=Team::class, inversedBy="cyclists")
      * @ORM\JoinColumn(name="cyclist_team", referencedColumnName="team_id", nullable=false)
      */
-    private Team $team;
+    private ?Team $team;
 
     /**
      * @ORM\OneToMany(targetEntity=Win::class, mappedBy="cyclist", orphanRemoval=true)
@@ -91,13 +91,13 @@ class Cyclist
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(name="cyclist_created_at", type="datetime", nullable=false)
      */
-    private \DateTime $createdAt;
+    private \DateTimeInterface $createdAt;
 
     /**
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(name="cyclist_modified_at", type="datetime", nullable=true)
      */
-    private \DateTime $modifiedAt;
+    private \DateTimeInterface $modifiedAt;
 
     public function __construct()
     {
@@ -200,7 +200,7 @@ class Cyclist
         return $this->team;
     }
 
-    public function setTeam(Team $team): self
+    public function setTeam(?Team $team): self
     {
         $this->team = $team;
 

@@ -45,13 +45,13 @@ class Team
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(name="team_created_at", type="datetime", nullable=false)
      */
-    private \DateTime $createdAt;
+    private \DateTimeInterface $createdAt;
 
     /**
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(name="team_modified_at", type="datetime", nullable=true)
      */
-    private \DateTime $modifiedAt;
+    private \DateTimeInterface $modifiedAt;
 
     public function __construct()
     {

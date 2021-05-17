@@ -40,7 +40,7 @@ class Win
     /**
      * @ORM\Column(name="win_date", type="datetime", nullable=false)
      */
-    private \DateTime $date;
+    private \DateTimeInterface $date;
 
     /**
      * @ORM\ManyToOne(targetEntity=Cyclist::class, inversedBy="wins")
@@ -52,13 +52,13 @@ class Win
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(name="win_created_at", type="datetime", nullable=false)
      */
-    private \DateTime $createdAt;
+    private \DateTimeInterface $createdAt;
 
     /**
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(name="win_modified_at", type="datetime", nullable=true)
      */
-    private \DateTime $modifiedAt;
+    private \DateTimeInterface $modifiedAt;
 
     public function getId(): ?int
     {
@@ -101,7 +101,7 @@ class Win
         return $this;
     }
 
-    public function getDate(): ?\DateTime
+    public function getDate(): ?\DateTimeInterface
     {
         return $this->date;
     }

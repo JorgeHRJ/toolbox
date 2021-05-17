@@ -39,8 +39,8 @@ class RaceBookCommand extends Command
         $style = new SymfonyStyle($input, $output);
 
         $url = (string) $input->getArgument('url');
+
         $users = $this->userService->getByRoles([User::ROLE_RACEBOOK, User::ROLE_ADMIN]);
-        dump($users);die();
         foreach ($users as $user) {
             $this->raceBookService->process($user, $url);
         }
