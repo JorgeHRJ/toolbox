@@ -37,6 +37,11 @@ class CyclistRaceService extends BaseService
         return $this->repository->getByUserRaceSlugAndCyclistSlug($user, $raceSlug, $cyclistSlug);
     }
 
+    public function suggest(Race $race, string $query): array
+    {
+        return $this->repository->suggest($race, $query);
+    }
+
     /**
      * @param CyclistRace[] $cyclistRaces
      * @return array

@@ -9,6 +9,7 @@ use App\Library\Controller\BaseController;
 use App\Service\CyclistRaceService;
 use App\Service\RaceService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -79,6 +80,7 @@ class RaceBookController extends BaseController
 
     /**
      * @Route("/{raceSlug}/{cyclistSlug}", name="cyclist_race")
+     *
      * @param Request $request
      * @param string $raceSlug
      * @param string $cyclistSlug
@@ -115,5 +117,32 @@ class RaceBookController extends BaseController
             'form' => $form->createView(),
             'cyclist_race' => $cyclistRace
         ]);
+    }
+
+    /**
+     * @Route("/{raceSlug}/cyclist/suggest", name="cyclist_race_suggest")
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function cyclistSuggest(Request $request, string $raceSlug): Response
+    {
+        if (!$request->isXmlHttpRequest()) {
+            return new JsonResponse(['message' => 'Bad request'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $race = $this->raceService->getBySlug($raceSlug);
+        if (!$race instanceof Race) {
+            return new JsonResponse(null, Response::HTTP_NOT_FOUND);
+        }
+
+        $query = $request->get('q');
+        if ($query === null) {
+            return new JsonResponse(['message' => 'Query parameter nedded!'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $suggestions = $this->cyclistRaceService->suggest($race, $query);
+
+        return new JsonResponse(['suggestions' => $suggestions], Response::HTTP_OK);
     }
 }
