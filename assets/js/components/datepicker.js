@@ -1,5 +1,5 @@
 import { Datepicker } from 'vanillajs-datepicker';
-import es from "vanillajs-datepicker/js/i18n/locales/es";
+import es from '../../../node_modules/vanillajs-datepicker/js/i18n/locales/es';
 
 function initDatepicker(element, options = {}) {
   Object.assign(Datepicker.locales, es);
