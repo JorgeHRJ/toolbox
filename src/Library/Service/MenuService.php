@@ -77,6 +77,14 @@ class MenuService
             'ROLE_RESERVOIR',
             'icons/droplet-half.svg'
         );
+        $raceBookItem = new MenuItem(
+            'Libro de Ruta',
+            'Diseña tu propio libro de ruta para seguir la temporada ciclista',
+            $this->isActive('racebook'),
+            'racebook_index',
+            'ROLE_RACEBOOK',
+            'icons/journal-richtext.svg'
+        );
         $usersItem = new MenuItem(
             'Usuarios',
             'Listado de usuarios actuales de Toolbox',
@@ -86,7 +94,7 @@ class MenuService
             'icons/people.svg'
         );
 
-        return [$landingItem, $taskItem, $transactionItem, $reservoirItem, $usersItem];
+        return [$landingItem, $taskItem, $transactionItem, $reservoirItem, $raceBookItem, $usersItem];
     }
 
     /**
