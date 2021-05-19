@@ -69,8 +69,32 @@ class MenuService
             'ROLE_TRANSACTION',
             'icons/wallet.svg'
         );
+        $reservoirItem = new MenuItem(
+            'Balsas',
+            'Visualiza estadísticas de las balsas de la isla de La Palma',
+            $this->isActive('reservoir'),
+            'reservoir_index',
+            'ROLE_RESERVOIR',
+            'icons/droplet-half.svg'
+        );
+        $raceBookItem = new MenuItem(
+            'Libro de Ruta',
+            'Diseña tu propio libro de ruta para seguir la temporada ciclista',
+            $this->isActive('racebook'),
+            'racebook_index',
+            'ROLE_RACEBOOK',
+            'icons/journal-richtext.svg'
+        );
+        $usersItem = new MenuItem(
+            'Usuarios',
+            'Listado de usuarios actuales de Toolbox',
+            $this->isActive('user'),
+            'user_index',
+            'ROLE_ADMIN',
+            'icons/people.svg'
+        );
 
-        return [$landingItem, $taskItem, $transactionItem];
+        return [$landingItem, $taskItem, $transactionItem, $reservoirItem, $raceBookItem, $usersItem];
     }
 
     /**
@@ -95,7 +119,7 @@ class MenuService
         }
 
         $route = $request->attributes->get('_route');
-        return explode($route, '_')[0];
+        return explode('_', $route)[0];
     }
 
     /**

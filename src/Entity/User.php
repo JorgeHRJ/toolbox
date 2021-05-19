@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Library\Traits\Entity\TimestampableTrait;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -25,7 +27,16 @@ class User implements UserInterface
     const ROLE_USER = 'ROLE_USER';
     const ROLE_TASK = 'ROLE_TASK';
     const ROLE_TRANSACTION = 'ROLE_TRANSACTION';
-    const ROLES = [self::ROLE_ADMIN, self::ROLE_TASK, self::ROLE_TRANSACTION, self::ROLE_USER];
+    const ROLE_RESERVOIR = 'ROLE_RESERVOIR';
+    const ROLE_RACEBOOK = 'ROLE_RACEBOOK';
+    const ROLES = [
+        self::ROLE_ADMIN,
+        self::ROLE_TASK,
+        self::ROLE_TRANSACTION,
+        self::ROLE_RESERVOIR,
+        self::ROLE_RACEBOOK,
+        self::ROLE_USER
+    ];
 
     const DISABLED_STATUS = 0;
     const ENABLED_STATUS = 1;
@@ -86,6 +97,16 @@ class User implements UserInterface
      * @ORM\Column(name="user_modified_at", type="datetime", nullable=true)
      */
     private $modifiedAt;
+
+    /**
+     * @ORM\OneToMany(targetEntity=CyclistRace::class, mappedBy="user")
+     */
+    private $cyclistRaces;
+
+    public function __construct()
+    {
+        $this->cyclistRaces = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -182,5 +203,35 @@ class User implements UserInterface
     public function setStatus(?int $status): void
     {
         $this->status = $status;
+    }
+
+    /**
+     * @return Collection|CyclistRace[]
+     */
+    public function getCyclistRaces(): Collection
+    {
+        return $this->cyclistRaces;
+    }
+
+    public function addCyclistRace(CyclistRace $cyclistRace): self
+    {
+        if (!$this->cyclistRaces->contains($cyclistRace)) {
+            $this->cyclistRaces[] = $cyclistRace;
+            $cyclistRace->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCyclistRace(CyclistRace $cyclistRace): self
+    {
+        if ($this->cyclistRaces->removeElement($cyclistRace)) {
+            // set the owning side to null (unless already changed)
+            if ($cyclistRace->getUser() === $this) {
+                $cyclistRace->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }

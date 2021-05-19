@@ -43,10 +43,16 @@ security:
         ROLE_ADMIN:
             - ROLE_TASK
             - ROLE_TRANSACTION
+            - ROLE_RESERVOIR
+            - ROLE_RACEBOOK
             - ROLE_ALLOWED_TO_SWITCH
         ROLE_TASK:
             - ROLE_USER
         ROLE_TRANSACTION:
+            - ROLE_USER
+        ROLE_RESERVOIR:
+            - ROLE_USER
+        ROLE_RACEBOOK:
             - ROLE_USER
         ROLE_USER:
             - ROLE_USER

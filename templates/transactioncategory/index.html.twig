@@ -19,6 +19,31 @@
 } %}
 
 {% block content %}
+    <div class="row g-4 mb-4">
+        <div class="col-12">
+            <div class="app-card app-card-chart h-100 shadow-sm justify-content-center">
+                <div class="app-card-header p-3 border-0">
+                    <h4 class="app-card-title">Balance últimos seis meses</h4>
+                </div>
+                <div class="app-card-body p-3">
+                    <div class="d-flex justify-content-center">
+                        <div class="chart-container" style="height: 450px; width: 600px">
+                            <canvas height="450" width="600" data-component="transaction-balance-stats"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="hide" data-component="balance-container">
+                    {% for date, item in balance %}
+                        <div data-component="balance-item"
+                             data-date="{{ date }}"
+                             data-incomes="{{ item.total_incomes }}"
+                             data-expenses="{{ item.total_expenses }}">
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
     <nav id="orders-table-tab" class="orders-table-tab app-nav-tabs nav shadow-sm flex-column flex-sm-row mb-4">
         <a class="flex-sm-fill text-sm-center nav-link active"
            id="expenses-tab"
@@ -39,7 +64,6 @@
             Ingresos
         </a>
     </nav>
-    {{ include('components/flash.html.twig') }}
     <div class="tab-content" id="orders-table-tab-content">
         <div class="tab-pane fade active show" id="expenses" role="tabpanel" aria-labelledby="expenses-tab">
             <div class="app-card app-card-orders-table shadow-sm mb-5">
@@ -47,7 +71,8 @@
                     {% if expenses is empty %}
                         {{ include('components/no-results.html.twig') }}
                     {% else %}
-                        {{ include('transactioncategory/components/_transactions-list-table.html.twig', {'categories': expenses}) }}
+                        {{ include('transactioncategory/components/_transactions-list-table.html.twig',
+                            {'categories': expenses, 'type': 'expenses'}) }}
                     {% endif %}
                 </div>
             </div>
@@ -58,7 +83,8 @@
                     {% if incomes is empty %}
                         {{ include('components/no-results.html.twig') }}
                     {% else %}
-                        {{ include('transactioncategory/components/_transactions-list-table.html.twig', {'categories': incomes}) }}
+                        {{ include('transactioncategory/components/_transactions-list-table.html.twig',
+                            {'categories': incomes, 'type': 'incomes'}) }}
                     {% endif %}
                 </div>
             </div>

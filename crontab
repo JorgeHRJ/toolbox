@@ -1,0 +1,2 @@
+0 1 1 * * docker exec toolbox-php bin/console toolbox:transaction:monthly >/dev/null 2>&1
+0 3 * * * docker exec toolbox-php bin/console toolbox:reservoir:process >/dev/null 2>&1

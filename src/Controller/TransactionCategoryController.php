@@ -20,8 +20,6 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class TransactionCategoryController extends BaseController
 {
-    const LIST_LIMIT = 10;
-
     private $categoryService;
     private $monthService;
 
@@ -46,8 +44,8 @@ class TransactionCategoryController extends BaseController
 
         if ($year === null && $month === null) {
             $now = new \DateTime();
-            $year = $now->format('Y');
-            $month = $now->format('m');
+            $year = (int) $now->format('Y');
+            $month = (int) $now->format('m');
         }
 
         $incomes = $this->categoryService->getByTypeMonthAndYear(
@@ -63,9 +61,12 @@ class TransactionCategoryController extends BaseController
             $month
         );
 
+        $balance = $this->categoryService->getBalance($user, $year, $month);
+
         return $this->render('transactioncategory/index.html.twig', [
             'incomes' => $incomes,
-            'expenses' => $expenses
+            'expenses' => $expenses,
+            'balance' => $balance
         ]);
     }
 

@@ -1,6 +1,7 @@
 # Toolbox
 
 ![Continuous Integration](https://github.com/JorgeHRJ/toolbox/workflows/Continuous%20Integration/badge.svg)
+![Continuous Deployment](https://github.com/JorgeHRJ/toolbox/workflows/Continuous%20Deployment/badge.svg)
 
 App with some tools and experiments.
 

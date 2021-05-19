@@ -19,7 +19,7 @@ abstract class BaseRepository extends ServiceEntityRepository
     abstract public function getFilterFields(): array;
 
     /**
-     * @param User $user
+     * @param User|null $user
      * @param string|null $filter
      * @param array|null $orderBy
      * @param int|null $limit
@@ -28,7 +28,7 @@ abstract class BaseRepository extends ServiceEntityRepository
      * @return mixed
      */
     public function getAll(
-        User $user,
+        ?User $user,
         string $filter = null,
         array $orderBy = null,
         int $limit = null,
@@ -38,7 +38,9 @@ abstract class BaseRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder($alias);
 
         $this->setFilter($qb, $alias, $filter);
-        $this->setUserRestriction($user, $qb, $alias);
+        if ($user instanceof User) {
+            $this->setUserRestriction($user, $qb, $alias);
+        }
 
         if (!empty($orderBy)) {
             foreach ($orderBy as $field => $dir) {
@@ -55,19 +57,21 @@ abstract class BaseRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param User $user
+     * @param User|null $user
      * @param string|null $filter
      *
      * @return int
      */
-    public function getAllCount(User $user, ?string $filter)
+    public function getAllCount(?User $user, ?string $filter)
     {
         $alias = 't';
 
         $qb = $this->createQueryBuilder($alias)->select(sprintf('count(%s.id)', $alias));
 
         $this->setFilter($qb, $alias, $filter);
-        $this->setUserRestriction($user, $qb, $alias);
+        if ($user instanceof User) {
+            $this->setUserRestriction($user, $qb, $alias);
+        }
 
         try {
             return $qb->getQuery()->getSingleScalarResult();

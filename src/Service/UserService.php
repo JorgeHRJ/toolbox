@@ -20,6 +20,16 @@ class UserService extends BaseService
         $this->repository = $this->entityManager->getRepository(User::class);
     }
 
+    public function getByRole(string $role): array
+    {
+        return $this->repository->getByRole($role);
+    }
+
+    public function getByRoles(array $roles): array
+    {
+        return $this->repository->getByRoles($roles);
+    }
+
     public function getSortFields(): array
     {
         return [];

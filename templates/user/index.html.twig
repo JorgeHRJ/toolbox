@@ -1,0 +1,60 @@
+{% extends 'layout.html.twig' %}
+
+{% page_setup {
+    'title': 'Usuarios',
+    'header': 'Usuarios',
+    'subheader': 'Listado de usuarios de la aplicación',
+    'breadcrumbs': [
+        {
+            'name': 'Usuarios',
+            'main': true
+        }
+    ],
+    'utilities': 'user/components/_index-utilities.html.twig'
+} %}
+
+{% block content %}
+    <div class="row g-4">
+        <div class="app-card app-card-orders-table shadow-sm mb-5">
+            <div class="app-card-body">
+                <div class="table-responsive p-3">
+                    <table class="table app-table-hover mb-0 text-left">
+                        <thead>
+                        <tr class="bg-primary pt-1 pb-1">
+                            <th>Email</th>
+                            <th>Estado</th>
+                            <th>Roles</th>
+                            <th>Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for user in users %}
+                            <tr>
+                                <td class="cell">{{ user.email }}</td>
+                                <td class="cell">
+                                    {% set status_data = get_status_data(user) %}
+                                    <span class="{{ "badge rounded-pill bg-#{status_data.class}" }}">
+                                        {{ status_data.label }}
+                                    </span>
+                                </td>
+                                <td class="cell">
+                                    {% for role in user.roles %}
+                                        <span class="badge rounded-pill bg-secondary">{{ role }}</span>
+                                    {% endfor %}
+                                </td>
+                                <td class="cell">
+                                    <a class="btn-sm app-btn-secondary ml-1 p-2"
+                                       href="{{ path('user_edit', {'id': user.id}) }}"
+                                       title="Editar usuario">
+                                        {{ source('icons/pencil-sm.svg') }} Editar
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

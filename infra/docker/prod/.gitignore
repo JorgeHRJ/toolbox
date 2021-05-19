@@ -1,0 +1,8 @@
+_db/*
+!_db/.gitkeep
+_rabbitmq/*
+!_rabbitmq/.gitkeep
+letsencrypt/*
+!letsencrypt/.gitkeep
+.env
+web/certs/*

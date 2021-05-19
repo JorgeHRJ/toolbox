@@ -90,17 +90,21 @@ abstract class BaseService
     }
 
     /**
-     * @param User $user
+     * @param User|null $user
      * @param int $id
      * @return object|null
      */
-    public function get(User $user, int $id): ?object
+    public function get(?User $user, int $id): ?object
     {
+        if (!$user instanceof User) {
+            return $this->getRepository()->find($id);
+        }
+
         return $this->getRepository()->findOneBy(['id' => $id, 'user' => $user]);
     }
 
     /**
-     * @param User $user
+     * @param User|null $user
      * @param string|null $filter
      * @param int|null $page
      * @param int|null $limit
@@ -110,7 +114,7 @@ abstract class BaseService
      * @return array
      */
     public function getAll(
-        User $user,
+        User $user = null,
         string $filter = null,
         int $page = null,
         int $limit = null,

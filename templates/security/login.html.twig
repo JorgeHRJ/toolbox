@@ -21,7 +21,9 @@
                     <h2 class="auth-heading text-center mb-5">Iniciar sesión</h2>
                     <div class="auth-form-container text-left">
                         {% if error %}
-                            <div class="alert alert-danger">{{ error.message }}</div>
+                            <div class="alert alert-danger">
+                                No se ha podido iniciar sesión. ¿Has introducido las credenciales correctas?
+                            </div>
                         {% endif %}
                         <form method="post" action="{{ path('security_login') }}" class="auth-form login-form">
                             <div class="email mb-3">

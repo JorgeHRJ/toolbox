@@ -22,6 +22,7 @@
                             {{ source('icons/person.svg') }}
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="user-dropdown-toggle">
+                            <li><a class="dropdown-item" href={{ path('profile_edit') }}>Mi cuenta</a></li>
                             <li><a class="dropdown-item" href={{ path('security_logout') }}>Desconectar</a></li>
                         </ul>
                     </div>
