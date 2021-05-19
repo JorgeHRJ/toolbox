@@ -60,4 +60,18 @@ class CyclistRaceRepository extends BaseRepository
 
         return $queryBuilder->getQuery()->getOneOrNullResult();
     }
+
+    public function suggest(Race $race, string $query): array
+    {
+        $queryBuilder = $this->createQueryBuilder('cr');
+        $queryBuilder
+            ->select('c.name, c.slug')
+            ->join('cr.cyclist', 'c')
+            ->andWhere('cr.race = :raceId')
+            ->andWhere('c.name LIKE :cyclist_query')
+            ->setParameter('raceId', $race->getId())
+            ->setParameter('cyclist_query', sprintf('%%%s%%', $query));
+
+        return $queryBuilder->getQuery()->getArrayResult();
+    }
 }
