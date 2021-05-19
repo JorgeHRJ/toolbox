@@ -16,11 +16,20 @@
 } %}
 
 {% block content %}
+    <p>
+        Este es tu libro de ruta de {{ "#{race.name} (#{race.year})" }}. Selecciona algún ciclista si deseas
+        ver más información de él, además de poder editar la misma si deseas.
+    </p>
+    <div class="suggestify-container">
+        <input type="text"
+               class="form-control"
+               name="search-cyclist"
+               placeholder="Buscar corredor..."
+               data-component="suggestify"
+               data-url="{{ path('racebook_cyclist_race_suggest', {'raceSlug': race.slug}) }}"
+               data-callback="{{ url('racebook_cyclist_race', {'raceSlug': race.slug, 'cyclistSlug': '_replace_'}) }}">
+    </div>
     <div class="row mt-2 g-4">
-        <p>
-            Este es tu libro de ruta de {{ "#{race.name} (#{race.year})" }}. Selecciona algún ciclista si deseas
-            ver más información de él, además de poder editar la misma si deseas.
-        </p>
         {% for team, cyclist_races in teams %}
             <div class="col-12 col-lg-4">
                 <div class="app-card app-card-stats-table h-100 shadow-sm">
@@ -39,7 +48,7 @@
                                 <tbody>
                                 {% for cyclist_race in cyclist_races %}
                                     <tr>
-                                        <td>{{ cyclist_race.cyclist.name }}</td>
+                                        <td><strong>{{ cyclist_race.dorsal }}</strong> - {{ cyclist_race.cyclist.name }}</td>
                                         <td>
                                             <a class="btn-sm app-btn-secondary"
                                                href="{{ path('racebook_cyclist_race',
@@ -47,7 +56,7 @@
                                                        'raceSlug': cyclist_race.race.slug,
                                                        'cyclistSlug': cyclist_race.cyclist.slug
                                                    }) }}">
-                                                En detalle
+                                                {{ source('icons/eye-sm.svg') }}
                                             </a>
                                         </td>
                                     </tr>
