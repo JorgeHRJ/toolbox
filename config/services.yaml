@@ -20,3 +20,5 @@ services:
     App\Service\StorageService:
         arguments:
             $storageFolder: '%env(STORAGE_DIR)%'
+            $publicFolder: '%kernel.project_dir%/public'
+            $assetsFolder: '%env(ASSETS_DIR)%'

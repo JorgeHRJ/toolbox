@@ -2,7 +2,7 @@
 
 {% page_setup {
     'title': "Libro de Ruta - #{cyclist_race.cyclist.name} - #{cyclist_race.race.name} (#{cyclist_race.race.year})",
-    'header': "Libro de Ruta de #{cyclist_race.cyclist.name} - #{cyclist_race.race.name} (#{cyclist_race.race.year})",
+    'header': "#{cyclist_race.cyclist.name} - #{cyclist_race.race.name} (#{cyclist_race.race.year})",
     'breadcrumbs': [
         {
             'name': 'Libro de Ruta',
@@ -30,7 +30,10 @@
                             <li><strong>Dorsal en la carrera:</strong> {{ cyclist_race.dorsal }}</li>
                             <li><strong>Nacionalidad:</strong> {{ cyclist_race.cyclist.nationality }}</li>
                             <li><strong>Localidad:</strong> {{ cyclist_race.cyclist.location }}</li>
-                            <li><strong>Fecha de nacimiento:</strong> {{ cyclist_race.cyclist.birthDate|date('d/m/Y') }}</li>
+                            <li>
+                                <strong>Fecha de nacimiento:</strong> {{ cyclist_race.cyclist.birthDate|date('d/m/Y') }}
+                                ({{ get_age(cyclist_race.cyclist.birthDate) }} años)
+                            </li>
                             <li><strong>Altura:</strong> {{ cyclist_race.cyclist.height }}</li>
                             <li><strong>Peso:</strong> {{ cyclist_race.cyclist.weight }}</li>
                         </ul>

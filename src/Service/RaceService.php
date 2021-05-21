@@ -24,6 +24,11 @@ class RaceService extends BaseService
         return $this->repository->findOneBy(['name' => $name]);
     }
 
+    public function getByNameAndYear(string $name, string $year): ?Race
+    {
+        return $this->repository->findOneBy(['name' => $name, 'year' => $year]);
+    }
+
     public function getBySlug(string $slug): ?Race
     {
         return $this->repository->findOneBy(['slug' => $slug]);

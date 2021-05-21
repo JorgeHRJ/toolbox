@@ -37,6 +37,7 @@ class RaceBookCommand extends Command
     public function execute(InputInterface $input, OutputInterface $output): int
     {
         $style = new SymfonyStyle($input, $output);
+        $style->title('Race Book import process');
 
         $url = (string) $input->getArgument('url');
 
@@ -45,6 +46,7 @@ class RaceBookCommand extends Command
             $this->raceBookService->process($user, $url);
         }
 
+        $style->success('Finished!');
         return self::SUCCESS;
     }
 }

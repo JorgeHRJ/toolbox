@@ -2,7 +2,7 @@
 
 {% page_setup {
     'title': "Libro de Ruta - #{race.name} (#{race.year})",
-    'header': "Libro de Ruta de #{race.name} (#{race.year})",
+    'header': "#{race.name} (#{race.year})",
     'breadcrumbs': [
         {
             'name': 'Libro de Ruta',
@@ -17,56 +17,126 @@
 
 {% block content %}
     <p>
-        Este es tu libro de ruta de {{ "#{race.name} (#{race.year})" }}. Selecciona algún ciclista si deseas
-        ver más información de él, además de poder editar la misma si deseas.
+        Este es tu libro de ruta de {{ "#{race.name} (#{race.year})" }}. Puedes visualizar información acerca
+        de los ciclistas o sobre las etapas de la carrera.
     </p>
-    <div class="suggestify-container">
-        <input type="text"
-               class="form-control"
-               name="search-cyclist"
-               placeholder="Buscar corredor..."
-               data-component="suggestify"
-               data-url="{{ path('racebook_cyclist_race_suggest', {'raceSlug': race.slug}) }}"
-               data-callback="{{ url('racebook_cyclist_race', {'raceSlug': race.slug, 'cyclistSlug': '_replace_'}) }}">
-    </div>
-    <div class="row mt-2 g-4">
-        {% for team, cyclist_races in teams %}
-            <div class="col-12 col-lg-4">
-                <div class="app-card app-card-stats-table h-100 shadow-sm">
-                    <div class="app-card-header p-3 pb-0 border-bottom-0">
-                        <div class="row align-items-center gx-3">
-                            <div class="col-auto"></div>
-                            <div class="col-auto">
-                                <h2>{{ team }}</h2>
-                            </div>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="app-card-body px-4 pb-2">
-                        <div class="table-responsive">
-                            <table class="table table-borderless mb-0">
-                                <tbody>
-                                {% for cyclist_race in cyclist_races %}
-                                    <tr>
-                                        <td><strong>{{ cyclist_race.dorsal }}</strong> - {{ cyclist_race.cyclist.name }}</td>
-                                        <td>
-                                            <a class="btn-sm app-btn-secondary"
-                                               href="{{ path('racebook_cyclist_race',
-                                                   {
-                                                       'raceSlug': cyclist_race.race.slug,
-                                                       'cyclistSlug': cyclist_race.cyclist.slug
-                                                   }) }}">
-                                                {{ source('icons/eye-sm.svg') }}
-                                            </a>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
+    <div class="app-card shadow-sm mb-4 border-left-decoration" role="alert">
+        <div class="inner">
+            <div class="app-card-body p-3 p-lg-4">
+                <h3 class="mb-3">{{ race.name }}</h3>
+                <div class="row gx-5 gy-3">
+                    <div class="col-12">
+                        <ul>
+                            <li><strong>Año:</strong> {{ race.year }}</li>
+                            <li><strong>Comienzo:</strong> {{ race.startDate|date('d/m/Y') }}</li>
+                            <li><strong>Fin:</strong> {{ race.endDate|date('d/m/Y') }}</li>
+                            <li><strong>Categoría:</strong> {{ race.category }}</li>
+                            <li><strong>UCI Tour:</strong> {{ race.uciTour }}</li>
+                            <li><strong>Número etapas:</strong> {{ race.stages|length }}</li>
+                        </ul>
+                        <a href="{{ race.startlistUrl }}"
+                           class="btn app-btn-primary mt-2"
+                           target="_blank">
+                            Ir a ProCyclingStats
+                        </a>
                     </div>
                 </div>
             </div>
-        {% endfor %}
+        </div>
+    </div>
+
+    <nav id="race-tabs" class="app-nav-tabs nav shadow-sm flex-column flex-sm-row mb-4">
+        <a class="flex-sm-fill text-sm-center nav-link active"
+           id="cyclists-tab"
+           data-bs-toggle="tab"
+           href="#cyclists"
+           role="tab"
+           aria-selected="true">
+            Ciclistas
+        </a>
+        <a class="flex-sm-fill text-sm-center nav-link"
+           id="stages-tab"
+           data-bs-toggle="tab"
+           href="#stages"
+           role="tab"
+           aria-selected="false">
+            Etapas
+        </a>
+    </nav>
+    <div class="tab-content" id="race-tabs-content">
+        <div class="tab-pane fade show active" id="cyclists" role="tabpanel" aria-labelledby="cyclists-tab">
+            <div class="suggestify-container">
+                <input type="text"
+                       class="form-control"
+                       name="search-cyclist"
+                       placeholder="Buscar corredor..."
+                       data-component="suggestify"
+                       data-url="{{ path('racebook_cyclist_race_suggest', {'raceSlug': race.slug}) }}"
+                       data-callback="{{ url('racebook_cyclist_race', {'raceSlug': race.slug, 'cyclistSlug': '_replace_'}) }}">
+            </div>
+            <div class="row mt-2 g-4">
+                {% for team, cyclist_races in teams %}
+                    <div class="col-12 col-lg-4">
+                        <div class="app-card app-card-stats-table h-100 shadow-sm">
+                            <div class="app-card-header p-3 pb-0 border-bottom-0">
+                                <div class="row align-items-center gx-3">
+                                    <div class="col-auto"></div>
+                                    <div class="col-auto">
+                                        <h2>{{ team }}</h2>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="app-card-body px-4 pb-2">
+                                <div class="table-responsive">
+                                    <table class="table table-borderless mb-0">
+                                        <tbody>
+                                        {% for cyclist_race in cyclist_races %}
+                                            <tr>
+                                                <td><strong>{{ cyclist_race.dorsal }}</strong> - {{ cyclist_race.cyclist.name }}</td>
+                                                <td>
+                                                    <a class="btn-sm app-btn-secondary"
+                                                       href="{{ path('racebook_cyclist_race',
+                                                           {
+                                                               'raceSlug': cyclist_race.race.slug,
+                                                               'cyclistSlug': cyclist_race.cyclist.slug
+                                                           }) }}">
+                                                        {{ source('icons/eye-sm.svg') }}
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="tab-pane fade" id="stages" role="tabpanel" aria-labelledby="stages-tab">
+            <div class="row mt-2 g-4">
+                {% for stage in race.stages %}
+                    <div class="col-12 col-lg-4">
+                        <div class="app-card app-card-stats-table h-100 shadow-sm">
+                            <div class="app-card-header p-3 border-bottom-0">
+                                <div class="row">
+                                    <div class="col-auto"></div>
+                                    <div class="col-auto">
+                                        <h4>{{ "#{stage.departure} > #{stage.arrival}" }}</h4>
+                                        <h5>{{ "Etapa #{stage.number}" }}</h5>
+                                        <p>{{ stage.date|date('d/m/Y') }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <a class="app-card-link-mask"
+                               href="{{ path('racebook_cyclist_race_stage', {'raceSlug': race.slug, 'number': stage.number}) }}">
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
     </div>
 {% endblock %}

@@ -12,6 +12,7 @@ class RaceBookExtension extends AbstractExtension
         return [
             new TwigFunction('beautify_win_type', [$this, 'beautifyWinType']),
             new TwigFunction('beautify_grandtour_gc', [$this, 'beautifyGrandTourGc']),
+            new TwigFunction('get_age', [$this, 'getAge'])
         ];
     }
 
@@ -34,5 +35,13 @@ class RaceBookExtension extends AbstractExtension
         ];
 
         return $labels[$result] ?? $result;
+    }
+
+    public function getAge(\DateTime $date): int
+    {
+        $today = new \DateTime();
+        $diff = $date->diff($today);
+
+        return $diff->y;
     }
 }

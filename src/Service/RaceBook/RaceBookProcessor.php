@@ -2,17 +2,23 @@
 
 namespace App\Service\RaceBook;
 
+use App\Entity\Asset;
 use App\Entity\Classic;
 use App\Entity\Cyclist;
 use App\Entity\CyclistRace;
 use App\Entity\GrandTour;
 use App\Entity\Race;
+use App\Entity\Stage;
+use App\Entity\StageAsset;
+use App\Entity\StageUser;
 use App\Entity\Team;
 use App\Entity\User;
 use App\Entity\Win;
+use App\Service\AssetService;
 use App\Service\CyclistRaceService;
 use App\Service\CyclistService;
 use App\Service\RaceService;
+use App\Service\StorageService;
 use App\Service\TeamService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -24,6 +30,7 @@ class RaceBookProcessor
     private TeamService $teamService;
     private CyclistService $cyclistService;
     private CyclistRaceService $cyclistRaceService;
+    private StorageService $storageService;
     private EntityManagerInterface $entityManager;
     private LoggerInterface $logger;
     private SluggerInterface $slugger;
@@ -33,6 +40,7 @@ class RaceBookProcessor
         TeamService $teamService,
         CyclistService $cyclistService,
         CyclistRaceService $cyclistRaceService,
+        StorageService $storageService,
         EntityManagerInterface $entityManager,
         LoggerInterface $logger,
         SluggerInterface $slugger
@@ -41,6 +49,7 @@ class RaceBookProcessor
         $this->teamService = $teamService;
         $this->cyclistService = $cyclistService;
         $this->cyclistRaceService = $cyclistRaceService;
+        $this->storageService = $storageService;
         $this->entityManager = $entityManager;
         $this->logger = $logger;
         $this->slugger = $slugger;
@@ -61,12 +70,11 @@ class RaceBookProcessor
 
     public function processRaceData(array $raceData): Race
     {
-        $race = $this->raceService->getByName($raceData['name']);
+        $year = $raceData['start_date']->format('Y');
+        $race = $this->raceService->getByNameAndYear($raceData['name'], $year);
         if ($race instanceof Race) {
             return $race;
         }
-
-        $year = $raceData['start_date']->format('Y');
 
         $race = new Race();
         $race
@@ -85,6 +93,76 @@ class RaceBookProcessor
         $this->logger->info(sprintf('Race %s processed!', $race->getName()));
 
         return $race;
+    }
+
+    public function processStagesData(User $user, Race $race, array $stagesData): void
+    {
+        foreach ($stagesData as $stageData) {
+            $stage = new Stage();
+            $stage
+                ->setRace($race)
+                ->setNumber($stageData['number'])
+                ->setDate($stageData['date'])
+                ->setDistance($stageData['distance'])
+                ->setVertical($stageData['vertical'])
+                ->setDeparture($stageData['departure'])
+                ->setArrival($stageData['arrival'])
+                ->setType($stageData['type']);
+            $this->entityManager->persist($stage);
+
+            $stageUser = new StageUser();
+            $stageUser
+                ->setUser($user)
+                ->setStage($stage)
+                ->setComment([]);
+            $this->entityManager->persist($stageUser);
+
+            $this->entityManager->flush();
+
+            foreach ($stageData['images'] as $imageData) {
+                list($url, $title) = array_values($imageData);
+                $urlParts = explode('/', $url);
+                $filename = array_pop($urlParts);
+                $filenameParts = explode('.', $filename);
+                $extension = array_pop($filenameParts);
+
+                $basePath = sprintf('%s/%s', StorageService::STAGES_FOLDER, $stage->getId());
+                $folder = $this->storageService->getAssetsDir($basePath);
+
+                try {
+                    $this->storageService->saveFromUrl($url, $folder, $filename);
+                } catch (\Exception $e) {
+                    $this->logger->error(
+                        sprintf(
+                            'Stage (ID %d) profile image from URL %s was not saved. Error: %s',
+                            $stage->getId(),
+                            $url,
+                            $e->getMessage()
+                        )
+                    );
+                    continue;
+                }
+
+                $asset = new Asset();
+                $asset
+                    ->setFilename($filename)
+                    ->setExtension($extension)
+                    ->setPath($this->storageService->getAssetPath($basePath, $filename))
+                    ->setType(Asset::IMAGE_TYPE)
+                    ->setOrigin(Asset::STAGES_ORIGIN);
+
+                $this->entityManager->persist($asset);
+
+                $stageAsset = new StageAsset();
+                $stageAsset
+                    ->setTitle($title)
+                    ->setStage($stage)
+                    ->setAsset($asset);
+
+                $this->entityManager->persist($stageAsset);
+                $this->entityManager->flush();
+            }
+        }
     }
 
     private function processTeamData(string $name): Team

@@ -71,13 +71,13 @@ class RaceBookCrawler
         return $race;
     }
 
-    public function crawlStartlistUrl(string $baseUrl, string $content): ?string
+    public function crawlNavUrl(string $baseUrl, string $content, string $type): ?string
     {
         $crawler = new Crawler($content);
         $nodes = $crawler
             ->filter('.page-topnav li.reg > a')
-            ->reduce(function (Crawler $node) {
-                return strpos(strtolower($node->text()), 'startlist') !== false;
+            ->reduce(function (Crawler $node) use ($type) {
+                return strpos(strtolower($node->text()), $type) !== false;
             });
 
         $url = null;
@@ -89,6 +89,110 @@ class RaceBookCrawler
         }
 
         return $url;
+    }
+
+    public function crawlStagesData(string $stagesContent, string $baseUrl): array
+    {
+        $crawler = new Crawler($stagesContent);
+        $tableHeaders = $crawler
+            ->filter('table.basic thead tr')
+            ->first()
+            ->children()
+            ->each(function (Crawler $node) {
+                return $node->text();
+            });
+
+        $raceTableIndex = (int) array_search('Race', $tableHeaders);
+
+        $stagesNodes = $crawler
+            ->filter('table.basic tbody')
+            ->first()
+            ->children('tr')
+            ->each(function (Crawler $node) {
+                return $node->children('td')->each(function (Crawler $subNode) {
+                    return $subNode;
+                });
+            });
+
+        $stagesLinks = [];
+        foreach ($stagesNodes as $stagesNode) {
+            /** @var Crawler $cell */
+            $cell = $stagesNode[$raceTableIndex];
+            $link = $cell->filter('a')->first()->attr('href');
+            $stagesLinks[] = sprintf('%s/%s', $baseUrl, $link);
+        }
+
+        $stagesData = [];
+        foreach ($stagesLinks as $stageNumber => $stageLink) {
+            $stageContent = $this->client->call($stageLink);
+            $crawler = new Crawler($stageContent);
+            $infoText = $crawler
+                ->filter('ul.infolist')
+                ->text();
+
+            $keys = [
+                'Avg. speed winner', 'Race category', 'Distance', 'Points scale', 'Parcours type', 'ProfileScore',
+                'Vert. meters', 'Departure', 'Arrival', 'Race ranking', 'Won how'
+            ];
+            $info = [];
+            foreach ($keys as $key) {
+                $parts = explode($key, $infoText);
+                if (count($parts) > 1) {
+                    $item = $parts[0];
+                    $infoText = str_replace($item, '', $infoText);
+                    list($field, $value) = explode(':', $item);
+                    $info[$field] = trim($value);
+                }
+            }
+
+            $date = $info['Date'] ?? null;
+            if ($date !== null) {
+                list($date) = explode(',', $date);
+                $date = \DateTime::createFromFormat('d F Y', $date);
+            }
+
+            $distance = $info['Distance'] ?? null;
+            $vertical = $info['Vert. meters'] ?? null;
+            $departure = $info['Departure'] ?? null;
+            $arrival = $info['Arrival'] ?? null;
+
+            $parcourClass = $crawler
+                ->filter('ul.infolist span.icon.profile')
+                ->attr('class');
+            $parcourClass = trim(str_replace('icon profile', '', $parcourClass));
+            $parcour = null;
+            switch ($parcourClass) {
+                case 'p1':
+                    $parcour = 'Llano';
+                    break;
+                case 'p2':
+                    $parcour = 'Cotas, final en llano';
+                    break;
+                case 'p3':
+                    $parcour = 'Cotas, final en alto';
+                    break;
+                case 'p4':
+                    $parcour = 'Montañosa, final en llano';
+                    break;
+                case 'p5':
+                    $parcour = 'Montañosa, final en alto';
+                    break;
+            }
+
+            $imagesData = $this->crawlStagesProfilesImages($crawler, $baseUrl);
+            $stagesData[] = [
+                'number' => ((int) $stageNumber) + 1,
+                'date' => $date,
+                'distance' => $distance,
+                'vertical' => sprintf('%s m', $vertical),
+                'departure' => $departure,
+                'arrival' => $arrival,
+                'type' => $parcour,
+                'images' => $imagesData
+            ];
+        }
+
+        return $stagesData;
     }
 
     public function crawlTeamsData(string $startlistContent, string $baseUrl): array
@@ -349,6 +453,27 @@ class RaceBookCrawler
         }
 
         return $data;
+    }
+
+    private function crawlStagesProfilesImages(Crawler $stageCrawler, string $baseUrl): array
+    {
+        $profilesRelativeLink = $stageCrawler
+            ->filter('ul.list a img')
+            ->first()
+            ->closest('a')
+            ->attr('href');
+        $profilesUrl = sprintf('%s/%s', $baseUrl, $profilesRelativeLink);
+
+        $profilesContent = $this->client->call($profilesUrl);
+        $profilesCrawler = new Crawler($profilesContent);
+        return $profilesCrawler
+            ->filter('.page-content.page-object.default img')
+            ->each(function (Crawler $node) use ($baseUrl) {
+                return [
+                    'url' => sprintf('%s/%s', $baseUrl, $node->attr('src')),
+                    'title' => $node->closest('li')->text()
+                ];
+            });
     }
 
     private function getCyclistName(string $cyclistContent): string

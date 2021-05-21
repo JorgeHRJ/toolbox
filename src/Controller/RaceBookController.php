@@ -4,10 +4,15 @@ namespace App\Controller;
 
 use App\Entity\CyclistRace;
 use App\Entity\Race;
+use App\Entity\Stage;
+use App\Entity\StageUser;
 use App\Form\CyclistRaceType;
+use App\Form\StageUserType;
 use App\Library\Controller\BaseController;
 use App\Service\CyclistRaceService;
 use App\Service\RaceService;
+use App\Service\StageService;
+use App\Service\StageUserService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,11 +29,19 @@ class RaceBookController extends BaseController
     const LIST_LIMIT = 10;
 
     private RaceService $raceService;
+    private StageService $stageService;
+    private StageUserService $stageUserService;
     private CyclistRaceService $cyclistRaceService;
 
-    public function __construct(RaceService $raceService, CyclistRaceService $cyclistRaceService)
-    {
+    public function __construct(
+        RaceService $raceService,
+        StageService $stageService,
+        StageUserService $stageUserService,
+        CyclistRaceService $cyclistRaceService
+    ) {
         $this->raceService = $raceService;
+        $this->stageService = $stageService;
+        $this->stageUserService = $stageUserService;
         $this->cyclistRaceService = $cyclistRaceService;
     }
 
@@ -71,10 +84,12 @@ class RaceBookController extends BaseController
 
         $cyclistsRaces = $this->cyclistRaceService->getByUserAndRace($user, $race);
         $teamsData = $this->cyclistRaceService->makeTeamCentered($cyclistsRaces);
+        $stages = $this->stageService->getByRace($race);
 
         return $this->render('racebook/race.html.twig', [
             'race' => $race,
-            'teams' => $teamsData
+            'teams' => $teamsData,
+            'stages' => $stages
         ]);
     }
 
@@ -144,5 +159,46 @@ class RaceBookController extends BaseController
         $suggestions = $this->cyclistRaceService->suggest($race, $query);
 
         return new JsonResponse(['suggestions' => $suggestions], Response::HTTP_OK);
+    }
+
+    /**
+     * @Route("/{raceSlug}/etapa/{number}", name="cyclist_race_stage")
+     *
+     * @param Request $request
+     * @param string $raceSlug
+     * @param int $number
+     * @return Response
+     */
+    public function stage(Request $request, string $raceSlug, int $number): Response
+    {
+        $user = $this->getUserInstance();
+        $stageUser = $this->stageUserService->getByUserRaceSlugAndNumber($user, $raceSlug, $number);
+        if (!$stageUser instanceof StageUser) {
+            throw new NotFoundHttpException();
+        }
+
+        $form = $this->createForm(StageUserType::class, $stageUser);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted()) {
+            if (!$form->isValid()) {
+                $this->addFlash('app_error', $this->getFormErrorMessagesList($form, true));
+                return $this->render('racebook/stage.html.twig', [
+                    'form' => $form->createView(),
+                    'stage_user' => $stageUser
+                ]);
+            }
+
+            try {
+                $this->cyclistRaceService->edit($stageUser);
+            } catch (\Exception $exception) {
+                $this->addFlash('app_error', 'Hubo un problema a la hora de editar la información de la etapa');
+            }
+        }
+
+        return $this->render('racebook/stage.html.twig', [
+            'form' => $form->createView(),
+            'stage_user' => $stageUser
+        ]);
     }
 }

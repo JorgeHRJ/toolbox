@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Library\Traits\Entity\TimestampableTrait;
 use App\Repository\RaceRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -65,6 +67,11 @@ class Race
     private string $uciTour;
 
     /**
+     * @ORM\OneToMany(targetEntity=Stage::class, mappedBy="race", orphanRemoval=true)
+     */
+    private Collection $stages;
+
+    /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(name="race_created_at", type="datetime", nullable=false)
      */
@@ -75,6 +82,11 @@ class Race
      * @ORM\Column(name="race_modified_at", type="datetime", nullable=true)
      */
     private \DateTimeInterface $modifiedAt;
+
+    public function __construct()
+    {
+        $this->stages = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -173,6 +185,36 @@ class Race
     public function setUciTour(string $uciTour): self
     {
         $this->uciTour = $uciTour;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Stage[]
+     */
+    public function getStages(): Collection
+    {
+        return $this->stages;
+    }
+
+    public function addStage(Stage $stage): self
+    {
+        if (!$this->stages->contains($stage)) {
+            $this->stages[] = $stage;
+            $stage->setRace($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStage(Stage $stage): self
+    {
+        if ($this->stages->removeElement($stage)) {
+            // set the owning side to null (unless already changed)
+            if ($stage->getRace() === $this) {
+                $stage->setRace(null);
+            }
+        }
 
         return $this;
     }
