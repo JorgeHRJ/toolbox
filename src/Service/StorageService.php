@@ -48,7 +48,7 @@ class StorageService
 
     public function getAssetPath(string $basePath, string $filename): string
     {
-        return sprintf('%s/%s/%s', $this->assetsFolder, $basePath , $filename);
+        return sprintf('%s/%s/%s', $this->assetsFolder, $basePath, $filename);
     }
 
     /**

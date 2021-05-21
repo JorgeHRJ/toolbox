@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use App\Library\Traits\Entity\TimestampableTrait;
 use App\Repository\StageRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -15,8 +14,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 class Stage
 {
-    use TimestampableTrait;
-
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -63,7 +60,7 @@ class Stage
      * @ORM\ManyToOne(targetEntity=Race::class, inversedBy="stages")
      * @ORM\JoinColumn(name="stage_race", referencedColumnName="race_id", nullable=false)
      */
-    private Race $race;
+    private ?Race $race;
 
     /**
      * @ORM\OneToMany(targetEntity=StageAsset::class, mappedBy="stage", orphanRemoval=true)
@@ -175,7 +172,7 @@ class Stage
         return $this->race;
     }
 
-    public function setRace(Race $race): self
+    public function setRace(?Race $race): self
     {
         $this->race = $race;
 
@@ -208,6 +205,18 @@ class Stage
                 $asset->setStage(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCreatedAt(): \DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }

@@ -91,6 +91,13 @@ class RaceBookCrawler
         return $url;
     }
 
+    /**
+     * @param string $stagesContent
+     * @param string $baseUrl
+     * @return array
+     * @throws \Exception
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     */
     public function crawlStagesData(string $stagesContent, string $baseUrl): array
     {
         $crawler = new Crawler($stagesContent);
@@ -103,7 +110,6 @@ class RaceBookCrawler
             });
 
         $raceTableIndex = (int) array_search('Race', $tableHeaders);
-
         $stagesNodes = $crawler
             ->filter('table.basic tbody')
             ->first()
@@ -160,28 +166,18 @@ class RaceBookCrawler
                 ->filter('ul.infolist span.icon.profile')
                 ->attr('class');
             $parcourClass = trim(str_replace('icon profile', '', $parcourClass));
-            $parcour = null;
-            switch ($parcourClass) {
-                case 'p1':
-                    $parcour = 'Llano';
-                    break;
-                case 'p2':
-                    $parcour = 'Cotas, final en llano';
-                    break;
-                case 'p3':
-                    $parcour = 'Cotas, final en alto';
-                    break;
-                case 'p4':
-                    $parcour = 'Montañosa, final en llano';
-                    break;
-                case 'p5':
-                    $parcour = 'Montañosa, final en alto';
-                    break;
-            }
+            $parcourLabels = [
+                'p1' =>  'Llano',
+                'p2' => 'Cotas, final en llano',
+                'p3' => 'Cotas, final en alto',
+                'p4' => 'Montañosa, final en llano',
+                'p5' => 'Montañosa, final en alto'
+            ];
+            $parcour = $parcourLabels[$parcourClass] ?? null;
 
             $imagesData = $this->crawlStagesProfilesImages($crawler, $baseUrl);
             $stagesData[] = [
-                'number' => ((int) $stageNumber) + 1,
+                'number' => ($stageNumber) + 1,
                 'date' => $date,
                 'distance' => $distance,
                 'vertical' => sprintf('%s m', $vertical),
