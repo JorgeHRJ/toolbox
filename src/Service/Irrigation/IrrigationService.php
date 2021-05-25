@@ -299,7 +299,6 @@ class IrrigationService extends BaseCrawlerClient
                     ];
                 }
             }
-
         }
 
         return $data;
