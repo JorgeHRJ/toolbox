@@ -29,12 +29,14 @@ class User implements UserInterface
     const ROLE_TRANSACTION = 'ROLE_TRANSACTION';
     const ROLE_RESERVOIR = 'ROLE_RESERVOIR';
     const ROLE_RACEBOOK = 'ROLE_RACEBOOK';
+    const ROLE_IRRIGATION = 'ROLE_IRRIGATION';
     const ROLES = [
         self::ROLE_ADMIN,
         self::ROLE_TASK,
         self::ROLE_TRANSACTION,
         self::ROLE_RESERVOIR,
         self::ROLE_RACEBOOK,
+        self::ROLE_IRRIGATION,
         self::ROLE_USER
     ];
 

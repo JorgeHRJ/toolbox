@@ -77,6 +77,14 @@ class MenuService
             'ROLE_RESERVOIR',
             'icons/droplet-half.svg'
         );
+        $irrigationItem = new MenuItem(
+            'Recomendaciones de Riego',
+            'Revisa datos sobre las recomendaciones de riego en platanera en La Palma',
+            $this->isActive('irrigation'),
+            'irrigation_zones',
+            'ROLE_IRRIGATION',
+            'icons/moisture.svg'
+        );
         $raceBookItem = new MenuItem(
             'Libro de Ruta',
             'Diseña tu propio libro de ruta para seguir la temporada ciclista',
@@ -94,7 +102,7 @@ class MenuService
             'icons/people.svg'
         );
 
-        return [$landingItem, $taskItem, $transactionItem, $reservoirItem, $raceBookItem, $usersItem];
+        return [$landingItem, $taskItem, $transactionItem, $reservoirItem, $irrigationItem, $raceBookItem, $usersItem];
     }
 
     /**

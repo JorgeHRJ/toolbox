@@ -7,6 +7,7 @@ use Psr\Log\LoggerInterface;
 class StorageService
 {
     const RESERVOIR_FOLDER = 'reservoir';
+    const IRRIGATION_FOLDER = 'irrigation';
     const STAGES_FOLDER = 'stages';
 
     private string $storageFolder;

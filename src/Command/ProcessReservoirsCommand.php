@@ -10,8 +10,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ProcessReservoirsCommand extends Command
 {
-    private $dataService;
-    private $logger;
+    private ReservoirDataService $dataService;
+    private LoggerInterface $logger;
 
     public function __construct(ReservoirDataService $dataService, LoggerInterface $logger)
     {
@@ -29,7 +29,7 @@ class ProcessReservoirsCommand extends Command
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->logger->info(sprintf('Started to process. Date %s', date('d-m-Y')));
+        $this->logger->info(sprintf('Reservoirs - Started to process. Date %s', date('d-m-Y')));
 
         $this->dataService->processData();
 

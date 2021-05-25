@@ -59,7 +59,8 @@ class UserRegistrationType extends AbstractType
                     'Semanal' => User::ROLE_TASK,
                     'Monedero' => User::ROLE_TRANSACTION,
                     'Balsas' => User::ROLE_RESERVOIR,
-                    'Libro de Ruta' => User::ROLE_RACEBOOK
+                    'Libro de Ruta' => User::ROLE_RACEBOOK,
+                    'Recomendaciones de Riego' => User::ROLE_IRRIGATION
                 ]
             ])
         ;

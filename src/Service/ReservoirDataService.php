@@ -22,15 +22,13 @@ class ReservoirDataService extends BaseService
     const LA_PALMA_AGUAS_BASE_URL = 'https://lapalmaaguas.com/category/balsas/';
     const LA_PALMA_AGUAS_PAGINATION = 'page/%d/';
 
-    private $processService;
-    private $municipalityService;
-    private $reservoirService;
-    private $storageService;
-    private $client;
-    private $pdfParser;
-
-    /** @var ReservoirDataRepository */
-    private $repository;
+    private ReservoirProcessService $processService;
+    private ReservoirMunicipalityService $municipalityService;
+    private ReservoirService $reservoirService;
+    private StorageService $storageService;
+    private HttpClientInterface $client;
+    private Parser $pdfParser;
+    private ReservoirDataRepository$repository;
 
     public function __construct(
         ReservoirProcessService $processService,

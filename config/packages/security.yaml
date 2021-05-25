@@ -45,6 +45,7 @@ security:
             - ROLE_TRANSACTION
             - ROLE_RESERVOIR
             - ROLE_RACEBOOK
+            - ROLE_IRRIGATION
             - ROLE_ALLOWED_TO_SWITCH
         ROLE_TASK:
             - ROLE_USER
@@ -53,6 +54,8 @@ security:
         ROLE_RESERVOIR:
             - ROLE_USER
         ROLE_RACEBOOK:
+            - ROLE_USER
+        ROLE_IRRIGATION:
             - ROLE_USER
         ROLE_USER:
             - ROLE_USER
