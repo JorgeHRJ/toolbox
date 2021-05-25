@@ -60,7 +60,6 @@ class IrrigationController extends BaseController
 
     /**
      * @Route("/zona/descargar/{dataId}", name="download", requirements={"dataId"="\d+"})
-     *
      * @param int $dataId
      * @return Response
      */

@@ -53,6 +53,7 @@ class IrrigationService extends BaseCrawlerClient
         $startDates = $this->dataService->getStartDates();
 
         $linksData = $this->getArticlesLinks($startDates, self::LA_PALMA_AGUAS_BASE_URL);
+
         $processes = $this->processLinks($linksData);
         $parsedData = $this->parseProcesses($processes);
 
@@ -199,8 +200,9 @@ class IrrigationService extends BaseCrawlerClient
                         if ($value === '' || !is_numeric($value)) {
                             $value = null;
                             $this->errors[] = sprintf(
-                                'It seems there is a wrong parsed value in file gotten from URL %s. Value: %s',
+                                'Wrong parsed value in file gotten from URL %s. Context %s - Value: %s',
                                 $item['link'],
+                                $context,
                                 $statData[$context]
                             );
                         }
@@ -243,7 +245,7 @@ class IrrigationService extends BaseCrawlerClient
             $row = preg_replace('/(\v|\s)+/', ' ', $row);
 
             $matches = null;
-            preg_match_all('/ZONA (\d+). (.*)/', $row, $matches);
+            preg_match_all('/ZONA (\d+(?:\.\d+)?(?:\.)?) (.*)/', $row, $matches);
             if (isset($matches[0][0])) {
                 $zoneTemp = trim(str_replace('Aire Libre Invernadero', '', $matches[2][0]));
                 continue;
@@ -251,13 +253,13 @@ class IrrigationService extends BaseCrawlerClient
 
             $matches = null;
             preg_match_all(
-                '/(LITROS POR PLANTA\/SEMANAL|LITROS POR PLANTA\/DÍA|PIPAS POR CELEMIN\/SEMANAL) (.*)/',
+                '/(LITROS POR PLANTA\/SEMANAL|LITROS POR PLANTA\/DÍA|PIPAS POR CELEMIN\/SEMANAL)(.*)/',
                 $row,
                 $matches
             );
             if (isset($matches[0][0])) {
                 $stat = $this->getStatKey($matches[1][0]);
-                $values = $matches[2][0];
+                $values = trim($matches[2][0]);
 
                 $valueParts = explode(' ', $values);
                 $outdoors = $valueParts[0] ?? null;
@@ -284,7 +286,7 @@ class IrrigationService extends BaseCrawlerClient
 
             $matches = null;
             preg_match_all(
-                '/^([+-]?\d+(?:\,\d+)?) ?([+-]?\d+(?:\,\d+)?)?$/',
+                '/^([+-]?\d+(?:\,\d+)?) ?([+-]?\d+(?:\,\d+)?)?/',
                 $row,
                 $matches
             );
