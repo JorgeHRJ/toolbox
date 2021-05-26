@@ -33,10 +33,10 @@ class RaceBookService
         $stagesData = $this->crawler->crawlStagesData($stagesContent, $baseUrl);
         $this->processor->processStagesData($user, $race, $stagesData);
 
-        //$startlistUrl = $this->crawler->crawlNavUrl($baseUrl, $overviewContent, 'startlist');
-        //$startlistContent = $this->client->call($startlistUrl);
+        $startlistUrl = $this->crawler->crawlNavUrl($baseUrl, $overviewContent, 'startlist');
+        $startlistContent = $this->client->call($startlistUrl);
 
-        //$teamsData = $this->crawler->crawlTeamsData($startlistContent, $baseUrl);
-        //$this->processor->processTeamsData($user, $race, $teamsData);
+        $teamsData = $this->crawler->crawlTeamsData($startlistContent, $baseUrl);
+        $this->processor->processTeamsData($user, $race, $teamsData);
     }
 }
