@@ -16,6 +16,7 @@ import initSlideshowComponent from './js/components/slideshow';
 import initTaskController from './js/controllers/task_controller';
 import initTransactionCategoryController from './js/controllers/transactioncategory_controller';
 import initReservoirController from './js/controllers/reservoir_controller';
+import initIrrigationController from './js/controllers/irrigation_controller';
 
 // init modules
 initTheme();
@@ -37,4 +38,8 @@ if (document.querySelector('[data-controller="transactioncategory"]')) {
 
 if (document.querySelector('[data-controller="reservoir"]')) {
   initReservoirController();
+}
+
+if (document.querySelector('[data-controller="irrigation"]')) {
+  initIrrigationController();
 }

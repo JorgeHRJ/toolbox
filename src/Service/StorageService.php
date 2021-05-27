@@ -63,7 +63,7 @@ class StorageService
     public function saveFromUrl(string $url, string $folder, string $filename): void
     {
         if (!file_exists($folder)) {
-            mkdir($folder, 0764, true);
+            mkdir($folder, 0777, true);
         }
 
         try {
@@ -86,7 +86,7 @@ class StorageService
     public function saveRemote(string $url, string $folder, string $filename): void
     {
         if (!file_exists($folder)) {
-            mkdir($folder, 0764, true);
+            mkdir($folder, 0777, true);
         }
 
         try {
