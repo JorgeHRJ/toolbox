@@ -38,6 +38,10 @@
                         {{ form_label(form.roles) }}
                         {{ form_widget(form.roles) }}
                     </div>
+                    <div class="form-check mb-3">
+                        {{ form_widget(form.reportable, {'attr': {'class': 'form-check-input'}}) }}
+                        {{ form_label(form.reportable, form.reportable.vars.label, {'label_attr': {'class': 'form-check-label'}}) }}
+                    </div>
                     <button type="submit" class="btn app-btn-primary">Enviar</button>
                     {{ form_widget(form._token) }}
                     {{ form_end(form, {'render_rest': false}) }}
