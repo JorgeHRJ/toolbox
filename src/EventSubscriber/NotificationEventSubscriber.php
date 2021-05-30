@@ -52,9 +52,11 @@ class NotificationEventSubscriber implements EventSubscriberInterface
 
             $this->notificationService->create($notification);
 
-            $mail = new NewIrrigationMail();
-            $mail->prepare($user->getEmail(), []);
-            $this->mailerService->send($mail);
+            if ($user->getReportable()) {
+                $mail = new NewIrrigationMail();
+                $mail->prepare($user->getEmail(), []);
+                $this->mailerService->send($mail);
+            }
         }
     }
 
@@ -71,9 +73,11 @@ class NotificationEventSubscriber implements EventSubscriberInterface
 
             $this->notificationService->create($notification);
 
-            $mail = new NewReservoirDataMail();
-            $mail->prepare($user->getEmail(), []);
-            $this->mailerService->send($mail);
+            if ($user->getReportable()) {
+                $mail = new NewReservoirDataMail();
+                $mail->prepare($user->getEmail(), []);
+                $this->mailerService->send($mail);
+            }
         }
     }
 
