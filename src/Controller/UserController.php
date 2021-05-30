@@ -5,8 +5,11 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\UserRegistrationType;
 use App\Library\Controller\BaseController;
+use App\Library\Event\NewUserNotificationEvent;
+use App\Library\Utils\Stringify;
 use App\Service\UserService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -18,11 +21,13 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class UserController extends BaseController
 {
-    private $userService;
+    private UserService $userService;
+    private EventDispatcherInterface $dispatcher;
 
-    public function __construct(UserService $userService)
+    public function __construct(UserService $userService, EventDispatcherInterface $dispatcher)
     {
         $this->userService = $userService;
+        $this->dispatcher = $dispatcher;
     }
 
     /**
@@ -57,9 +62,11 @@ class UserController extends BaseController
             }
 
             try {
-                $this->userService->create($user);
+                $password = $form->get('password')->getData() ?? Stringify::randomStr(12);
+                $user = $this->userService->new($user, $password);
 
-                // TODO send mail
+                $event = new NewUserNotificationEvent($user->getEmail(), $password);
+                $this->dispatcher->dispatch($event, NewUserNotificationEvent::EVENT);
 
                 $this->addFlash('app_success', '¡Usuario creado con éxito!');
 

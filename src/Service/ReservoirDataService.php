@@ -6,6 +6,7 @@ use App\Entity\Reservoir;
 use App\Entity\ReservoirData;
 use App\Entity\ReservoirMunicipality;
 use App\Entity\ReservoirProcess;
+use App\Library\Event\ReservoirNotificationEvent;
 use App\Library\Repository\BaseRepository;
 use App\Library\Service\BaseService;
 use App\Repository\ReservoirDataRepository;
@@ -14,6 +15,7 @@ use Psr\Log\LoggerInterface;
 use Smalot\PdfParser\Parser;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\DomCrawler\Link as CrawlerLink;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
@@ -28,7 +30,8 @@ class ReservoirDataService extends BaseService
     private StorageService $storageService;
     private HttpClientInterface $client;
     private Parser $pdfParser;
-    private ReservoirDataRepository$repository;
+    private ReservoirDataRepository $repository;
+    private EventDispatcherInterface $dispatcher;
 
     public function __construct(
         ReservoirProcessService $processService,
@@ -37,7 +40,8 @@ class ReservoirDataService extends BaseService
         StorageService $storageService,
         EntityManagerInterface $entityManager,
         LoggerInterface $logger,
-        HttpClientInterface $client
+        HttpClientInterface $client,
+        EventDispatcherInterface $dispatcher
     ) {
         parent::__construct($entityManager, $logger);
         $this->processService = $processService;
@@ -45,6 +49,7 @@ class ReservoirDataService extends BaseService
         $this->reservoirService = $reservoirService;
         $this->storageService = $storageService;
         $this->client = $client;
+        $this->dispatcher = $dispatcher;
         $this->pdfParser = new Parser();
         $this->repository = $entityManager->getRepository(ReservoirData::class);
     }
@@ -92,8 +97,13 @@ class ReservoirDataService extends BaseService
         $articlesLinks = $this->getArticlesLinks($processedDates, self::LA_PALMA_AGUAS_BASE_URL);
 
         $processes = $this->getProcessesFromArticles($articlesLinks);
+        if (empty($processes)) {
+            return;
+        }
 
         $this->handle($processes);
+
+        $this->dispatcher->dispatch(new ReservoirNotificationEvent(), ReservoirNotificationEvent::EVENT);
     }
 
     /**

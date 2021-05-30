@@ -1,0 +1,42 @@
+{% extends 'layout.html.twig' %}
+
+{% page_setup {
+    'title': 'Notificaciones',
+    'header': 'Notificaciones',
+    'breadcrumbs': [
+        {
+            'name': 'Notificaciones',
+            'main': true
+        }
+    ],
+} %}
+
+{% block content %}
+    {% if notifications is empty %}
+        {{ include('components/no-results.html.twig') }}
+    {% else %}
+        {% for notification in notifications %}
+            <div class="app-card app-card-notification shadow-sm mb-4">
+                <div class="app-card-header px-4 py-3">
+                    <div class="row g-3 align-items-center">
+                        <div class="col-12 col-lg-auto text-center text-lg-left">
+                            <div class="notification-type mb-2">
+                                {% set notification_info = get_notification_type_info(notification.type) %}
+                                {% if notification_info is not empty %}
+                                    <span class="badge bg-{{ notification_info.badge }}">{{ notification_info.label }}</span>
+                                {% endif %}
+                            </div>
+                            <ul class="notification-meta list-inline mb-0">
+                                <li class="list-inline-item">{{ notification.createdAt|date('d/m/Y') }}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="app-card-body p-4">
+                    <div class="notification-content">{{ notification.content }}</div>
+                    <a class="app-card-link-mask" href="{{ path('notification_handle', {'id': notification.id}) }}"></a>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endblock %}

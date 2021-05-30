@@ -11,17 +11,10 @@ use Twig\Environment;
 
 class MailerService
 {
-    /** @var string */
-    private $from;
-
-    /** @var MailerInterface */
-    private $mailer;
-
-    /** @var Environment */
-    private $templating;
-
-    /** @var LoggerInterface */
-    private $logger;
+    private string $from;
+    private MailerInterface $mailer;
+    private Environment $templating;
+    private LoggerInterface $logger;
 
     public function __construct(
         string $from,

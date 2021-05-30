@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
@@ -52,6 +53,10 @@ class UserProfileType extends AbstractType
                     ],
                     'required' => false,
                     'invalid_message' => 'Las contraseñas nuevas deben coincidir.'
+            ])
+            ->add('reportable', CheckboxType::class, [
+                'required' => false,
+                'label' => '¿Deseas recibir notificaciones via email de tus herramientas?'
             ])
         ;
 

@@ -7,6 +7,7 @@ use App\Entity\IrrigationProcess;
 use App\Entity\IrrigationStat;
 use App\Entity\IrrigationZone;
 use App\Library\Crawler\BaseCrawlerClient;
+use App\Library\Event\IrrigationNotificationEvent;
 use App\Service\IrrigationDataService;
 use App\Service\IrrigationProcessService;
 use App\Service\IrrigationZoneService;
@@ -15,6 +16,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Smalot\PdfParser\Parser;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class IrrigationService extends BaseCrawlerClient
@@ -27,6 +29,7 @@ class IrrigationService extends BaseCrawlerClient
     private IrrigationProcessService $processService;
     private StorageService $storageService;
     private EntityManagerInterface $entityManager;
+    private EventDispatcherInterface $dispatcher;
     private Parser $pdfParser;
     private array $errors = [];
 
@@ -36,6 +39,7 @@ class IrrigationService extends BaseCrawlerClient
         IrrigationProcessService $processService,
         StorageService $storageService,
         EntityManagerInterface $entityManager,
+        EventDispatcherInterface $dispatcher,
         HttpClientInterface $client,
         LoggerInterface $logger
     ) {
@@ -45,6 +49,7 @@ class IrrigationService extends BaseCrawlerClient
         $this->processService = $processService;
         $this->storageService = $storageService;
         $this->entityManager = $entityManager;
+        $this->dispatcher = $dispatcher;
         $this->pdfParser = new Parser();
     }
 
@@ -55,13 +60,18 @@ class IrrigationService extends BaseCrawlerClient
         $linksData = $this->getArticlesLinks($startDates, self::LA_PALMA_AGUAS_BASE_URL);
 
         $processes = $this->processLinks($linksData);
+        if (empty($processes)) {
+            return;
+        }
+
         $parsedData = $this->parseProcesses($processes);
 
         $process = $this->processService->create();
         $this->processParsedData($process, $parsedData);
 
         $this->processService->update($process, $this->errors);
-        // TODO refactor after finished funcionality
+
+        $this->dispatcher->dispatch(new IrrigationNotificationEvent(), IrrigationNotificationEvent::EVENT);
     }
 
     private function getArticlesLinks(array $dates, string $baseUrl, int $page = null): array

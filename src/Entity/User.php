@@ -44,70 +44,67 @@ class User implements UserInterface
     const ENABLED_STATUS = 1;
 
     /**
-     * @var int|null
-     *
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(name="user_id", type="integer", nullable=false)
      */
-    private $id;
+    private int $id;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="user_email", type="string", length=180, unique=true, nullable=false)
      */
-    private $email;
+    private string $email;
 
     /**
-     * @var array|null
-     *
      * @ORM\Column(name="user_roles", type="json", nullable=false)
      */
-    private $roles = [];
+    private array $roles = [];
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(name="user_password", type="string", nullable=false)
      */
-    private $password;
+    private string $password;
 
     /**
-     * @var int|null
-     *
      * @ORM\Column(name="user_status", type="smallint", nullable=false)
      */
-    private $status;
+    private ?int $status;
 
     /**
-     * @var \DateTimeInterface|null
-     *
+     * @ORM\Column(name="user_reportable", type="boolean", nullable=false)
+     */
+    private bool $reportable;
+
+    /**
+     * @ORM\OneToMany(targetEntity=CyclistRace::class, mappedBy="user")
+     */
+    private Collection $cyclistRaces;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Notification::class, mappedBy="user", orphanRemoval=true)
+     */
+    private Collection $notifications;
+
+    /**
      * @Assert\Type("\DateTimeInterface")
      * @Gedmo\Timestampable(on="create")
      *
      * @ORM\Column(name="user_created_at", type="datetime", nullable=false)
      */
-    private $createdAt;
+    private \DateTimeInterface $createdAt;
 
     /**
-     * @var \DateTimeInterface|null
-     *
      * @Assert\Type("\DateTimeInterface")
      * @Gedmo\Timestampable(on="update")
      *
      * @ORM\Column(name="user_modified_at", type="datetime", nullable=true)
      */
-    private $modifiedAt;
-
-    /**
-     * @ORM\OneToMany(targetEntity=CyclistRace::class, mappedBy="user")
-     */
-    private $cyclistRaces;
+    private \DateTimeInterface $modifiedAt;
 
     public function __construct()
     {
         $this->cyclistRaces = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -208,6 +205,25 @@ class User implements UserInterface
     }
 
     /**
+     * @return bool
+     */
+    public function getReportable(): bool
+    {
+        return $this->reportable;
+    }
+
+    /**
+     * @param bool $reportable
+     * @return $this
+     */
+    public function setReportable(bool $reportable): self
+    {
+        $this->reportable = $reportable;
+
+        return $this;
+    }
+
+    /**
      * @return Collection|CyclistRace[]
      */
     public function getCyclistRaces(): Collection
@@ -231,6 +247,36 @@ class User implements UserInterface
             // set the owning side to null (unless already changed)
             if ($cyclistRace->getUser() === $this) {
                 $cyclistRace->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Notification[]
+     */
+    public function getNotifications(): Collection
+    {
+        return $this->notifications;
+    }
+
+    public function addNotification(Notification $notification): self
+    {
+        if (!$this->notifications->contains($notification)) {
+            $this->notifications[] = $notification;
+            $notification->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNotification(Notification $notification): self
+    {
+        if ($this->notifications->removeElement($notification)) {
+            // set the owning side to null (unless already changed)
+            if ($notification->getUser() === $this) {
+                $notification->setUser(null);
             }
         }
 

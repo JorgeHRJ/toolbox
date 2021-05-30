@@ -12,7 +12,10 @@
     <li>Contraseña: {{ password }}</li>
 </ul>
 <p>La contraseña es temporal y se te ha asignado aleatoriamente. Por favor, cámbiala lo antes posible.</p>
-<p>¡Espero que disfrutes de la herramienta!</p>
-<p>Jorge</p>
+<p>
+    ¡Espero que disfrutes de la herramienta! Puedes entrar a ella haciendo click
+    <a href="{{ get_absolute_url(path('landing_index')) }}">aquí</a>.
+</p>
+<p>Jorge Hernández Ríos</p>
 </body>
 </html>

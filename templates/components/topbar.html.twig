@@ -12,6 +12,66 @@
                     </a>
                 </div>
                 <div class="app-utilities col-auto">
+                    <div class="app-utility-item app-notifications-dropdown dropdown">
+                        <a class="dropdown-toggle no-toggle-arrow"
+                           id="notifications-dropdown-toggle"
+                           data-bs-toggle="dropdown"
+                           href="#"
+                           role="button"
+                           aria-expanded="false"
+                           title="Notificaciones">
+                            {{ source('icons/bell.svg') }}
+                            {% set unread_notificatoins = get_unread_notifications_total() %}
+                            {% if unread_notificatoins > 0 %}
+                                <span class="icon-badge">{{ unread_notificatoins }}</span>
+                            {% endif %}
+                        </a>
+
+                        <div class="dropdown-menu p-0" aria-labelledby="notifications-dropdown-toggle">
+                            <div class="dropdown-menu-header p-3">
+                                <h5 class="dropdown-menu-title mb-0">Notificaciones</h5>
+                            </div>
+                            {% set notifications = get_user_notifications() %}
+                            {% if notifications is not empty %}
+                                <div class="dropdown-menu-content">
+                                    {% for notification in notifications %}
+                                        <div class="item p-3 {{ notification.status == constant('App\\Entity\\Notification::UNREAD_STATUS') ? 'border-left-decoration' }}">
+                                            <div class="row gx-2 justify-content-between align-items-center">
+                                                <div class="col">
+                                                    <div class="info">
+                                                        <div class="desc">
+                                                            {% if notification.status == constant('App\\Entity\\Notification::UNREAD_STATUS') %}
+                                                                <strong>{{ notification.content }}</strong>
+                                                            {% else %}
+                                                                {{ notification.content }}
+                                                            {% endif %}
+                                                        </div>
+                                                        <div class="meta">{{ notification.createdAt|date('d/m/Y') }}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <a class="link-mask" href="{{ path('notification_handle', {'id': notification.id}) }}"></a>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <div class="dropdown-menu-footer p-2 text-center">
+                                    <a href="{{ path('notification_index') }}">Ver todas</a>
+                                </div>
+                            {% else %}
+                                <div class="item p-3">
+                                    <div class="row gx-2 justify-content-between align-items-center">
+                                        <div class="col">
+                                            <div class="info">
+                                                <div class="desc">
+                                                    ¡No tienes notificaciones por el momento!
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
                     <div class="app-utility-item app-user-dropdown dropdown">
                         <a class="dropdown-toggle"
                            id="user-dropdown-toggle"

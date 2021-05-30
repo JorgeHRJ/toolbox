@@ -11,11 +11,10 @@ docker-compose down
 docker-compose up -d --build
 cd ../../../
 
-cp infra/env/.env.prod .env.local
-
 docker exec toolbox-php composer dump-env prod
 docker exec toolbox-php composer install --no-dev --optimize-autoloader
-docker exec toolbox-php bin/console doctrine:schema:update --force
+#docker exec toolbox-php bin/console doctrine:schema:update --force
+#docker exec toolbox-php bin/console doctrine:migrations:migrate
 docker run -v $(pwd):/home/app toolbox-node yarn install
 docker run -v $(pwd):/home/app toolbox-node yarn encore production
 

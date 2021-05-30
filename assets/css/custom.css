@@ -17,3 +17,7 @@
 .bg-none {
     background-color: transparent;
 }
+
+.border-left-decoration {
+    border-left: 3px solid #15a362;
+}

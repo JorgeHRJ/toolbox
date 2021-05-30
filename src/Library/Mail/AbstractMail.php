@@ -4,17 +4,10 @@ namespace App\Library\Mail;
 
 abstract class AbstractMail
 {
-    /** @var string */
-    protected $to;
-
-    /** @var string */
-    protected $subject;
-
-    /** @var string */
-    protected $template;
-
-    /** @var array */
-    protected $parameters;
+    protected string $to;
+    protected string $subject;
+    protected string $template;
+    protected array $parameters;
 
     /**
      * @param string $to

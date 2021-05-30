@@ -4,6 +4,10 @@ namespace App\Library\Mail;
 
 class NewUserMail extends AbstractMail
 {
+    public function __construct()
+    {
+    }
+
     /**
      * @return string
      */
@@ -17,6 +21,6 @@ class NewUserMail extends AbstractMail
      */
     protected function getMailSubject(): string
     {
-        return 'Usuario en Toolbox';
+        return 'Toolbox - Usuario en la aplicación';
     }
 }

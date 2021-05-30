@@ -4,6 +4,8 @@ services:
     _defaults:
         autowire: true
         autoconfigure: true
+        bind:
+            $domain: '%env(DOMAIN_NAME)%'
 
     App\:
         resource: '../src/'
@@ -22,3 +24,7 @@ services:
             $storageFolder: '%env(STORAGE_DIR)%'
             $publicFolder: '%kernel.project_dir%/public'
             $assetsFolder: '%env(ASSETS_DIR)%'
+
+    App\Service\MailerService:
+        arguments:
+            $from: '%env(FROM_MAIL)%'
