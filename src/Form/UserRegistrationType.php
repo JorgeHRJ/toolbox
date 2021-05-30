@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -50,6 +51,10 @@ class UserRegistrationType extends AbstractType
                     'Libro de Ruta' => User::ROLE_RACEBOOK,
                     'Recomendaciones de Riego' => User::ROLE_IRRIGATION
                 ]
+            ])
+            ->add('reportable', CheckboxType::class, [
+                'required' => false,
+                'label' => '¿Debe recibir notificaciones este usuario?'
             ])
         ;
     }
