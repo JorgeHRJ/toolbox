@@ -1,0 +1,80 @@
+{% extends 'layout.html.twig' %}
+
+{% page_setup {
+    'title': 'Clientes',
+    'header': 'Clientes',
+    'subheader': 'Listado de clientes',
+    'breadcrumbs': [
+        {
+            'name': 'Cronos',
+            'path': '#'
+        },
+        {
+            'name': 'Clientes',
+            'main': true
+        }
+    ],
+    'utilities': 'crono/client/components/_index-utilities.html.twig'
+} %}
+
+{% block content %}
+<div class="row g-4 mb-4">
+    <div class="col-12">
+        <div class="app-card app-card-orders-table shadow-sm mb-5">
+            <div class="app-card-body">
+                {% if data is empty %}
+                    {{ include('components/no-results.html.twig') }}
+                {% else %}
+                <div class="table-responsive p-3">
+                    <table class="table app-table-hover mb-0 text-left">
+                        {% if dir == 'asc' %}
+                            {% set dir_class = '-up' %}
+                            {% set new_dir = 'desc' %}
+                        {% elseif dir == 'desc' %}
+                            {% set dir_class = '-down' %}
+                            {% set new_dir = 'asc' %}
+                        {% else %}
+                            {% set dir_class = '' %}
+                            {% set new_dir = '' %}
+                        {% endif %}
+                        {% set filter_query = get_filter_query(params, ['f']) %}
+                        <thead>
+                        <tr class="bg-primary pt-1 pb-1">
+                            <th>Nombre</th>
+                            <th>Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for client in data %}
+                        <tr class="table-active">
+                            <td class="cell">
+                                <h6><span class="badge bg-{{ client.color }}">{{ client.name }}</span></h6>
+                            </td>
+                            <td class="cell">
+                                <a class="btn-sm app-btn-secondary ml-1 p-2"
+                                   href="{{ path('crono_client_edit', {'id': client.id}) }}"
+                                   title="Editar cliente">
+                                    {{ source('icons/pencil-sm.svg') }} Editar
+                                </a>
+                                <a class="btn-sm app-btn-secondary ml-1 p-2"
+                                   href="{{ path('crono_client_remove', {'id': client.id}) }}"
+                                   title="Eliminar cliente">
+                                    {{ source('icons/trash-sm.svg') }} Eliminar
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {{ include(
+                    'components/pagination.html.twig',
+                    paginationData|merge({'params': params, 'dir_class': dir_class, 'new_dir': new_dir, 'fitler_query': filter_query}),
+                    false
+                ) }}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

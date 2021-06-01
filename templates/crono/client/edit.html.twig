@@ -1,0 +1,33 @@
+{% extends 'layout.html.twig' %}
+
+{% page_setup {
+    'title': "Editar cliente #{client.name}",
+    'header': "Editar cliente #{client.name}",
+    'subheader': 'Rellena el formulario para crear el cliente',
+    'breadcrumbs': [
+        {
+            'name': 'Cronos',
+            'path': '#'
+        },
+        {
+            'name': 'Clientes',
+            'path': path('crono_client_index')
+        },
+        {
+            'name': "Editar cliente #{client.name}",
+            'main': true
+        }
+    ]
+} %}
+
+{% block content %}
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="app-card app-card-settings shadow-sm p-4">
+                <div class="app-card-body">
+                    {{ include('crono/client/components/form.html.twig') }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

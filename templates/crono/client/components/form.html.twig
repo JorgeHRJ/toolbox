@@ -1,0 +1,25 @@
+{{ form_start(form, {'attr': {'class': 'mt-1', 'autocomplete': 'off'}}) }}
+<div class="mb-3">
+    {{ form_label(form.name) }}
+    {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
+</div>
+<div class="mb-3">
+    {{ form_label(form.color) }}
+    {{ form_widget(form.color, {'attr': {'class': 'form-control'}}) }}
+    <div class="col-12" data-component="color-picker" data-target="{{ form.color.vars.id }}">
+        <button type="button" class="btn btn-primary text-white m-1" data-color="primary">
+        </button>
+        <button type="button" class="btn btn-secondary m-1" data-color="secondary">
+        </button>
+        <button type="button" class="btn btn-success text-white m-1" data-color="success">
+        </button>
+        <button type="button" class="btn btn-danger text-white m-1" data-color="danger">
+        </button>
+        <button type="button" class="btn btn-warning text-white m-1" data-color="warning">
+        </button>
+        <button type="button" class="btn btn-info text-white m-1" data-color="info"></button>
+    </div>
+</div>
+<button type="submit" class="btn app-btn-primary">Enviar</button>
+{{ form_widget(form._token) }}
+{{ form_end(form, {'render_rest': false}) }}

@@ -11,6 +11,7 @@ import initEditorComponent from './js/components/editor';
 import initNotyfComponent from './js/components/notyf';
 import initSuggestifyComponent from './js/components/suggestify';
 import initSlideshowComponent from './js/components/slideshow';
+import initColorPickerComponent from './js/components/color-picker';
 
 // import controllers
 import initTaskController from './js/controllers/task_controller';
@@ -26,6 +27,7 @@ initEditorComponent();
 initNotyfComponent();
 initSuggestifyComponent();
 initSlideshowComponent();
+initColorPickerComponent();
 
 // init controllers
 if (document.querySelector('[data-controller="task"]')) {

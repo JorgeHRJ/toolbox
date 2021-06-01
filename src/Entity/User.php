@@ -30,6 +30,7 @@ class User implements UserInterface
     const ROLE_RESERVOIR = 'ROLE_RESERVOIR';
     const ROLE_RACEBOOK = 'ROLE_RACEBOOK';
     const ROLE_IRRIGATION = 'ROLE_IRRIGATION';
+    const ROLE_CRONOS = 'ROLE_CRONOS';
     const ROLES = [
         self::ROLE_ADMIN,
         self::ROLE_TASK,
@@ -37,6 +38,7 @@ class User implements UserInterface
         self::ROLE_RESERVOIR,
         self::ROLE_RACEBOOK,
         self::ROLE_IRRIGATION,
+        self::ROLE_CRONOS,
         self::ROLE_USER
     ];
 
