@@ -1,0 +1,47 @@
+{% extends 'layout.html.twig' %}
+
+{% page_setup {
+    'title': 'Cronos',
+    'header': 'Cronos',
+    'subheader': 'Organización de tiempos dedicados a clientes',
+    'breadcrumbs': [
+        {
+            'name': 'Cronos',
+            'main': true
+        }
+    ],
+    'body': {
+        'attr': {
+            'controller': 'cronos'
+        }
+    },
+    'utilities': 'crono/components/index-utilities.html.twig'
+} %}
+
+{% block content %}
+    <div class="app-card shadow-sm mb-4">
+        <div class="inner">
+            <div class="app-card-body p-4">
+                <div class="row gx-5 gy-3">
+                    <div class="calendar" data-component="calendar"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="hide"
+         data-component="time-container"
+         data-edit="#"
+         data-delete="#">
+        {% for time in times %}
+            <div data-id="{{ time.id }}"
+                 data-title="{{ time.title }}"
+                 data-color="{{ time.client.color }}"
+                 data-start="{{ time.startAt|date('c') }}"
+                 data-end="{{ time.endAt|date('c') }}"
+                 data-component="time-event">
+            </div>
+        {% endfor %}
+    </div>
+    {{ include('crono/components/time-modal.html.twig', {'type': 'add'}) }}
+    {{ include('crono/components/time-modal.html.twig', {'type': 'edit'}) }}
+{% endblock %}

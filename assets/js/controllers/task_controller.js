@@ -394,9 +394,6 @@ function initCalendar(element) {
     dateClick: (d) => {
       openAddModal(d)
     },
-    datesSet: (dateInfo) => {
-      console.log(dateInfo);
-    },
     eventDrop: (info) => {
       onDropEvent(info);
     },

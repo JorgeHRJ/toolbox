@@ -2,6 +2,9 @@
 @import 'vendors/fullcalendar/main.min.css';
 @import 'vendors/datepicker/datepicker.min.css';
 @import 'vendors/notyf/notyf.min.css';
+@import 'vendors/easymde/easymde.min.css';
+@import 'vendors/choices/choices.min.css';
+@import 'vendors/flatpickr/flatpickr.min.css';
 
 @import 'components/pace.css';
 @import 'components/editorjs.css';
@@ -9,5 +12,7 @@
 @import 'components/datepicker.css';
 @import 'components/suggestify.css';
 @import 'components/slideshow.css';
+@import 'components/markdown_editor';
+@import 'components/fortawesome';
 
 @import 'custom';

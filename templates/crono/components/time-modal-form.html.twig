@@ -1,0 +1,22 @@
+{{ form_start(form, {'attr': {'class': 'mt-1', 'autocomplete': 'off'}}) }}
+<div class="mb-3">
+    {{ form_label(form.title) }}
+    {{ form_widget(form.title, {'attr': {'class': 'form-control'}}) }}
+</div>
+<div class="mb-3">
+    {{ form_label(form.startAt) }}
+    {{ form_widget(form.startAt, {'attr': {'class': 'form-control'}}) }}
+</div>
+<div class="mb-3">
+    {{ form_label(form.endAt) }}
+    {{ form_widget(form.endAt, {'attr': {'class': 'form-control'}}) }}
+</div>
+<div class="mb-3">
+    {{ form_label(form.client) }}
+    {{ form_widget(form.client, {'attr': {'class': 'form-control'}}) }}
+</div>
+<div class="mb-3">
+    {{ form_label(form.description) }}
+    {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+</div>
+{{ form_end(form, {'render_rest': false}) }}

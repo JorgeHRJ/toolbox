@@ -24,7 +24,29 @@
     border-bottom-left-radius: .25em !important;
 }
 
+.fc-day-other {
+    background-image: linear-gradient(135deg, rgba(0, 0, 0, 0.02) 25%, transparent 25%, transparent 50%, rgba(0, 0, 0, 0.02) 50%, rgba(0, 0, 0, 0.02) 75%, transparent 75%, transparent) !important;
+    background-color: #fff !important;
+    background-size: 32px 32px !important;
+}
+
+.fc-daygrid-day-number {
+    padding: 0 5px !important;
+    font-weight: bold !important;
+    font-size: 20px !important;
+    color: #808080 !important;
+}
+
 .task-done .fc-event-title {
     font-style: italic !important;
     text-decoration: line-through !important;
+}
+
+.fc-cronos-event {
+    font-size: 14px !important;
+}
+
+a.fc-cronos-event:hover {
+    color: #efefef !important;
+    cursor: pointer;
 }

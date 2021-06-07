@@ -1,0 +1,50 @@
+{#
+Parameters:
+  * nb_pages (int): number of pages
+  * current_page (int): current pages
+  * url (string): route name & query (string): route parameter
+#}
+{% if nb_pages > 1 %}
+    {# Number of page around current page+1 #}
+    {% set nearby_pages_limit = 4 %}
+    <nav class="app-pagination pb-4">
+        <ul class="pagination justify-content-center">
+            {% if current_page != 1 %}
+                <li class="page-item">
+                    <a href="{{ path(url, params|merge({'page': 1})) }}" class="page-link">Primero</a>
+                </li>
+            {% endif %}
+
+            {% for i in 1..nb_pages %}
+                {# twigcs use-var i #}
+                {% if 0 == (current_page - nearby_pages_limit) - loop.index %} {# dot before #}
+                    <li class="page-item disabled"><a href="#" class="page-link">...</a></li>
+                {% elseif 0 == (current_page + nearby_pages_limit) - loop.index %} {# dot after #}
+                    <li class="page-item disabled"><a href="#" class="page-link">...</a></li>
+                {% elseif 0 < (current_page - nearby_pages_limit) - loop.index %} {# hide all before #}
+                {% elseif 0 > (current_page + nearby_pages_limit) - loop.index %} {# hide all after #}
+                {% else %}
+                    <li {% if current_page == loop.index %} class="page-item active"{% endif %}>
+                        <a href="{{ path(url, params|merge({'page': loop.index})) }}" class="page-link">
+                            {{ loop.index }}
+                        </a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if current_page != nb_pages %}
+                <li class="page-item">
+                    <a href="{{ path(url, params|merge({'page': nb_pages})) }}" class="page-link">Último</a>
+                </li>
+            {% endif %}
+        </ul>
+        <div class="d-flex justify-content-center">
+            <small>
+                Mostrando {{ ((current_page - 1) * limit) + 1 }}
+                a <span>{{ ((current_page - 1) * limit) + current_count }}</span>
+                de <span>{{ total_count }}</span>
+                elementos.
+            </small>
+        </div>
+    </nav>
+{% endif %}

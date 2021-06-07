@@ -1,6 +1,6 @@
 import { Notyf } from 'notyf';
 
-function initNotification(message, type) {
+function notify(message, type) {
   const notyf = new Notyf({
     position: {x: 'right', y: 'top'},
     duration: 4000
@@ -20,9 +20,12 @@ function init() {
   const messages = document.querySelectorAll('[data-component="notification"]');
   if (messages) {
     messages.forEach((message) => {
-      initNotification(message.innerText, message.dataset.type);
+      notify(message.innerText, message.dataset.type);
     })
   }
 }
 
-export default init;
+export {
+  init as initNotyfComponent,
+  notify
+};
