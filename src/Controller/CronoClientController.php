@@ -18,7 +18,7 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class CronoClientController extends BaseController
 {
-    const LIST_LIMIT = 2;
+    const LIST_LIMIT = 10;
 
     private CronoClientService $clientService;
 

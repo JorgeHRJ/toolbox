@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\CronoClient;
+use App\Entity\User;
 use App\Library\Repository\BaseRepository;
 use App\Library\Service\BaseService;
 use App\Repository\CronoClientRepository;
@@ -17,6 +18,18 @@ class CronoClientService extends BaseService
     {
         parent::__construct($entityManager, $logger);
         $this->repository = $entityManager->getRepository(CronoClient::class);
+    }
+
+    public function getForChoices(User $user): array
+    {
+        $clients = $this->repository->getIdsNames($user);
+
+        $choices = [];
+        foreach ($clients as $client) {
+            $choices[$client['name']] = $client['id'];
+        }
+
+        return $choices;
     }
 
     public function getSortFields(): array

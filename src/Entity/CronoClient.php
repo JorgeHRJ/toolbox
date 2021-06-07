@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=CronoClientRepository::class)
@@ -37,6 +38,7 @@ class CronoClient
 
     /**
      * @ORM\Column(name="cronoclient_color", type="string", length=16, nullable=false)
+     * @Groups({"detail"})
      */
     private string $color;
 
@@ -66,6 +68,11 @@ class CronoClient
     {
         $this->plans = new ArrayCollection();
         $this->times = new ArrayCollection();
+    }
+
+    public function __toString(): string
+    {
+        return $this->name;
     }
 
     public function getId(): ?int

@@ -6,6 +6,7 @@ use App\Library\Traits\Entity\TimestampableTrait;
 use App\Repository\CronoTimeRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=CronoTimeRepository::class)
@@ -19,28 +20,33 @@ class CronoTime
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(name="cronotime_id", type="integer", nullable=false)
+     * @Groups({"detail"})
      */
     private int $id;
 
     /**
      * @ORM\Column(name="cronotime_start_at", type="datetime", nullable=false)
+     * @Groups({"detail"})
      */
     private \DateTimeInterface $startAt;
 
     /**
      * @ORM\Column(name="cronotime_end_at", type="datetime", nullable=false)
+     * @Groups({"detail"})
      */
     private \DateTimeInterface  $endAt;
 
     /**
      * @ORM\Column(name="cronotime_title", type="string", length=128, nullable=false)
+     * @Groups({"detail"})
      */
     private string $title;
 
     /**
      * @ORM\Column(name="cronotime_description", type="text", nullable=true)
+     * @Groups({"detail"})
      */
-    private string $description;
+    private ?string $description = '';
 
     /**
      * @ORM\ManyToOne(targetEntity=CronoMonth::class, inversedBy="times")
@@ -51,8 +57,9 @@ class CronoTime
     /**
      * @ORM\ManyToOne(targetEntity=CronoClient::class, inversedBy="times")
      * @ORM\JoinColumn(name="cronotime_client", referencedColumnName="cronoclient_id", nullable=false)
+     * @Groups({"detail"})
      */
-    private CronoClient $client;
+    private ?CronoClient $client = null;
 
     /**
      * @ORM\Column(name="cronotime_created_at", type="datetime", nullable=false)

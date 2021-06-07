@@ -77,11 +77,13 @@ abstract class BaseService
      */
     public function remove($entity): void
     {
+        $entityId = $entity->getId();
+
         try {
             $this->entityManager->remove($entity);
             $this->entityManager->flush();
 
-            $this->logger->info(sprintf('Removed %s ID::%s', get_class($entity), $entity->getId()));
+            $this->logger->info(sprintf('Removed %s ID::%s', get_class($entity), $entityId));
         } catch (\Exception $e) {
             $this->logger->error(sprintf('Error removing %s. Error: %s', get_class($entity), $e->getMessage()));
 

@@ -61,6 +61,14 @@ class MenuService
             'ROLE_TASK',
             'icons/calendar-week.svg'
         );
+        $cronosItem = new MenuItem(
+            'Cronos',
+            'Organiza tus tiempos dedicados a tus clientes',
+            $this->isActive('crono'),
+            'crono_time_index',
+            'ROLE_CRONOS',
+            'icons/stopwatch.svg'
+        );
         $transactionItem = new MenuItem(
             'Monedero',
             'Gestiona tu presupuesto personal mes a mes',
@@ -102,7 +110,16 @@ class MenuService
             'icons/people.svg'
         );
 
-        return [$landingItem, $taskItem, $transactionItem, $reservoirItem, $irrigationItem, $raceBookItem, $usersItem];
+        return [
+            $landingItem,
+            $taskItem,
+            $cronosItem,
+            $transactionItem,
+            $reservoirItem,
+            $irrigationItem,
+            $raceBookItem,
+            $usersItem
+        ];
     }
 
     /**

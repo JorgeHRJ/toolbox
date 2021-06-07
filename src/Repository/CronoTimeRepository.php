@@ -3,48 +3,42 @@
 namespace App\Repository;
 
 use App\Entity\CronoTime;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Entity\User;
+use App\Library\Repository\BaseRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * @method CronoTime|null find($id, $lockMode = null, $lockVersion = null)
- * @method CronoTime|null findOneBy(array $criteria, array $orderBy = null)
- * @method CronoTime[]    findAll()
- * @method CronoTime[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
- */
-class CronoTimeRepository extends ServiceEntityRepository
+class CronoTimeRepository extends BaseRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, CronoTime::class);
     }
 
-    // /**
-    //  * @return CronoTime[] Returns an array of CronoTime objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param User $user
+     * @param string $startDate
+     * @param string $endDate
+     * @return CronoTime[]
+     */
+    public function getBetweenDates(User $user, string $startDate, string $endDate): array
     {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('c.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $queryBuilder = $this->createQueryBuilder('ct');
+        $queryBuilder
+            ->join('ct.month', 'cm')
+            ->join('ct.client', 'cc')
+            ->addSelect('cc')
+            ->andWhere('ct.startAt >= :startDate')
+            ->andWhere('ct.endAt <= :endDate')
+            ->andWhere('cm.user = :userId')
+            ->setParameter('startDate', $startDate)
+            ->setParameter('endDate', $endDate)
+            ->setParameter('userId', $user->getId());
 
-    /*
-    public function findOneBySomeField($value): ?CronoTime
-    {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        return $queryBuilder->getQuery()->getResult();
     }
-    */
+
+    public function getFilterFields(): array
+    {
+        return [];
+    }
 }
