@@ -32,3 +32,8 @@ yarn-error.log
 /storage/reservoir/*
 /storage/irrigation/*
 /public/assets/*
+
+###> friendsofphp/php-cs-fixer ###
+/.php-cs-fixer.php
+/.php-cs-fixer.cache
+###< friendsofphp/php-cs-fixer ###
