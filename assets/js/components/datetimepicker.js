@@ -7,6 +7,7 @@ function initDatetimePicker(element) {
   flatpickr(element, {
     allowInput: true,
     enableTime: time,
+    time_24hr: true,
     dateFormat: format,
     monthSelectorType: 'static'
   });

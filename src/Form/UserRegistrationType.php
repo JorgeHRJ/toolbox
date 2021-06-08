@@ -46,6 +46,7 @@ class UserRegistrationType extends AbstractType
                 'choices' => [
                     'Administrador' => User::ROLE_ADMIN,
                     'Semanal' => User::ROLE_TASK,
+                    'Cronos' => User::ROLE_CRONOS,
                     'Monedero' => User::ROLE_TRANSACTION,
                     'Balsas' => User::ROLE_RESERVOIR,
                     'Libro de Ruta' => User::ROLE_RACEBOOK,

@@ -15,10 +15,32 @@ function getClassNameForEvent(color) {
   return `badge bg-${color} border border-light rounded p-2 w-100 fc-cronos-event`;
 }
 
+function getDiff(startAt, endAt) {
+  const diffMs = (new Date(endAt)) - (new Date(startAt));
+  const diffDays = Math.floor(diffMs / 86400000);
+  const diffHrs = Math.floor((diffMs % 86400000) / 3600000);
+  const diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000);
+
+  let diff = '';
+  if (diffDays > 0) {
+    diff += `${diffDays}d`;
+  }
+
+  if (diffHrs > 0) {
+    diff += ` ${diffHrs}h`;
+  }
+
+  if (diffMins > 0) {
+    diff += ` ${diffMins}m`;
+  }
+
+  return diff;
+}
+
 function getEvent(id, title, startAt, endAt, color) {
   return {
     id: id,
-    title: title,
+    title: `${title} (${getDiff(startAt, endAt)})`,
     start: startAt,
     end: endAt,
     className: getClassNameForEvent(color),
